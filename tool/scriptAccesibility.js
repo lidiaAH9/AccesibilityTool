@@ -8,6 +8,9 @@
     btnAccesibilidad.id = 'miBotonAccesibilidad';
     btnAccesibilidad.className = 'btn-accesibilidad';
     btnAccesibilidad.setAttribute('aria-label', 'Botón para abrir la herramienta de accesibilidad');
+    // Añadir atributos ARIA al botón de accesibilidad
+    btnAccesibilidad.setAttribute('aria-haspopup', 'true');
+    btnAccesibilidad.setAttribute('aria-controls', 'menu-accesibilidad');
 
     // Añadir el SVG al botón
     var iconoAccesibilidad = doc.createElement('img');
