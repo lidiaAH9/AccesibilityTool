@@ -1,0 +1,183 @@
+/* Style for Accesibility Tool by Lidia Alaejos Herrero
+scriptAccesibilidad.js */
+
+
+.btn-accesibilidad {
+    position: fixed;
+    bottom: 30px;
+    left: 20px;
+    background: white;
+    height: 50px;
+    width: 50px;
+    border-radius: 50px;
+    padding: 30px;
+    cursor: pointer;
+    z-index: 1000;
+    background-image: url('icon-accessibility.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 70%;
+    border: 2px solid dimgray;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: auto;
+    /* Ancho automático según el contenido */
+    background-color: white;
+    /* Fondo del tooltip */
+    color: black;
+    /* Color de texto del tooltip */
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 10px;
+    position: absolute;
+    z-index: 1001;
+    /* Encima del botón */
+    bottom: 110%;
+    /* Posición debajo del botón */
+    left: 100%;
+    transform: translateX(-50%);
+    /* Centrado horizontal */
+    white-space: nowrap;
+    /* Evita que el texto se pase a la siguiente línea */
+    transition: visibility 0.2s, opacity 0.2s ease-in-out;
+    opacity: 0;
+}
+
+.btn-accesibilidad:hover .tooltip-text {
+    visibility: visible;
+    /* Muestra el tooltip */
+    opacity: 1;
+    /* Hace el tooltip totalmente opaco */
+}
+
+
+#menu-accesibilidad {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 3000;
+    top: 0;
+    left: 0;
+    background-color: lightblue;
+    overflow-x: hidden;
+    transition: 0.5s;
+    box-sizing: border-box;
+    padding: 0;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+#menu-accesibilidad.open {
+    width: 400px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.close-button {
+    position: absolute;
+    background-color: transparent;
+    top: 20px;
+    right: 25px;
+    font-size: 30px;
+    font-weight: bold;
+    margin-left: 50px;
+    border: none;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    color: red;
+}
+
+#menu-accesibilidad * {
+    padding-left: 20px;
+
+}
+
+#menu-accesibilidad div {
+    margin-bottom: 15px;
+    /* Espacio entre los elementos div */
+    padding-left: 20px;
+    /* Espacio de relleno izquierdo */
+}
+
+.titulo-menu {
+    margin-bottom: -15px;
+    /* Ajusta el margen inferior del título "Accesibilidad" */
+}
+
+#high-contrast {
+    margin-top: 5px;
+}
+
+#color-picker-texto {
+    width: 80px;
+    /* Ancho del color picker */
+    height: 40px;
+    /* Altura del color picker */
+    border: none;
+    /* Elimina el borde */
+    padding: 0;
+    /* Elimina cualquier relleno interno */
+    cursor: pointer;
+    /* Cambia el cursor al pasar sobre el color picker */
+}
+
+#color-picker-fondo {
+    width: 80px;
+    /* Ancho del color picker */
+    height: 40px;
+    /* Altura del color picker */
+    border: none;
+    /* Elimina el borde */
+    padding: 0;
+    /* Elimina cualquier relleno interno */
+    cursor: pointer;
+    /* Cambia el cursor al pasar sobre el color picker */
+}
+
+:root {
+    --thumb-color: transparent;
+}
+
+/* Estilos para los controles deslizantes personalizados */
+.custom-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 80%;
+    height: 15px;
+    background: linear-gradient(to right, black, white);
+    border-radius: 5px;
+    outline: none;
+    opacity: 1;
+    transition: opacity .2s;
+}
+
+/* Cambia el color del control deslizante según su valor */
+.custom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background-color: transparent;
+    border-radius: 50%;
+    border: 2px solid white;
+    cursor: pointer;
+    transition: background-color .2s;
+}
+
+.menu-label {
+    font-size: 18px;
+}
+
+.no-underline {
+    color: blue;
+    /* Cambia el color del texto a azul */
+    text-decoration: none;
+    /* Elimina el subrayado */
+    font-weight: bold;
+}
