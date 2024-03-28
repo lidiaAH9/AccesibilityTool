@@ -75,16 +75,24 @@ scriptAccesibilidad.js */
     width: 400px;
     padding-left: 20px;
     padding-right: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+#menu-accesibilidad h2.titulo-menu {
+    padding-right: 20px; 
+    margin-top: 20px; 
+    margin-bottom: 20px; 
 }
 
 .close-button {
     position: absolute;
     background-color: transparent;
     top: 20px;
-    right: 25px;
+    right: 10px;
     font-size: 30px;
     font-weight: bold;
-    margin-left: 50px;
+    
     border: none;
     cursor: pointer;
 }
@@ -93,10 +101,7 @@ scriptAccesibilidad.js */
     color: red;
 }
 
-#menu-accesibilidad * {
-    padding-left: 20px;
 
-}
 
 #menu-accesibilidad div {
     margin-bottom: 15px;
@@ -144,6 +149,31 @@ scriptAccesibilidad.js */
     --thumb-color: transparent;
 }
 
+.custom-slider-satu {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 80%;
+    height: 15px;
+    background: linear-gradient(to right, grey, var(--color-seleccionado));
+    border-radius: 5px;
+    outline: none;
+    opacity: 1;
+    transition: opacity .2s;
+}
+
+/* Cambia el color del control deslizante según su valor */
+.custom-slider-satu::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background-color: var(--thumb-color);
+    border-radius: 50%;
+    border: 2px solid white;
+    cursor: pointer;
+    transition: background-color .2s;
+}
+
 /* Estilos para los controles deslizantes personalizados */
 .custom-slider {
     -webkit-appearance: none;
@@ -157,18 +187,23 @@ scriptAccesibilidad.js */
     transition: opacity .2s;
 }
 
+
 /* Cambia el color del control deslizante según su valor */
 .custom-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 18px;
     height: 18px;
-    background-color: transparent;
+    background-color: var(--thumb-color);
     border-radius: 50%;
     border: 2px solid white;
     cursor: pointer;
     transition: background-color .2s;
 }
+
+ .txt-slider {
+    width: 80%;
+ }
 
 .menu-label {
     font-size: 18px;
@@ -181,3 +216,23 @@ scriptAccesibilidad.js */
     /* Elimina el subrayado */
     font-weight: bold;
 }
+
+details > summary {
+    display: flex;
+    justify-content: space-between; /* Espacio entre el texto y la flecha */
+    align-items: center; /* Alinea verticalmente */
+    cursor: pointer;
+    list-style: none;
+  }
+  
+  details > summary::after {
+    content: '▼';
+    font-size: 1em;
+    line-height: 1;
+    transition: transform 0.3s ease-in-out; /* Animación de giro */
+  }
+  
+  details[open] > summary::after {
+    transform: rotate(-180deg); /* Gira la flecha cuando está abierto */
+  }
+  

@@ -8,6 +8,7 @@
     btnAccesibilidad.id = 'miBotonAccesibilidad';
     btnAccesibilidad.className = 'btn-accesibilidad';
     btnAccesibilidad.setAttribute('aria-label', 'Botón para abrir la herramienta de accesibilidad');
+
     // Añadir atributos ARIA al botón de accesibilidad
     btnAccesibilidad.setAttribute('aria-haspopup', 'true');
     btnAccesibilidad.setAttribute('aria-controls', 'menu-accesibilidad');
@@ -31,51 +32,34 @@
     var menuAccesibilidad = doc.createElement('div');
     menuAccesibilidad.id = 'menu-accesibilidad';
     menuAccesibilidad.className = 'menu-accesibilidad';
-    menuAccesibilidad.innerHTML = '<button class="close-button">X</button><h2 class="titulo-menu">Accesibilidad</h2><label><h3 id="high-contrast">Ajustar Colores de Texto</h3></label>' +
+
+    menuAccesibilidad.innerHTML = '<button class="close-button">X</button><h2 class="titulo-menu">Accesibilidad</h2><details><summary><h3 id="high-contrast">Ajustar Colores de Texto</h3></summary>' +
       '<div id="color-texto-adjustment-container"><label class="menu-label" for="color-picker-texto">Seleccione un color:   </label><input type="color" id="color-picker-texto" ></div>' +
-      '<div><label class="menu-label" for="saturacionSliderTexto">Saturación:</label><input type="range" id="saturacionSliderTexto" class="custom-slider" min="0" max="100" value="50"></div>' +
+      '<div><label class="menu-label" for="saturacionSliderTexto">Saturación:</label><input type="range" id="saturacionSliderTexto" class="custom-slider-satu" min="0" max="100" value="50"></div>' +
       '<div><label class="menu-label" for="luminosidadSliderTexto">Luminosidad: </label><input type="range" id="luminosidadSliderTexto" class="custom-slider" min="0" max="100" value="50"></div>' +
-      '<div><a id="restablecerCambiosTexto" class="restablecer-cambios-link no-underline" href="#">Restablecer color del texto</a></div>' +
-      '<label><h3 id="high-contrast">Ajustar Colores de Fondo</h3></label>' +
-      '<div id="color-fondo-adjustment-container"><label for="color-picker-fondo">Seleccione un color:  </label><input type="color" id="color-picker-fondo" ></div>' +
-      '<div><label class="menu-label" for="saturacionSliderFondo">Saturación:</label><input type="range" id="saturacionSliderFondo" class="custom-slider" min="0" max="100" value="50"></div>' +
+      '<div><a id="restablecerCambiosTexto" class="restablecer-cambios-link no-underline" href="#">Restablecer color del texto</a></div></details>' +
+      '<details><summary><h3 id="high-contrast">Ajustar Colores de Fondo</h3></summary>' +
+      '<div id="color-fondo-adjustment-container"><label class="menu-label" for="color-picker-fondo">Seleccione un color:  </label><input type="color" id="color-picker-fondo" ></div>' +
+      '<div><label class="menu-label" for="saturacionSliderFondo">Saturación:</label><input type="range" id="saturacionSliderFondo" class="custom-slider-satu" min="0" max="100" value="50"></div>' +
       '<div><label class="menu-label" for="luminosidadSliderFondo">Luminosidad: </label><input type="range" id="luminosidadSliderFondo" class="custom-slider" min="0" max="100" value="50"></div>' +
-      '<div><a id="restablecerCambiosFondo" class="restablecer-cambios-link no-underline" href="#">Restablecer color de fondo</a></div>';
+      '<div><a id="restablecerCambiosFondo" class="restablecer-cambios-link no-underline" href="#">Restablecer color de fondo</a></div></details>';
 
     doc.body.appendChild(menuAccesibilidad);
 
-   // Variables para registrar la posición inicial del ratón
-   var startX = 0;
-   var startY = 0;
 
-   // Evento mousedown para registrar la posición inicial del ratón
-   btnAccesibilidad.addEventListener('mousedown', function (event) {
-     startX = event.clientX;
-     startY = event.clientY;
-   });
-
-   // Evento mouseup para comparar la posición final del ratón y abrir el menú si no se ha movido el botón
-   btnAccesibilidad.addEventListener('mouseup', function (event) {
-     var endX = event.clientX;
-     var endY = event.clientY;
-     var distance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2)); // Calcular la distancia total
-     if (distance < 5) { // Considerar que el botón no se ha movido si la distancia es menor a 5 píxeles
-       menuAccesibilidad.style.width = menuAccesibilidad.style.width === '350px' ? '0' : '350px';
-     }
-   });
-
-
-    // Evento para cerrar el menú usando el botón de cierre
-    var closeButton = menuAccesibilidad.querySelector('.close-button');
-    closeButton.addEventListener('click', function () {
-      menuAccesibilidad.style.width = '0';
+    // Agregar eventos al botón de accesibilidad para abrir/cerrar el menú
+    btnAccesibilidad.addEventListener('click', function () {
+      menuAccesibilidad.classList.toggle('open');
     });
+
+
 
     // Cargar la biblioteca Chroma.js
     const scriptChroma = doc.createElement('script');
     scriptChroma.src = 'https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.1/chroma.min.js';
     scriptChroma.onload = function () {
 
+      actualizarGradientes();
       // Función para cambiar el color del texto
       function cambiarColorTexto() {
         const colorPickerTexto = doc.getElementById('color-picker-texto');
@@ -83,6 +67,10 @@
         const saturacionSliderTexto = doc.getElementById('saturacionSliderTexto');
 
         const colorTexto = chroma(colorPickerTexto.value).set('hsl.l', luminosidadSliderTexto.value / 100).set('hsl.s', saturacionSliderTexto.value / 100).hex();
+        const colorPickerTextoValue = colorPickerTexto.value;
+        const colorBaseTexto = chroma(colorPickerTextoValue);
+        const colorEndTexto = chroma('grey');
+        saturacionSliderTexto.style.background = `linear-gradient(to right, ${colorEndTexto}, ${colorBaseTexto})`;
 
         // Seleccionar todos los elementos de texto y cambiar su color simultáneamente
         const elementosTexto = doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
@@ -101,6 +89,10 @@
         const saturacionSliderFondo = doc.getElementById('saturacionSliderFondo');
 
         const colorFondo = chroma(colorPickerFondo.value).set('hsl.l', luminosidadSliderFondo.value / 100).set('hsl.s', saturacionSliderFondo.value / 100).hex();
+        const colorPickerFondoValue = colorPickerFondo.value;
+        const colorBaseFondo = chroma(colorPickerFondoValue);
+        const colorEndFondo = chroma('grey');
+        saturacionSliderFondo.style.background = `linear-gradient(to right, ${colorEndFondo}, ${colorBaseFondo})`;
 
         // Seleccionar todos los elementos de texto y cambiar su color simultáneamente
         const elementosTexto = doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
@@ -112,6 +104,20 @@
         });
       }
 
+      function actualizarGradientes() {
+        const colorPickerTexto = doc.getElementById('color-picker-texto');
+        const colorPickerFondo = doc.getElementById('color-picker-fondo');
+        const saturacionSliderTexto = doc.getElementById('saturacionSliderTexto');
+        const saturacionSliderFondo = doc.getElementById('saturacionSliderFondo');
+      
+        const colorBaseTexto = chroma(colorPickerTexto.value);
+        const colorBaseFondo = chroma(colorPickerFondo.value);
+        const colorEnd = chroma('grey');
+      
+        saturacionSliderTexto.style.background = `linear-gradient(to right, ${colorEnd}, ${colorBaseTexto})`;
+        saturacionSliderFondo.style.background = `linear-gradient(to right, ${colorEnd}, ${colorBaseFondo})`;
+      }
+      
       // Eventos para cambiar el color de texto cuando se interactúa con los controles
       doc.getElementById('color-picker-texto').addEventListener('input', cambiarColorTexto);
       doc.getElementById('luminosidadSliderTexto').addEventListener('input', cambiarColorTexto);
@@ -129,6 +135,10 @@
         elementosTexto.forEach(elemento => {
           elemento.style.color = ''; // Restablecer el color a su valor predeterminado
         });
+        doc.getElementById('color-picker-texto').value = '#000000';
+        doc.getElementById('luminosidadSliderTexto').value = '50';
+        doc.getElementById('saturacionSliderTexto').value = '50';
+        actualizarGradientes();
       });
 
       // Evento para restablecer los cambios de color de fondo
@@ -138,13 +148,184 @@
         elementosFondo.forEach(elemento => {
           elemento.style.backgroundColor = ''; // Restablecer el color de fondo a su valor predeterminado
         });
+        doc.getElementById('color-picker-texto').value = '#000000';
+        doc.getElementById('luminosidadSliderFondo').value = '50';
+        doc.getElementById('saturacionSliderFondo').value = '50';
+        actualizarGradientes();
+      
       });
-
     };
 
     // Agregar el script de Chroma.js al documento
     doc.head.appendChild(scriptChroma);
 
+
+    // Función para cambiar el tamaño de la fuente
+    function cambiarTamanoFuente(valor) {
+      const elementosTexto = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
+      elementosTexto.forEach(elemento => {
+        if (!elemento.closest('#menu-accesibilidad')) {
+          elemento.style.fontSize = valor + 'px';
+        }
+      });
+    }
+
+    // Función para cambiar el espaciado entre líneas
+    function cambiarEspaciadoLineas(valor) {
+      const elementosTexto = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
+      elementosTexto.forEach(elemento => {
+        if (!elemento.closest('#menu-accesibilidad')) {
+          elemento.style.lineHeight = valor;
+        }
+      });
+    }
+
+    // Función para cambiar el espaciado entre palabras
+    function cambiarEspaciadoPalabras(valor) {
+      const elementosTexto = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
+      elementosTexto.forEach(elemento => {
+        if (!elemento.closest('#menu-accesibilidad')) {
+          elemento.style.wordSpacing = valor + 'px';
+        }
+      });
+    }
+
+    // Función para cambiar el espaciado entre letras
+    function cambiarEspaciadoLetras(valor) {
+      const elementosTexto = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
+      elementosTexto.forEach(elemento => {
+        if (!elemento.closest('#menu-accesibilidad')) {
+          elemento.style.letterSpacing = valor + 'px';
+        }
+      });
+    }
+
+    // Añadir los controles de accesibilidad para el tamaño de la letra y el espaciado
+    menuAccesibilidad.innerHTML += '<details><summary><h3>Ajustar Texto</h3></summary>' +
+      '<div><label class="menu-label" for="tamanoFuenteSlider">Tamaño de letra:</label><input type="range" id="tamanoFuenteSlider" class="txt-slider" min="12" max="30" value="16"></div>' +
+      '<div><label class="menu-label" for="espaciadoLineasSlider">Espaciado entre líneas:</label><input type="range" id="espaciadoLineasSlider" class="txt-slider" min="1" max="3" value="1.6" step="0.1"></div>' +
+      '<div><label class="menu-label" for="espaciadoPalabrasSlider">Espaciado entre palabras:</label><input type="range" id="espaciadoPalabrasSlider" class="txt-slider" min="0" max="20" value="0"></div>' +
+      '<div><label class="menu-label" for="espaciadoLetrasSlider">Espaciado entre letras:</label><input type="range" id="espaciadoLetrasSlider" class="txt-slider" min="0" max="5" value="0"></div></details>';
+
+    // Eventos para cambiar el tamaño de la letra y el espaciado cuando se interactúa con los controles
+    document.getElementById('tamanoFuenteSlider').addEventListener('input', function (event) {
+      cambiarTamanoFuente(event.target.value);
+    });
+
+    document.getElementById('espaciadoLineasSlider').addEventListener('input', function (event) {
+      cambiarEspaciadoLineas(event.target.value);
+    });
+
+    document.getElementById('espaciadoPalabrasSlider').addEventListener('input', function (event) {
+      cambiarEspaciadoPalabras(event.target.value);
+    });
+
+    document.getElementById('espaciadoLetrasSlider').addEventListener('input', function (event) {
+      cambiarEspaciadoLetras(event.target.value);
+    });
+
+
+    function inicializarMejorasAccesibilidad() {
+      asignarRolesSemanticos();
+      mejorarNavegacion();
+      mejorarFormularios();
+      mejorarElementosInteractivos();
+      mejorarContenidoDinamico();
+    }
+
+    function asignarRolesSemanticos() {
+      // Navegación
+      document.querySelectorAll('nav').forEach(nav => {
+        if (!nav.hasAttribute('role')) {
+          nav.setAttribute('role', 'navigation');
+        }
+      });
+
+      // Encabezados principales
+      document.querySelectorAll('header').forEach(header => {
+        if (!header.closest('section, article') && !header.hasAttribute('role')) { // Solo si no es parte de una sección o artículo
+          header.setAttribute('role', 'banner');
+        }
+      });
+
+      // Contenido principal
+      document.querySelectorAll('main').forEach(main => {
+        if (!main.hasAttribute('role')) {
+          main.setAttribute('role', 'main');
+        }
+      });
+
+      // Pie de página
+      document.querySelectorAll('footer').forEach(footer => {
+        if (!footer.closest('section, article') && !footer.hasAttribute('role')) { // Solo si no es parte de una sección o artículo
+          footer.setAttribute('role', 'contentinfo');
+        }
+      });
+    }
+
+    function mejorarNavegacion() {
+      // ARIA Labels para elementos de navegación
+      document.querySelectorAll('nav').forEach((nav, index) => {
+        const label = nav.getAttribute('aria-label') || `Navegación ${index + 1}`;
+        nav.setAttribute('aria-label', label);
+      });
+    }
+
+    function mejorarFormularios() {
+      // Roles para campos de formulario
+      document.querySelectorAll('form').forEach(form => {
+        form.setAttribute('role', 'form');
+        form.querySelectorAll('input, select, textarea, button, fieldset').forEach(el => {
+          if (el.tagName.toLowerCase() === 'fieldset' && !el.hasAttribute('role')) {
+            el.setAttribute('role', 'group');
+          }
+        });
+      });
+    }
+
+    function mejorarElementosInteractivos() {
+      // Mejora de botones y enlaces
+      document.querySelectorAll('button, [role="button"], a[href]').forEach(btn => {
+        if (!btn.hasAttribute('role')) {
+          btn.setAttribute('role', 'button');
+        }
+      });
+    }
+
+    function mejorarContenidoDinamico() {
+      // Observar cambios en el DOM para aplicar mejoras a contenido dinámico
+      const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+          if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+            mutation.addedNodes.forEach(node => {
+              if (node.nodeType === Node.ELEMENT_NODE) { // Asegurar que es un nodo de tipo Elemento
+                // Aplicar mejoras de accesibilidad a nuevos nodos
+                asignarRolesSemanticos();
+                mejorarNavegacion();
+                mejorarFormularios();
+                mejorarElementosInteractivos();
+              }
+            });
+          }
+        });
+      });
+
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+
+
+    //añadir ARIA (agrega información semántica a los elementos de un sitio web proporcionando ayuda adicional como dictados por voz y guías auditivas)
+    inicializarMejorasAccesibilidad();
+
+
+    // Evento para cerrar el menú usando el botón de cierre
+    var closeButton = menuAccesibilidad.querySelector('.close-button');
+    closeButton.addEventListener('click', function () {
+      menuAccesibilidad.classList.remove('open');
+    });
   });
+
+
 })(document);
 
