@@ -54,6 +54,7 @@
 
 
 
+
     // Cargar la biblioteca Chroma.js
     const scriptChroma = doc.createElement('script');
     scriptChroma.src = 'https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.1/chroma.min.js';
@@ -109,15 +110,15 @@
         const colorPickerFondo = doc.getElementById('color-picker-fondo');
         const saturacionSliderTexto = doc.getElementById('saturacionSliderTexto');
         const saturacionSliderFondo = doc.getElementById('saturacionSliderFondo');
-      
+
         const colorBaseTexto = chroma(colorPickerTexto.value);
         const colorBaseFondo = chroma(colorPickerFondo.value);
         const colorEnd = chroma('grey');
-      
+
         saturacionSliderTexto.style.background = `linear-gradient(to right, ${colorEnd}, ${colorBaseTexto})`;
         saturacionSliderFondo.style.background = `linear-gradient(to right, ${colorEnd}, ${colorBaseFondo})`;
       }
-      
+
       // Eventos para cambiar el color de texto cuando se interactúa con los controles
       doc.getElementById('color-picker-texto').addEventListener('input', cambiarColorTexto);
       doc.getElementById('luminosidadSliderTexto').addEventListener('input', cambiarColorTexto);
@@ -152,12 +153,62 @@
         doc.getElementById('luminosidadSliderFondo').value = '50';
         doc.getElementById('saturacionSliderFondo').value = '50';
         actualizarGradientes();
-      
+
       });
     };
 
     // Agregar el script de Chroma.js al documento
     doc.head.appendChild(scriptChroma);
+
+
+
+    //Funcion para hacer la web con contraste alto
+    function toggleModoAltoContraste() {
+      const elementos = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
+      elementos.forEach(elemento => {
+          if (!elemento.closest('#menu-accesibilidad')) {
+              // Comprobar si el modo de alto contraste está activo
+              if (elemento.dataset.altoContraste === 'true') {
+                  // Restablecer estilos para el modo normal
+                  elemento.style.backgroundColor = '';
+                  elemento.style.color = '';
+                  elemento.style.borderColor = '';
+                  // Específico para enlaces
+                  if (elemento.tagName === 'A') {
+                      elemento.style.color = ''; // Aquí puedes definir el color original de tus enlaces, si es necesario
+                  }
+                  elemento.dataset.altoContraste = 'false';
+              } else {
+                  // Aplicar estilos de alto contraste
+                  elemento.style.backgroundColor = 'black';
+                  elemento.style.color = 'white';
+                  elemento.style.borderColor = 'white';
+                  // Específico para enlaces
+                  if (elemento.tagName === 'A') {
+                      elemento.style.color = '#FFD700';
+                  }
+                  elemento.dataset.altoContraste = 'true';
+              }
+          }
+      });
+  }
+
+    menuAccesibilidad.innerHTML += '<details><summary><h3 id="modo-alto-contraste">Modo de Alto Contraste</h3></summary>' +
+      '<button id="toggleAltoContraste" class="btn-modificar">Alto Contraste</button></details>';
+
+    // Asegurar que el DOM se haya actualizado
+    setTimeout(() => {
+      // Ahora agregamos el evento al botón "Alto Contraste"
+      const btnToggleAltoContraste = document.getElementById('toggleAltoContraste');
+      if (btnToggleAltoContraste) {
+        btnToggleAltoContraste.addEventListener('click', toggleModoAltoContraste);
+      } else {
+        console.error('El botón de Alto Contraste no se encontró.');
+      }
+    }, 0);
+
+
+
 
 
     // Función para cambiar el tamaño de la fuente

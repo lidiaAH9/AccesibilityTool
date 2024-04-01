@@ -145,6 +145,23 @@ scriptAccesibilidad.js */
     /* Cambia el cursor al pasar sobre el color picker */
 }
 
+  .btn-modificar {
+    padding: 10px;
+    background-color: #f8f9fa;
+    color: black;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block; 
+}
+
+/* Opcional: Estilos para el hover del botón */
+.btn-modificar:hover {
+    background-color: #e2e6ea;
+}
+
+
 :root {
     --thumb-color: transparent;
 }
