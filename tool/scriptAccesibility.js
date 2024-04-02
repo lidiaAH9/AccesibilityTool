@@ -28,6 +28,7 @@
     // Añadir el botón al documento
     doc.body.appendChild(btnAccesibilidad);
 
+
     // Crear e inicializar el menú de accesibilidad
     var menuAccesibilidad = doc.createElement('div');
     menuAccesibilidad.id = 'menu-accesibilidad';
@@ -166,32 +167,32 @@
     function toggleModoAltoContraste() {
       const elementos = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
       elementos.forEach(elemento => {
-          if (!elemento.closest('#menu-accesibilidad')) {
-              // Comprobar si el modo de alto contraste está activo
-              if (elemento.dataset.altoContraste === 'true') {
-                  // Restablecer estilos para el modo normal
-                  elemento.style.backgroundColor = '';
-                  elemento.style.color = '';
-                  elemento.style.borderColor = '';
-                  // Específico para enlaces
-                  if (elemento.tagName === 'A') {
-                      elemento.style.color = ''; // Aquí puedes definir el color original de tus enlaces, si es necesario
-                  }
-                  elemento.dataset.altoContraste = 'false';
-              } else {
-                  // Aplicar estilos de alto contraste
-                  elemento.style.backgroundColor = 'black';
-                  elemento.style.color = 'white';
-                  elemento.style.borderColor = 'white';
-                  // Específico para enlaces
-                  if (elemento.tagName === 'A') {
-                      elemento.style.color = '#FFD700';
-                  }
-                  elemento.dataset.altoContraste = 'true';
-              }
+        if (!elemento.closest('#menu-accesibilidad')) {
+          // Comprobar si el modo de alto contraste está activo
+          if (elemento.dataset.altoContraste === 'true') {
+            // Restablecer estilos para el modo normal
+            elemento.style.backgroundColor = '';
+            elemento.style.color = '';
+            elemento.style.borderColor = '';
+            // Específico para enlaces
+            if (elemento.tagName === 'A') {
+              elemento.style.color = ''; // Aquí puedes definir el color original de tus enlaces, si es necesario
+            }
+            elemento.dataset.altoContraste = 'false';
+          } else {
+            // Aplicar estilos de alto contraste
+            elemento.style.backgroundColor = 'black';
+            elemento.style.color = 'white';
+            elemento.style.borderColor = 'white';
+            // Específico para enlaces
+            if (elemento.tagName === 'A') {
+              elemento.style.color = '#FFD700';
+            }
+            elemento.dataset.altoContraste = 'true';
           }
+        }
       });
-  }
+    }
 
     menuAccesibilidad.innerHTML += '<details><summary><h3 id="modo-alto-contraste">Modo de Alto Contraste</h3></summary>' +
       '<button id="toggleAltoContraste" class="btn-modificar">Alto Contraste</button></details>';
@@ -256,7 +257,9 @@
       '<div><label class="menu-label" for="tamanoFuenteSlider">Tamaño de letra:</label><input type="range" id="tamanoFuenteSlider" class="txt-slider" min="12" max="30" value="16"></div>' +
       '<div><label class="menu-label" for="espaciadoLineasSlider">Espaciado entre líneas:</label><input type="range" id="espaciadoLineasSlider" class="txt-slider" min="1" max="3" value="1.6" step="0.1"></div>' +
       '<div><label class="menu-label" for="espaciadoPalabrasSlider">Espaciado entre palabras:</label><input type="range" id="espaciadoPalabrasSlider" class="txt-slider" min="0" max="20" value="0"></div>' +
-      '<div><label class="menu-label" for="espaciadoLetrasSlider">Espaciado entre letras:</label><input type="range" id="espaciadoLetrasSlider" class="txt-slider" min="0" max="5" value="0"></div></details>';
+      '<div><label class="menu-label" for="espaciadoLetrasSlider">Espaciado entre letras:</label><input type="range" id="espaciadoLetrasSlider" class="txt-slider" min="0" max="5" value="0"></div></details>' +
+      '<details><summary><h3>Ajustar Cursor</h3></summary><button id="btnCursorNegroGrande" class="btn-cursor">Cursor Negro y Grande</button>' +
+      '<a id="restablecerCursor" class="restablecer-cambios-link-cursor no-underline-cursor" href="#">Restablecer cursor</a></details>';
 
     // Eventos para cambiar el tamaño de la letra y el espaciado cuando se interactúa con los controles
     document.getElementById('tamanoFuenteSlider').addEventListener('input', function (event) {
@@ -365,6 +368,33 @@
     }
 
 
+    document.getElementById('btnCursorNegroGrande').addEventListener('click', function () {
+      console.log('Botón clickeado, cambiando cursores...');
+      document.body.classList.add('custom-default-cursor');
+
+      const interactiveElements = document.querySelectorAll('a, button');
+      interactiveElements.forEach(element => {
+        console.log(`Cambiando cursor para: ${element.tagName}`);
+        element.classList.add('custom-interactive-cursor');
+      });
+    });
+
+    // Evento para restablecer el cursor a los valores predeterminados
+    document.getElementById('restablecerCursor').addEventListener('click', function (e) {
+      e.preventDefault(); // Prevenir la acción por defecto del enlace
+
+      // Eliminar la clase custom-cursor del cuerpo para restablecer el cursor por defecto
+      document.body.classList.remove('custom-default-cursor');
+
+      // Eliminar la clase custom-interactive-cursor de todos los elementos interactivos
+      const interactiveElements = document.querySelectorAll('.custom-interactive-cursor');
+      interactiveElements.forEach(function (element) {
+        element.classList.remove('custom-interactive-cursor');
+      });
+    });
+
+
+
 
     //añadir ARIA (agrega información semántica a los elementos de un sitio web proporcionando ayuda adicional como dictados por voz y guías auditivas)
     inicializarMejorasAccesibilidad();
@@ -375,6 +405,8 @@
     closeButton.addEventListener('click', function () {
       menuAccesibilidad.classList.remove('open');
     });
+
+
   });
 
 

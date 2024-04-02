@@ -80,9 +80,9 @@ scriptAccesibilidad.js */
 }
 
 #menu-accesibilidad h2.titulo-menu {
-    padding-right: 20px; 
-    margin-top: 20px; 
-    margin-bottom: 20px; 
+    padding-right: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .close-button {
@@ -92,7 +92,7 @@ scriptAccesibilidad.js */
     right: 10px;
     font-size: 30px;
     font-weight: bold;
-    
+
     border: none;
     cursor: pointer;
 }
@@ -145,7 +145,7 @@ scriptAccesibilidad.js */
     /* Cambia el cursor al pasar sobre el color picker */
 }
 
-  .btn-modificar {
+.btn-modificar {
     padding: 10px;
     background-color: #f8f9fa;
     color: black;
@@ -153,7 +153,7 @@ scriptAccesibilidad.js */
     font-size: 16px;
     border-radius: 5px;
     cursor: pointer;
-    display: block; 
+    display: block;
 }
 
 /* Opcional: Estilos para el hover del botón */
@@ -218,9 +218,9 @@ scriptAccesibilidad.js */
     transition: background-color .2s;
 }
 
- .txt-slider {
+.txt-slider {
     width: 80%;
- }
+}
 
 .menu-label {
     font-size: 18px;
@@ -234,22 +234,56 @@ scriptAccesibilidad.js */
     font-weight: bold;
 }
 
-details > summary {
+details>summary {
     display: flex;
-    justify-content: space-between; /* Espacio entre el texto y la flecha */
-    align-items: center; /* Alinea verticalmente */
+    justify-content: space-between;
+    /* Espacio entre el texto y la flecha */
+    align-items: center;
+    /* Alinea verticalmente */
     cursor: pointer;
     list-style: none;
-  }
-  
-  details > summary::after {
+}
+
+details>summary::after {
     content: '▼';
     font-size: 1em;
     line-height: 1;
-    transition: transform 0.3s ease-in-out; /* Animación de giro */
-  }
-  
-  details[open] > summary::after {
-    transform: rotate(-180deg); /* Gira la flecha cuando está abierto */
-  }
-  
+    transition: transform 0.3s ease-in-out;
+    /* Animación de giro */
+}
+
+details[open]>summary::after {
+    transform: rotate(-180deg);
+    /* Gira la flecha cuando está abierto */
+}
+
+/* Cursor por defecto personalizado */
+.custom-default-cursor {
+    cursor: url('cursor.svg'), auto;
+}
+
+/* Cursor interactivo para elementos sobre los que se puede hacer clic */
+.custom-interactive-cursor {
+    cursor: url('pointer.svg'), pointer;
+}
+
+.btn-cursor {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    color: black;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+}
+
+.no-underline-cursor {
+    color: blue;
+    /* Cambia el color del texto a azul */
+    text-decoration: none;
+    /* Elimina el subrayado */
+    font-weight: bold;
+    margin: 3px;
+}
