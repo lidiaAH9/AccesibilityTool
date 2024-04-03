@@ -3,6 +3,30 @@
   // Esperamos a que el DOM esté listo antes de ejecutar nuestro script
   doc.addEventListener('DOMContentLoaded', function () {
 
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/css/index.css';
+
+    // Agregar el elemento link al encabezado (head) del documento
+    document.head.appendChild(link);
+
+    var script = document.createElement('script');
+
+    // Establece el atributo src para apuntar al CDN de SimpleKeyboard
+    script.src = 'https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/index.js';
+    // Define una función de callback para ejecutar una vez que se haya cargado la librería
+    script.onload = function () {
+      // La librería SimpleKeyboard está cargada y lista para usar
+      console.log('La librería SimpleKeyboard ha sido cargada.');
+      initializeSimpleKeyboard();
+
+    };
+
+    // Agrega el elemento script al final del body para comenzar la carga
+    document.body.appendChild(script);
+
+
+
     // Crear el botón de accesibilidad
     var btnAccesibilidad = doc.createElement('button');
     btnAccesibilidad.id = 'miBotonAccesibilidad';
@@ -34,7 +58,8 @@
     menuAccesibilidad.id = 'menu-accesibilidad';
     menuAccesibilidad.className = 'menu-accesibilidad';
 
-    menuAccesibilidad.innerHTML = '<button class="close-button">X</button><h2 class="titulo-menu">Accesibilidad</h2><details><summary><h3 id="high-contrast">Ajustar Colores de Texto</h3></summary>' +
+    menuAccesibilidad.innerHTML = '<button class="close-button">X</button><h2 class="titulo-menu">Accesibilidad</h2>' +
+      '<details><summary><h3 id="high-contrast">Ajustar Colores de Texto</h3></summary>' +
       '<div id="color-texto-adjustment-container"><label class="menu-label" for="color-picker-texto">Seleccione un color:   </label><input type="color" id="color-picker-texto" ></div>' +
       '<div><label class="menu-label" for="saturacionSliderTexto">Saturación:</label><input type="range" id="saturacionSliderTexto" class="custom-slider-satu" min="0" max="100" value="50"></div>' +
       '<div><label class="menu-label" for="luminosidadSliderTexto">Luminosidad: </label><input type="range" id="luminosidadSliderTexto" class="custom-slider" min="0" max="100" value="50"></div>' +
@@ -47,6 +72,51 @@
 
     doc.body.appendChild(menuAccesibilidad);
 
+
+    // Añadir el botón 'btnTeclado' al menú de accesibilidad
+    var btnTecladoHTML = '<details><summary><h3>Abrir Teclado Virtual en Pantalla</h3></summary><button id="btnTeclado" class="btn-teclado">Teclado Virtual</button></summary></details>';
+    menuAccesibilidad.innerHTML += btnTecladoHTML;
+
+
+    // Define el input asociado con el teclado y añádelo al DOM
+    var input = doc.createElement('input');
+    input.className = 'input';
+    input.placeholder = 'Tap on the virtual keyboard to start';
+    doc.body.appendChild(input);
+
+    // Define el contenedor del teclado virtual y añádelo al DOM
+    var keyboardContainer = doc.createElement('div');
+    keyboardContainer.className = 'simple-keyboard';
+    doc.body.appendChild(keyboardContainer);
+
+    // Inicializa el teclado virtual
+    var myKeyboard;
+    function initializeSimpleKeyboard() {
+      myKeyboard = new SimpleKeyboard.default({
+        onChange: input => onChange(input),
+        onKeyPress: button => onKeyPress(button)
+      });
+
+      function onChange(input) {
+        document.querySelector(".input").value = input;
+        console.log("Input changed", input);
+      }
+
+      function onKeyPress(button) {
+        console.log("Button pressed", button);
+      }
+    }
+
+
+
+    // Encuentra el botón 'btnTeclado' y añade el evento click para inicializar el teclado
+    var btnTeclado = doc.getElementById("btnTeclado");
+    btnTeclado.addEventListener('click', function () {
+      console.log("HOLAAAAAAAA");
+      initializeSimpleKeyboard();
+
+
+    });
 
     // Agregar eventos al botón de accesibilidad para abrir/cerrar el menú
     btnAccesibilidad.addEventListener('click', function () {
@@ -206,6 +276,7 @@
       } else {
         console.error('El botón de Alto Contraste no se encontró.');
       }
+
     }, 0);
 
 
@@ -260,6 +331,8 @@
       '<div><label class="menu-label" for="espaciadoLetrasSlider">Espaciado entre letras:</label><input type="range" id="espaciadoLetrasSlider" class="txt-slider" min="0" max="5" value="0"></div></details>' +
       '<details><summary><h3>Ajustar Cursor</h3></summary><button id="btnCursorNegroGrande" class="btn-cursor">Cursor Negro y Grande</button>' +
       '<a id="restablecerCursor" class="restablecer-cambios-link-cursor no-underline-cursor" href="#">Restablecer cursor</a></details>';
+
+
 
     // Eventos para cambiar el tamaño de la letra y el espaciado cuando se interactúa con los controles
     document.getElementById('tamanoFuenteSlider').addEventListener('input', function (event) {
@@ -392,6 +465,9 @@
         element.classList.remove('custom-interactive-cursor');
       });
     });
+
+
+
 
 
 
