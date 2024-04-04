@@ -27,12 +27,12 @@
 
     // Añadir el botón al documento
     doc.body.appendChild(btnAccesibilidad);
-
+    dragElement(btnAccesibilidad);
 
     // Crear e inicializar el menú de accesibilidad
     var menuAccesibilidad = doc.createElement('div');
     menuAccesibilidad.id = 'menu-accesibilidad';
-    menuAccesibilidad.className = 'menu-accesibilidad';
+    menuAccesibilidad.className = 'menu-accesibilidad ';
 
 
     var link = document.createElement('link');
@@ -73,7 +73,6 @@
 
     doc.body.appendChild(menuAccesibilidad);
 
-
     let lastActiveInput = null;
 
     // Esta función se invoca con cada cambio en el teclado virtual
@@ -92,6 +91,7 @@
 
     // Inicialización del teclado virtual
     function initializeSimpleKeyboard() {
+      dragElement(document.querySelector(".simple-keyboard"));
       var keyboardContainer = document.querySelector(".simple-keyboard");
       if (!keyboardContainer) {
         console.error("El contenedor del teclado no fue encontrado.");
@@ -130,6 +130,7 @@
             doc.body.appendChild(keyboardContainer);
             console.log("Creando e inicializando el teclado virtual...");
             initializeSimpleKeyboard();
+            dragElement(keyboardContainer);
           } else {
             console.log("El teclado virtual ya está inicializado.");
             keyboardContainer.style.display = keyboardContainer.style.display === 'none' ? 'block' : 'none';
@@ -140,6 +141,39 @@
       }
     }, 0);
 
+
+
+    function dragElement(container) {
+      let pos1 = 0,
+        pos2 = 0,
+        pos3 = 0,
+        pos4 = 0;
+      container.onpointerdown = pointerDrag;
+
+      function pointerDrag(e) {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+
+        document.onpointermove = elementDrag;
+        document.onpointerup = stopElementDrag;
+      }
+
+      function elementDrag(e) {
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+
+        container.style.top = container.offsetTop - pos2 + "px";
+        container.style.left = container.offsetLeft - pos1 + "px";
+      }
+
+      function stopElementDrag() {
+        document.onpointerup = null;
+        document.onpointermove = null;
+      }
+    }
 
 
     // Agregar eventos al botón de accesibilidad para abrir/cerrar el menú
