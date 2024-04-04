@@ -27,14 +27,37 @@
 
     // Añadir el botón al documento
     doc.body.appendChild(btnAccesibilidad);
-
+    dragElement(btnAccesibilidad);
 
     // Crear e inicializar el menú de accesibilidad
     var menuAccesibilidad = doc.createElement('div');
     menuAccesibilidad.id = 'menu-accesibilidad';
-    menuAccesibilidad.className = 'menu-accesibilidad';
+    menuAccesibilidad.className = 'menu-accesibilidad ';
 
-    menuAccesibilidad.innerHTML = '<button class="close-button">X</button><h2 class="titulo-menu">Accesibilidad</h2><details><summary><h3 id="high-contrast">Ajustar Colores de Texto</h3></summary>' +
+
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/css/index.css';
+
+    // Agregar el elemento link al encabezado (head) del documento
+    document.head.appendChild(link);
+
+    var script = document.createElement('script');
+
+    // Establece el atributo src para apuntar al CDN de SimpleKeyboard
+    script.src = 'https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/index.js';
+    // Define una función de callback para ejecutar una vez que se haya cargado la librería
+    script.onload = function () {
+      // La librería SimpleKeyboard está cargada y lista para usar
+      console.log('La librería SimpleKeyboard ha sido cargada.');
+    };
+
+    // Agrega el elemento script al final del body para comenzar la carga
+    document.body.appendChild(script);
+
+
+    menuAccesibilidad.innerHTML = '<button class="close-button">X</button><h2 class="titulo-menu">Accesibilidad</h2>' +
+      '<details><summary><h3 id="high-contrast">Ajustar Colores de Texto</h3></summary>' +
       '<div id="color-texto-adjustment-container"><label class="menu-label" for="color-picker-texto">Seleccione un color:   </label><input type="color" id="color-picker-texto" ></div>' +
       '<div><label class="menu-label" for="saturacionSliderTexto">Saturación:</label><input type="range" id="saturacionSliderTexto" class="custom-slider-satu" min="0" max="100" value="50"></div>' +
       '<div><label class="menu-label" for="luminosidadSliderTexto">Luminosidad: </label><input type="range" id="luminosidadSliderTexto" class="custom-slider" min="0" max="100" value="50"></div>' +
@@ -43,17 +66,120 @@
       '<div id="color-fondo-adjustment-container"><label class="menu-label" for="color-picker-fondo">Seleccione un color:  </label><input type="color" id="color-picker-fondo" ></div>' +
       '<div><label class="menu-label" for="saturacionSliderFondo">Saturación:</label><input type="range" id="saturacionSliderFondo" class="custom-slider-satu" min="0" max="100" value="50"></div>' +
       '<div><label class="menu-label" for="luminosidadSliderFondo">Luminosidad: </label><input type="range" id="luminosidadSliderFondo" class="custom-slider" min="0" max="100" value="50"></div>' +
-      '<div><a id="restablecerCambiosFondo" class="restablecer-cambios-link no-underline" href="#">Restablecer color de fondo</a></div></details>';
+      '<div><a id="restablecerCambiosFondo" class="restablecer-cambios-link no-underline" href="#">Restablecer color de fondo</a></div></details>' +
+      '<details><summary><h3 id="modo-alto-contraste">Modo de Alto Contraste</h3></summary>' +
+      '<button id="toggleAltoContraste" class="btn-modificar">Alto Contraste</button></details>' +
+      '<details><summary><h3>Abrir Teclado Virtual en Pantalla</h3></summary><button id="btnTeclado" class="btn-teclado">Teclado Virtual</button></summary></details>';
 
     doc.body.appendChild(menuAccesibilidad);
+
+    let lastActiveInput = null;
+
+    // Esta función se invoca con cada cambio en el teclado virtual
+    function onKeyboardInput(input) {
+      if (lastActiveInput) {
+        lastActiveInput.value = input;
+      }
+    }
+
+    // Esta función maneja el guardado del último input activo
+    function onInputFocus(e) {
+
+      lastActiveInput = e.target;
+      myKeyboard.setInput(lastActiveInput.value);
+    }
+
+    // Inicialización del teclado virtual
+    function initializeSimpleKeyboard() {
+      dragElement(document.querySelector(".simple-keyboard"));
+      var keyboardContainer = document.querySelector(".simple-keyboard");
+      if (!keyboardContainer) {
+        console.error("El contenedor del teclado no fue encontrado.");
+        return;
+      }
+
+      // Configuración del teclado virtual
+      myKeyboard = new SimpleKeyboard.default({
+        onChange: onKeyboardInput,
+        theme: "simple-keyboard hg-theme-default hg-layout-default",
+        newLineOnEnter: true,
+        debug: true,
+      });
+
+      // Muestra el contenedor del teclado
+      keyboardContainer.style.display = "block";
+
+
+      // Añade el evento de enfoque a todos los campos de entrada
+      document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('focus', onInputFocus);
+      });
+    }
+
+
+
+    // Espera a que todo el contenido esté listo.
+    setTimeout(function () {
+      var btnTeclado = doc.getElementById("btnTeclado");
+      if (btnTeclado) {
+        btnTeclado.addEventListener('click', function () {
+          var keyboardContainer = document.querySelector(".simple-keyboard");
+          if (!keyboardContainer) {
+            keyboardContainer = doc.createElement('div');
+            keyboardContainer.className = 'simple-keyboard';
+            doc.body.appendChild(keyboardContainer);
+            console.log("Creando e inicializando el teclado virtual...");
+            initializeSimpleKeyboard();
+            dragElement(keyboardContainer);
+          } else {
+            console.log("El teclado virtual ya está inicializado.");
+            keyboardContainer.style.display = keyboardContainer.style.display === 'none' ? 'block' : 'none';
+          }
+        });
+      } else {
+        console.log("El botón del teclado no se encontró.");
+      }
+    }, 0);
+
+
+
+    function dragElement(container) {
+      let pos1 = 0,
+        pos2 = 0,
+        pos3 = 0,
+        pos4 = 0;
+      container.onpointerdown = pointerDrag;
+
+      function pointerDrag(e) {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+
+        document.onpointermove = elementDrag;
+        document.onpointerup = stopElementDrag;
+      }
+
+      function elementDrag(e) {
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+
+        container.style.top = container.offsetTop - pos2 + "px";
+        container.style.left = container.offsetLeft - pos1 + "px";
+      }
+
+      function stopElementDrag() {
+        document.onpointerup = null;
+        document.onpointermove = null;
+      }
+    }
 
 
     // Agregar eventos al botón de accesibilidad para abrir/cerrar el menú
     btnAccesibilidad.addEventListener('click', function () {
       menuAccesibilidad.classList.toggle('open');
     });
-
-
 
 
     // Cargar la biblioteca Chroma.js
@@ -194,8 +320,6 @@
       });
     }
 
-    menuAccesibilidad.innerHTML += '<details><summary><h3 id="modo-alto-contraste">Modo de Alto Contraste</h3></summary>' +
-      '<button id="toggleAltoContraste" class="btn-modificar">Alto Contraste</button></details>';
 
     // Asegurar que el DOM se haya actualizado
     setTimeout(() => {
@@ -206,6 +330,7 @@
       } else {
         console.error('El botón de Alto Contraste no se encontró.');
       }
+
     }, 0);
 
 
@@ -260,6 +385,8 @@
       '<div><label class="menu-label" for="espaciadoLetrasSlider">Espaciado entre letras:</label><input type="range" id="espaciadoLetrasSlider" class="txt-slider" min="0" max="5" value="0"></div></details>' +
       '<details><summary><h3>Ajustar Cursor</h3></summary><button id="btnCursorNegroGrande" class="btn-cursor">Cursor Negro y Grande</button>' +
       '<a id="restablecerCursor" class="restablecer-cambios-link-cursor no-underline-cursor" href="#">Restablecer cursor</a></details>';
+
+
 
     // Eventos para cambiar el tamaño de la letra y el espaciado cuando se interactúa con los controles
     document.getElementById('tamanoFuenteSlider').addEventListener('input', function (event) {
@@ -394,6 +521,26 @@
     });
 
 
+
+    /*INTENTO DE QUE ME DEJE MOVER EL TECLADO VIRTUAL PERO NO FUNCIONA
+    const div = document.querySelector(".simple-keyboard");
+    let offsetX, offsetY;
+ 
+    const move = (e) => {
+      div.style.left = `${e.clientX - offsetX}px`;
+      div.style.top = `${e.clientY - offsetY}px`;
+    }
+ 
+    div.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      offsetX = e.clientX - div.offsetLeft;
+      offsetY = e.clientY - div.offsetTop;
+      document.addEventListener("mousemove", move);
+    });
+ 
+    document.addEventListener("mouseup", () => {
+      document.removeEventListener("mousemove", move);
+    });*/
 
 
     //añadir ARIA (agrega información semántica a los elementos de un sitio web proporcionando ayuda adicional como dictados por voz y guías auditivas)
