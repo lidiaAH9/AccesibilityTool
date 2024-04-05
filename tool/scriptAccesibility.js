@@ -521,28 +521,6 @@
     });
 
 
-
-    /*INTENTO DE QUE ME DEJE MOVER EL TECLADO VIRTUAL PERO NO FUNCIONA
-    const div = document.querySelector(".simple-keyboard");
-    let offsetX, offsetY;
- 
-    const move = (e) => {
-      div.style.left = `${e.clientX - offsetX}px`;
-      div.style.top = `${e.clientY - offsetY}px`;
-    }
- 
-    div.addEventListener("mousedown", (e) => {
-      e.preventDefault();
-      offsetX = e.clientX - div.offsetLeft;
-      offsetY = e.clientY - div.offsetTop;
-      document.addEventListener("mousemove", move);
-    });
- 
-    document.addEventListener("mouseup", () => {
-      document.removeEventListener("mousemove", move);
-    });*/
-
-
     //añadir ARIA (agrega información semántica a los elementos de un sitio web proporcionando ayuda adicional como dictados por voz y guías auditivas)
     inicializarMejorasAccesibilidad();
 
