@@ -104,6 +104,7 @@ scriptAccesibilidad.js */
 
 
 #menu-accesibilidad div {
+    position: absolute;
     margin-bottom: 15px;
     /* Espacio entre los elementos div */
     padding-left: 20px;

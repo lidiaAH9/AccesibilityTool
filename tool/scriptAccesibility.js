@@ -69,9 +69,54 @@
       '<div><a id="restablecerCambiosFondo" class="restablecer-cambios-link no-underline" href="#">Restablecer color de fondo</a></div></details>' +
       '<details><summary><h3 id="modo-alto-contraste">Modo de Alto Contraste</h3></summary>' +
       '<button id="toggleAltoContraste" class="btn-modificar">Alto Contraste</button></details>' +
-      '<details><summary><h3>Abrir Teclado Virtual en Pantalla</h3></summary><button id="btnTeclado" class="btn-teclado">Teclado Virtual</button></summary></details>';
+      '<details><summary><h3>Abrir Teclado Virtual en Pantalla</h3></summary><button id="btnTeclado" class="btn-teclado">Teclado Virtual</button></summary></details>' +
+      '<details><summary><h3>Ajustar Zoom</h3></summary><label for="zoomSlider" class="menu-label">Nivel de zoom:</label><input type="range" id="zoomSlider" min="1" max="3" value="1" step="0.1">' +
+      '<div><a id="restablecerZoom" class="restablecer-cambios-link no-underline" href="#">Restablecer zoom</a></div></details></summary></details>';
 
     doc.body.appendChild(menuAccesibilidad);
+
+    console.log('Voy a añadir el event listener al slider de zoom');
+
+    function ajustarZoom() {
+      var zoomSlider = document.getElementById('zoomSlider');
+      var valorZoom = zoomSlider.value;
+      var contenidoPrincipal = document.querySelectorAll('body *:not(#menu-accesibilidad):not(#menu-accesibilidad *)');
+    
+      // Aplicar el zoom a todo el contenido principal
+      contenidoPrincipal.style.transform = 'scale(' + valorZoom + ')';
+      contenidoPrincipal.style.transformOrigin = 'top left';
+      contenidoPrincipal.style.width = 100 / valorZoom + '%';
+    
+      
+    }
+    
+    // Asegúrate de agregar esta función al listener del slider del zoom
+    var zoomSlider = document.getElementById('zoomSlider');
+    if (zoomSlider) {
+      zoomSlider.addEventListener('input', ajustarZoom);
+    }
+    
+    
+    // Asegúrate de que el menú y los controles existen antes de añadir el event listener
+    function inicializarSliderZoom() {
+      var zoomSlider = doc.getElementById('zoomSlider');
+      if (zoomSlider) {
+        console.log('Añadiendo event listener al zoomSlider');
+        zoomSlider.addEventListener('input', ajustarZoom);
+      }
+    }
+
+    // Función para restablecer el zoom
+    function restablecerZoom() {
+      var valorZoomOriginal = 1;
+      document.body.style.transform = 'scale(' + valorZoomOriginal + ')';
+      document.body.style.width = '100%';
+
+      var zoomSlider = document.getElementById('zoomSlider');
+      if (zoomSlider) {
+        zoomSlider.value = valorZoomOriginal;
+      }
+    }
 
     let lastActiveInput = null;
 
@@ -174,6 +219,8 @@
         document.onpointermove = null;
       }
     }
+
+
 
 
     // Agregar eventos al botón de accesibilidad para abrir/cerrar el menú
@@ -520,7 +567,24 @@
       });
     });
 
+    function addEventListeners() {
+      var zoomSlider = document.getElementById('zoomSlider');
+      if (zoomSlider) {
+        zoomSlider.addEventListener('input', ajustarZoom);
+      }
 
+      var restablecerZoomLink = document.getElementById('restablecerZoom');
+      if (restablecerZoomLink) {
+        restablecerZoomLink.addEventListener('click', function (event) {
+          event.preventDefault(); // Previene el comportamiento por defecto del enlace
+          restablecerZoom();
+        });
+      }
+    }
+
+    inicializarSliderZoom();
+    inicializarSliderZoom();
+    addEventListeners();
     //añadir ARIA (agrega información semántica a los elementos de un sitio web proporcionando ayuda adicional como dictados por voz y guías auditivas)
     inicializarMejorasAccesibilidad();
 
