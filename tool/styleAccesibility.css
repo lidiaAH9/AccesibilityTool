@@ -104,7 +104,6 @@ scriptAccesibilidad.js */
 
 
 #menu-accesibilidad div {
-    position: absolute;
     margin-bottom: 15px;
     /* Espacio entre los elementos div */
     padding-left: 20px;
@@ -326,5 +325,5 @@ details[open]>summary::after {
     font-size: 16px;
     border-radius: 5px;
     cursor: pointer;
-    display: block;
+    margin-right: 30px;
 }
