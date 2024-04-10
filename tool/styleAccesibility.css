@@ -317,3 +317,14 @@ details[open]>summary::after {
     padding: 20px;
 }
 
+.btn-zoom {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    color: black;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+}

@@ -70,53 +70,13 @@
       '<details><summary><h3 id="modo-alto-contraste">Modo de Alto Contraste</h3></summary>' +
       '<button id="toggleAltoContraste" class="btn-modificar">Alto Contraste</button></details>' +
       '<details><summary><h3>Abrir Teclado Virtual en Pantalla</h3></summary><button id="btnTeclado" class="btn-teclado">Teclado Virtual</button></summary></details>' +
-      '<details><summary><h3>Ajustar Zoom</h3></summary><label for="zoomSlider" class="menu-label">Nivel de zoom:</label><input type="range" id="zoomSlider" min="1" max="3" value="1" step="0.1">' +
+      '<details><summary><h3>Ajustar Zoom</h3></summary><button id="aumentarZoom" class="btn-zoom">Aumentar Zoom</button>' +
+      '<button id="disminuirZoom" class="btn-zoom">Disminuir Zoom</button>'+
       '<div><a id="restablecerZoom" class="restablecer-cambios-link no-underline" href="#">Restablecer zoom</a></div></details></summary></details>';
 
     doc.body.appendChild(menuAccesibilidad);
 
-    console.log('Voy a añadir el event listener al slider de zoom');
-
-    function ajustarZoom() {
-      var zoomSlider = document.getElementById('zoomSlider');
-      var valorZoom = zoomSlider.value;
-      var contenidoPrincipal = document.querySelectorAll('body *:not(#menu-accesibilidad):not(#menu-accesibilidad *)');
-    
-      // Aplicar el zoom a todo el contenido principal
-      contenidoPrincipal.style.transform = 'scale(' + valorZoom + ')';
-      contenidoPrincipal.style.transformOrigin = 'top left';
-      contenidoPrincipal.style.width = 100 / valorZoom + '%';
-    
-      
-    }
-    
-    // Asegúrate de agregar esta función al listener del slider del zoom
-    var zoomSlider = document.getElementById('zoomSlider');
-    if (zoomSlider) {
-      zoomSlider.addEventListener('input', ajustarZoom);
-    }
-    
-    
-    // Asegúrate de que el menú y los controles existen antes de añadir el event listener
-    function inicializarSliderZoom() {
-      var zoomSlider = doc.getElementById('zoomSlider');
-      if (zoomSlider) {
-        console.log('Añadiendo event listener al zoomSlider');
-        zoomSlider.addEventListener('input', ajustarZoom);
-      }
-    }
-
-    // Función para restablecer el zoom
-    function restablecerZoom() {
-      var valorZoomOriginal = 1;
-      document.body.style.transform = 'scale(' + valorZoomOriginal + ')';
-      document.body.style.width = '100%';
-
-      var zoomSlider = document.getElementById('zoomSlider');
-      if (zoomSlider) {
-        zoomSlider.value = valorZoomOriginal;
-      }
-    }
+   
 
     let lastActiveInput = null;
 
@@ -566,25 +526,37 @@
         element.classList.remove('custom-interactive-cursor');
       });
     });
+    var nivelDeZoom = 1; // Nivel de zoom inicial (1 es el valor por defecto, sin zoom)
 
-    function addEventListeners() {
-      var zoomSlider = document.getElementById('zoomSlider');
-      if (zoomSlider) {
-        zoomSlider.addEventListener('input', ajustarZoom);
-      }
-
-      var restablecerZoomLink = document.getElementById('restablecerZoom');
-      if (restablecerZoomLink) {
-        restablecerZoomLink.addEventListener('click', function (event) {
-          event.preventDefault(); // Previene el comportamiento por defecto del enlace
-          restablecerZoom();
-        });
-      }
-    }
-
-    inicializarSliderZoom();
-    inicializarSliderZoom();
-    addEventListeners();
+    function ajustarZoom() {
+      // Selecciona todos los elementos hijos del body excepto el menú de accesibilidad
+      var nodos = document.body.childNodes;
+      nodos.forEach(function (nodo) {
+          if (nodo.nodeType === Node.ELEMENT_NODE && nodo.id !== 'menu-accesibilidad') {
+              // Aplica la transformación de escala a cada nodo
+              nodo.style.transform = 'scale(' + nivelDeZoom + ')';
+              nodo.style.transformOrigin = 'top left';
+              nodo.style.transition = 'transform 0.3s';
+          }
+      });
+  }
+    
+    document.getElementById('aumentarZoom').addEventListener('click', function () {
+      nivelDeZoom += 0.1; // Aumentar el zoom
+      ajustarZoom();
+    });
+    
+    document.getElementById('disminuirZoom').addEventListener('click', function () {
+      nivelDeZoom -= 0.1; // Disminuir el zoom
+      ajustarZoom();
+    });
+    
+    document.getElementById('restablecerZoom').addEventListener('click', function (e) {
+      e.preventDefault();
+      nivelDeZoom = 1; // Restablecer el zoom al valor inicial
+      ajustarZoom();
+    });
+    
     //añadir ARIA (agrega información semántica a los elementos de un sitio web proporcionando ayuda adicional como dictados por voz y guías auditivas)
     inicializarMejorasAccesibilidad();
 
