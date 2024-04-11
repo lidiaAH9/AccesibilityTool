@@ -69,14 +69,12 @@
       '<div><a id="restablecerCambiosFondo" class="restablecer-cambios-link no-underline" href="#">Restablecer color de fondo</a></div></details>' +
       '<details><summary><h3 id="modo-alto-contraste">Modo de Alto Contraste</h3></summary>' +
       '<button id="toggleAltoContraste" class="btn-modificar">Alto Contraste</button></details>' +
-      '<details><summary><h3>Abrir Teclado Virtual en Pantalla</h3></summary><button id="btnTeclado" class="btn-teclado">Teclado Virtual</button></summary></details>' +
-      '<details><summary><h3>Ajustar Zoom</h3></summary><button id="aumentarZoom" class="btn-zoom">Aumentar Zoom</button>' +
-      '<button id="disminuirZoom" class="btn-zoom">Disminuir Zoom</button>'+
-      '<div><a id="restablecerZoom" class="restablecer-cambios-link no-underline" href="#">Restablecer zoom</a></div></details></summary></details>';
+      '<details><summary><h3>Abrir Teclado Virtual en Pantalla</h3></summary><button id="btnTeclado" class="btn-teclado">Abrir Teclado Virtual</button></summary></details>' +
+      '<details><summary><h3>Ocultar Contenido Multimedia (imágenes/vídeos...)</h3></summary><button id="ocultarImg" class="btn-img">Ocultar Multimedia</button></summary></details>';
 
     doc.body.appendChild(menuAccesibilidad);
 
-   
+
 
     let lastActiveInput = null;
 
@@ -98,6 +96,7 @@
     function initializeSimpleKeyboard() {
       dragElement(document.querySelector(".simple-keyboard"));
       var keyboardContainer = document.querySelector(".simple-keyboard");
+      keyboardContainer.style.background = 'lightblue';
       if (!keyboardContainer) {
         console.error("El contenedor del teclado no fue encontrado.");
         return;
@@ -125,26 +124,38 @@
 
     // Espera a que todo el contenido esté listo.
     setTimeout(function () {
-      var btnTeclado = doc.getElementById("btnTeclado");
+      var btnTeclado = document.getElementById("btnTeclado");
       if (btnTeclado) {
         btnTeclado.addEventListener('click', function () {
           var keyboardContainer = document.querySelector(".simple-keyboard");
           if (!keyboardContainer) {
-            keyboardContainer = doc.createElement('div');
+            keyboardContainer = document.createElement('div');
             keyboardContainer.className = 'simple-keyboard';
-            doc.body.appendChild(keyboardContainer);
+            document.body.appendChild(keyboardContainer);
             console.log("Creando e inicializando el teclado virtual...");
             initializeSimpleKeyboard();
             dragElement(keyboardContainer);
+            // Actualizar el texto y el fondo del botón cuando se crea el teclado por primera vez
+            btnTeclado.style.background = 'yellow';
+            btnTeclado.textContent = 'Cerrar Teclado Virtual';
           } else {
-            console.log("El teclado virtual ya está inicializado.");
-            keyboardContainer.style.display = keyboardContainer.style.display === 'none' ? 'block' : 'none';
+            // Alternar la visibilidad del teclado
+            if (keyboardContainer.style.display === 'none') {
+              keyboardContainer.style.display = 'block';
+              btnTeclado.style.background = 'yellow';
+              btnTeclado.textContent = 'Cerrar Teclado Virtual';
+            } else {
+              keyboardContainer.style.display = 'none';
+              btnTeclado.style.background = 'white';
+              btnTeclado.textContent = 'Abrir Teclado Virtual';
+            }
           }
         });
       } else {
         console.log("El botón del teclado no se encontró.");
       }
     }, 0);
+
 
 
 
@@ -298,33 +309,41 @@
 
     //Funcion para hacer la web con contraste alto
     function toggleModoAltoContraste() {
+      const btnToggleAltoContraste = document.getElementById('toggleAltoContraste');
       const elementos = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
+      let modoAltoContrasteActivado = btnToggleAltoContraste.dataset.altoContraste === 'true';
+
       elementos.forEach(elemento => {
         if (!elemento.closest('#menu-accesibilidad')) {
-          // Comprobar si el modo de alto contraste está activo
-          if (elemento.dataset.altoContraste === 'true') {
+          if (modoAltoContrasteActivado) {
             // Restablecer estilos para el modo normal
             elemento.style.backgroundColor = '';
             elemento.style.color = '';
             elemento.style.borderColor = '';
-            // Específico para enlaces
-            if (elemento.tagName === 'A') {
-              elemento.style.color = ''; // Aquí puedes definir el color original de tus enlaces, si es necesario
-            }
             elemento.dataset.altoContraste = 'false';
           } else {
             // Aplicar estilos de alto contraste
             elemento.style.backgroundColor = 'black';
             elemento.style.color = 'white';
             elemento.style.borderColor = 'white';
-            // Específico para enlaces
             if (elemento.tagName === 'A') {
-              elemento.style.color = '#FFD700';
+              elemento.style.color = 'yellow';
             }
             elemento.dataset.altoContraste = 'true';
           }
         }
       });
+
+      // Actualizar el estado del botón y su apariencia
+      if (modoAltoContrasteActivado) {
+        btnToggleAltoContraste.dataset.altoContraste = 'false';
+        btnToggleAltoContraste.style.backgroundColor = 'white';
+        btnToggleAltoContraste.textContent = 'Activar Alto Contraste';
+      } else {
+        btnToggleAltoContraste.dataset.altoContraste = 'true';
+        btnToggleAltoContraste.style.backgroundColor = 'yellow';
+        btnToggleAltoContraste.textContent = 'Desactivar Alto Contraste';
+      }
     }
 
 
@@ -339,8 +358,6 @@
       }
 
     }, 0);
-
-
 
 
 
@@ -390,8 +407,7 @@
       '<div><label class="menu-label" for="espaciadoLineasSlider">Espaciado entre líneas:</label><input type="range" id="espaciadoLineasSlider" class="txt-slider" min="1" max="3" value="1.6" step="0.1"></div>' +
       '<div><label class="menu-label" for="espaciadoPalabrasSlider">Espaciado entre palabras:</label><input type="range" id="espaciadoPalabrasSlider" class="txt-slider" min="0" max="20" value="0"></div>' +
       '<div><label class="menu-label" for="espaciadoLetrasSlider">Espaciado entre letras:</label><input type="range" id="espaciadoLetrasSlider" class="txt-slider" min="0" max="5" value="0"></div></details>' +
-      '<details><summary><h3>Ajustar Cursor</h3></summary><button id="btnCursorNegroGrande" class="btn-cursor">Cursor Negro y Grande</button>' +
-      '<a id="restablecerCursor" class="restablecer-cambios-link-cursor no-underline-cursor" href="#">Restablecer cursor</a></details>';
+      '<details><summary><h3>Ajustar Cursor</h3></summary><button id="btnCursorNegroGrande" class="btn-cursor">Cursor Negro y Grande</button></details>';
 
 
 
@@ -503,60 +519,69 @@
 
 
     document.getElementById('btnCursorNegroGrande').addEventListener('click', function () {
-      console.log('Botón clickeado, cambiando cursores...');
-      document.body.classList.add('custom-default-cursor');
+      // Verificar si el cuerpo ya tiene la clase para determinar el estado actual
+      if (document.body.classList.contains('custom-default-cursor')) {
+        console.log('Restableciendo cursores a predeterminados...');
+        document.body.classList.remove('custom-default-cursor');
 
-      const interactiveElements = document.querySelectorAll('a, button');
-      interactiveElements.forEach(element => {
-        console.log(`Cambiando cursor para: ${element.tagName}`);
-        element.classList.add('custom-interactive-cursor');
+        // Eliminar la clase custom-interactive-cursor de todos los elementos interactivos
+        const interactiveElements = document.querySelectorAll('.custom-interactive-cursor');
+        interactiveElements.forEach(element => {
+          element.classList.remove('custom-interactive-cursor');
+          this.textContent = 'Cursor Negro y Grande';
+        });
+
+        // Restablecer el color del botón
+        this.style.backgroundColor = ''; // Asume blanco o color original del botón
+      } else {
+        console.log('Botón clickeado, cambiando cursores...');
+        document.body.classList.add('custom-default-cursor');
+
+        // Aplicar la clase custom-interactive-cursor a todos los elementos interactivos
+        const interactiveElements = document.querySelectorAll('a, button');
+        interactiveElements.forEach(element => {
+          console.log(`Cambiando cursor para: ${element.tagName}`);
+          element.classList.add('custom-interactive-cursor');
+        });
+
+        // Cambiar el color del botón a amarillo
+        this.style.backgroundColor = 'yellow';
+        this.textContent = 'Desactivar Cursor';
+      }
+    });
+
+
+
+    function ocultarImagenes() {
+      var elementosOcultos = false; // Variable para detectar si al menos un elemento estaba oculto
+
+      document.querySelectorAll('img, svg, video, iframe').forEach(function (el) {
+        if (el.id !== 'miBotonAccesibilidad') { // Excluyendo el botón de accesibilidad
+          el.style.visibility = el.style.visibility === 'hidden' ? '' : 'hidden';
+          if (el.style.visibility === 'hidden') elementosOcultos = true;
+        }
       });
-    });
 
-    // Evento para restablecer el cursor a los valores predeterminados
-    document.getElementById('restablecerCursor').addEventListener('click', function (e) {
-      e.preventDefault(); // Prevenir la acción por defecto del enlace
-
-      // Eliminar la clase custom-cursor del cuerpo para restablecer el cursor por defecto
-      document.body.classList.remove('custom-default-cursor');
-
-      // Eliminar la clase custom-interactive-cursor de todos los elementos interactivos
-      const interactiveElements = document.querySelectorAll('.custom-interactive-cursor');
-      interactiveElements.forEach(function (element) {
-        element.classList.remove('custom-interactive-cursor');
+      document.querySelectorAll('*').forEach(function (el) {
+        if ((el.currentStyle ? el.currentStyle.backgroundImage !== 'none' : getComputedStyle(el, null).backgroundImage !== 'none') && el.id !== 'miBotonAccesibilidad') {
+          el.style.visibility = el.style.visibility === 'hidden' ? '' : 'hidden';
+          if (el.style.visibility === 'hidden') elementosOcultos = true;
+        }
       });
-    });
-    var nivelDeZoom = 1; // Nivel de zoom inicial (1 es el valor por defecto, sin zoom)
 
-    function ajustarZoom() {
-      // Selecciona todos los elementos hijos del body excepto el menú de accesibilidad
-      var nodos = document.body.childNodes;
-      nodos.forEach(function (nodo) {
-          if (nodo.nodeType === Node.ELEMENT_NODE && nodo.id !== 'menu-accesibilidad') {
-              // Aplica la transformación de escala a cada nodo
-              nodo.style.transform = 'scale(' + nivelDeZoom + ')';
-              nodo.style.transformOrigin = 'top left';
-              nodo.style.transition = 'transform 0.3s';
-          }
-      });
-  }
-    
-    document.getElementById('aumentarZoom').addEventListener('click', function () {
-      nivelDeZoom += 0.1; // Aumentar el zoom
-      ajustarZoom();
-    });
-    
-    document.getElementById('disminuirZoom').addEventListener('click', function () {
-      nivelDeZoom -= 0.1; // Disminuir el zoom
-      ajustarZoom();
-    });
-    
-    document.getElementById('restablecerZoom').addEventListener('click', function (e) {
-      e.preventDefault();
-      nivelDeZoom = 1; // Restablecer el zoom al valor inicial
-      ajustarZoom();
-    });
-    
+      var boton = document.getElementById('ocultarImg');
+      if (elementosOcultos) {
+        boton.style.backgroundColor = 'yellow';
+        boton.textContent = 'Mostrar Multimedia';
+      } else {
+        boton.style.backgroundColor = 'white';
+        boton.textContent = 'Ocultar Multimedia';
+      }
+    }
+
+    document.getElementById('ocultarImg').addEventListener('click', ocultarImagenes);
+
+
     //añadir ARIA (agrega información semántica a los elementos de un sitio web proporcionando ayuda adicional como dictados por voz y guías auditivas)
     inicializarMejorasAccesibilidad();
 
