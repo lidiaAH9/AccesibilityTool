@@ -57,6 +57,7 @@
 
 
     menuAccesibilidad.innerHTML = '<button class="close-button">X</button><h2 class="titulo-menu">Accesibilidad</h2>' +
+      '<details><summary><h3>Lectura Fácil</h3><img id="img-ll" src="tool/icon-lectura-facil.png"></summary><button id="lecturaFacil" class="btn-img">Activar Lectura Fácil</button></summary></details>' +
       '<details><summary><h3 id="high-contrast">Ajustar Colores de Texto</h3></summary>' +
       '<div id="color-texto-adjustment-container"><label class="menu-label" for="color-picker-texto">Seleccione un color:   </label><input type="color" id="color-picker-texto" ></div>' +
       '<div><label class="menu-label" for="saturacionSliderTexto">Saturación:</label><input type="range" id="saturacionSliderTexto" class="custom-slider-satu" min="0" max="100" value="50"></div>' +
@@ -77,6 +78,7 @@
 
 
     let lastActiveInput = null;
+
 
     // Esta función se invoca con cada cambio en el teclado virtual
     function onKeyboardInput(input) {
@@ -548,6 +550,50 @@
         this.textContent = 'Desactivar Cursor';
       }
     });
+
+
+    let estilosOriginales = new Map();
+
+    function actualizarEstilosTexto() {
+      var body = document.body;
+      var btnLecturaFacil = document.getElementById('lecturaFacil');
+
+      if (body.classList.contains('textoArial')) {
+        btnLecturaFacil.style.backgroundColor = 'white';
+        btnLecturaFacil.textContent = 'Activar Lectura Fácil';
+        body.classList.remove('textoArial');
+
+        document.querySelectorAll('body, body *').forEach(elemento => {
+          if (estilosOriginales.has(elemento)) {
+            let estilos = estilosOriginales.get(elemento);
+            elemento.style.fontFamily = estilos.fontFamily;
+            elemento.style.fontSize = estilos.fontSize;
+          }
+        });
+
+        estilosOriginales.clear();
+      } else {
+        btnLecturaFacil.style.backgroundColor = 'yellow';
+        btnLecturaFacil.textContent = 'Desactivar Lectura Fácil';
+        body.classList.add('textoArial');
+
+        document.querySelectorAll('body, body *').forEach(elemento => {
+          let estilosActuales = {
+            fontFamily: elemento.style.fontFamily,
+            fontSize: elemento.style.fontSize
+          };
+          estilosOriginales.set(elemento, estilosActuales);
+
+          elemento.style.fontFamily = 'Arial, sans-serif';
+          let tamanoActual = window.getComputedStyle(elemento, null).fontSize;
+          if (parseFloat(tamanoActual) < 16) {
+            elemento.style.fontSize = '16px';
+          }
+        });
+      }
+    }
+
+    document.getElementById('lecturaFacil').addEventListener('click', actualizarEstilosTexto);
 
 
 

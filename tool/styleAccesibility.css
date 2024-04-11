@@ -327,3 +327,9 @@ details[open]>summary::after {
     cursor: pointer;
 }
 
+#img-ll {
+   margin-left: 150px;
+   border-radius: 5px;
+   width: 50px;
+   height: 50px;
+}
