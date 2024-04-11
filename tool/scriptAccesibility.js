@@ -408,7 +408,8 @@
       '<div><label class="menu-label" for="espaciadoPalabrasSlider">Espaciado entre palabras:</label><input type="range" id="espaciadoPalabrasSlider" class="txt-slider" min="0" max="20" value="0"></div>' +
       '<div><label class="menu-label" for="espaciadoLetrasSlider">Espaciado entre letras:</label><input type="range" id="espaciadoLetrasSlider" class="txt-slider" min="0" max="5" value="0"></div></details>' +
       '<details><summary><h3>Ajustar Cursor</h3></summary><button id="btnCursorNegroGrande" class="btn-cursor">Cursor Negro y Grande</button></details>' +
-      '<details><summary><h3>Estilizar Botones</h3></summary><button id="btnEstilizarBotones" class="btn-cursor">Activar Estilo de Botones</button></details>';
+      '<details><summary><h3>Estilizar Botones</h3></summary><button id="btnEstilizarBotones" class="btn-cursor">Activar Estilo de Botones</button></details>'+
+      '<details><summary><h3>Guía de Lectura</h3></summary><button id="btnGuiaLectura" class="btn-cursor">Activar Guía de Lectura</button><div id="guiaLectura"></div></details>';
 
 
 
@@ -664,6 +665,48 @@
     }
 
     document.getElementById('btnEstilizarBotones').addEventListener('click', estilizarBotones);
+
+
+
+    function guiaLectura() {
+      var guia = document.getElementById('guiaLectura');
+      var btn = document.getElementById('btnGuiaLectura');
+    
+      // Verificar si la guía está visible
+      if (guia.style.display === 'block') {
+        guia.style.display = 'none'; // Ocultar guía
+        btn.style.backgroundColor = 'white'; // Botón a blanco
+        btn.textContent = 'Activar Guía de Lectura';
+        document.removeEventListener('mousemove', moverGuiaConRaton);
+      } else {
+        guia.style.display = 'block'; // Mostrar guía
+        btn.style.backgroundColor = 'yellow'; // Botón a amarillo
+        btn.textContent = 'Desactivar Guía de Lectura';
+        document.addEventListener('mousemove', moverGuiaConRaton);
+      }
+    }
+    
+    document.getElementById('btnGuiaLectura').addEventListener('click', guiaLectura);
+    
+    function moverGuiaConRaton(e) {
+      var guia = document.getElementById('guiaLectura');
+      // Establecer la posición de la guía en la coordenada Y del ratón
+      guia.style.top = `${e.clientY}px`;
+    }
+    // Mover la guía con las teclas de flecha
+    document.addEventListener('keydown', function(event) {
+      var guia = document.getElementById('guiaLectura');
+      if (guia.style.display === 'block') { // Si la guía está visible
+        if (event.key === 'ArrowDown') {
+          guia.style.top = `${parseInt(guia.style.top) + 10}px`;
+        } else if (event.key === 'ArrowUp') {
+          guia.style.top = `${parseInt(guia.style.top) - 10}px`;
+        }
+      }
+    });
+
+    
+
 
 
     //añadir ARIA (agrega información semántica a los elementos de un sitio web proporcionando ayuda adicional como dictados por voz y guías auditivas)
