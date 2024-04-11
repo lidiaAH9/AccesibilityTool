@@ -157,8 +157,6 @@
     }, 0);
 
 
-
-
     function dragElement(container) {
       let pos1 = 0,
         pos2 = 0,
@@ -407,7 +405,8 @@
       '<div><label class="menu-label" for="espaciadoLineasSlider">Espaciado entre líneas:</label><input type="range" id="espaciadoLineasSlider" class="txt-slider" min="1" max="3" value="1.6" step="0.1"></div>' +
       '<div><label class="menu-label" for="espaciadoPalabrasSlider">Espaciado entre palabras:</label><input type="range" id="espaciadoPalabrasSlider" class="txt-slider" min="0" max="20" value="0"></div>' +
       '<div><label class="menu-label" for="espaciadoLetrasSlider">Espaciado entre letras:</label><input type="range" id="espaciadoLetrasSlider" class="txt-slider" min="0" max="5" value="0"></div></details>' +
-      '<details><summary><h3>Ajustar Cursor</h3></summary><button id="btnCursorNegroGrande" class="btn-cursor">Cursor Negro y Grande</button></details>';
+      '<details><summary><h3>Ajustar Cursor</h3></summary><button id="btnCursorNegroGrande" class="btn-cursor">Cursor Negro y Grande</button></details>' +
+      '<details><summary><h3>Estilizar Botones</h3></summary><button id="btnEstilizarBotones" class="btn-cursor">Activar Estilo de Botones</button></details>';
 
 
 
@@ -580,6 +579,43 @@
     }
 
     document.getElementById('ocultarImg').addEventListener('click', ocultarImagenes);
+
+
+
+    function estilizarBotones() {
+      var todosLosBotones = document.querySelectorAll('button');
+      var botones = Array.from(todosLosBotones).filter(function (btn) {
+        return !btn.closest('#menu-accesibilidad');
+      });
+
+
+      // Comprobar si el estilo ya se aplicó antes
+      var estiloAplicado = document.getElementById('btnEstilizarBotones').dataset.estiloAplicado === 'true';
+
+      botones.forEach(function (btn) {
+        if (estiloAplicado) {
+          // Si el estilo ya fue aplicado, removemos el estilo
+          btn.style.border = '';
+        } else {
+          // Si el estilo no fue aplicado, lo añadimos
+          btn.style.border = '4px solid yellow';
+        }
+      });
+
+      // Alternar el estado de activación y el color del botón de activación
+      var btnActivacion = document.getElementById('btnEstilizarBotones');
+      if (estiloAplicado) {
+        btnActivacion.style.backgroundColor = 'white';
+        btnActivacion.textContent = 'Activar Estilo de Botones';
+        btnActivacion.dataset.estiloAplicado = 'false';
+      } else {
+        btnActivacion.style.backgroundColor = 'yellow';
+        btnActivacion.textContent = 'Desactivar Estilo de Botones';
+        btnActivacion.dataset.estiloAplicado = 'true';
+      }
+    }
+
+    document.getElementById('btnEstilizarBotones').addEventListener('click', estilizarBotones);
 
 
     //añadir ARIA (agrega información semántica a los elementos de un sitio web proporcionando ayuda adicional como dictados por voz y guías auditivas)
