@@ -568,6 +568,7 @@
             let estilos = estilosOriginales.get(elemento);
             elemento.style.fontFamily = estilos.fontFamily;
             elemento.style.fontSize = estilos.fontSize;
+            elemento.style.textAlign = estilos.textAlign;
           }
         });
 
@@ -580,10 +581,11 @@
         document.querySelectorAll('body, body *').forEach(elemento => {
           let estilosActuales = {
             fontFamily: elemento.style.fontFamily,
-            fontSize: elemento.style.fontSize
+            fontSize: elemento.style.fontSize,
+            textAlign: elemento.style.textAlign
           };
           estilosOriginales.set(elemento, estilosActuales);
-
+          elemento.style.textAlign = 'left';
           elemento.style.fontFamily = 'Arial, sans-serif';
           let tamanoActual = window.getComputedStyle(elemento, null).fontSize;
           if (parseFloat(tamanoActual) < 16) {
