@@ -56,7 +56,7 @@
     document.body.appendChild(script);
 
 
-    menuAccesibilidad.innerHTML = '<button class="close-button">X</button><h2 class="titulo-menu">Accesibilidad</h2>' +
+    menuAccesibilidad.innerHTML = '<button class="close-button">X</button><h2 class="titulo-menu">MENÚ DE ACCESIBILIDAD</h2>' +
       '<details><summary><h3>Lectura Fácil</h3><img id="img-ll" src="tool/icon-lectura-facil.png"></summary><button id="lecturaFacil" class="btn-img">Activar Lectura Fácil</button></summary></details>' +
       '<details><summary><h3 id="high-contrast">Ajustar Colores de Texto</h3></summary>' +
       '<div id="color-texto-adjustment-container"><label class="menu-label" for="color-picker-texto">Seleccione un color:   </label><input type="color" id="color-picker-texto" ></div>' +
@@ -414,8 +414,81 @@
       '<div><label class="menu-label" for="espaciadoLetrasSlider">Espaciado entre letras:</label><input type="range" id="espaciadoLetrasSlider" class="txt-slider" min="0" max="5" value="0"></div></details>' +
       '<details><summary><h3>Ajustar Cursor</h3></summary><button id="btnCursorNegroGrande" class="btn-cursor">Cursor Negro y Grande</button></details>' +
       '<details><summary><h3>Estilizar Botones</h3></summary><button id="btnEstilizarBotones" class="btn-cursor">Activar Estilo de Botones</button></details>' +
-      '<details><summary><h3>Guía de Lectura</h3></summary><button id="btnGuiaLecturaNegra" class="btn-cursor">Activar Guía de Lectura Negra</button><div id="guiaLecturaNegra"></div>' +
-      '<button id="btnGuiaLecturaBlanca" class="btn-cursor">Activar Guía de Lectura Blanca</button><div id="guiaLecturaBlanca"></div></details>';
+      '<details><summary><h3>Guía de Lectura</h3></summary><button id="btnGuiaLecturaNegra" class="btn-otros-black">Activar Guía de Lectura Negra</button><div id="guiaLecturaNegra"></div>' +
+      '<button id="btnGuiaLecturaBlanca" class="btn-otros">Activar Guía de Lectura Blanca</button><div id="guiaLecturaBlanca"></div></details>' +
+      '<details><summary><h3>Lector de Texto</h3></summary><select id="voiceSelect" class="select-voice"></select><button id="btnLector" class="btn-otros ">Activar Lector de Texto</button></details>';
+
+
+    function populateVoiceList() {
+      if (typeof speechSynthesis === "undefined") {
+        return;
+      }
+
+      const voices = speechSynthesis.getVoices();
+
+      for (let i = 0; i < voices.length; i++) {
+        const option = document.createElement("option");
+        option.textContent = `${voices[i].name} (${voices[i].lang})`;
+
+        if (voices[i].default) {
+          option.textContent += " — DEFAULT";
+        }
+
+        option.setAttribute("data-lang", voices[i].lang);
+        option.setAttribute("data-name", voices[i].name);
+        document.getElementById("voiceSelect").appendChild(option);
+      }
+    }
+
+    populateVoiceList();
+    if (
+      typeof speechSynthesis !== "undefined" &&
+      speechSynthesis.onvoiceschanged !== undefined
+    ) {
+      speechSynthesis.onvoiceschanged = populateVoiceList;
+    }
+
+
+    var lecturaEnVozAltaActivada = false;
+    var synth = window.speechSynthesis;
+
+
+    // Función para leer en voz alta
+    function leerEnVozAlta() {
+      var btnLector = document.getElementById('btnLector');
+      if (!lecturaEnVozAltaActivada) {
+        lecturaEnVozAltaActivada = true;
+        btnLector.style.backgroundColor = 'yellow';
+        btnLector.style.fontWeight = '700';
+        btnLector.textContent = 'Activar Lector de Texto';
+
+        var vozSeleccionada = document.getElementById('voiceSelect').value;
+        var textoParaLeer = document.body.innerText;
+        var utterThis = new SpeechSynthesisUtterance(textoParaLeer);
+
+        // Seleccionar la voz según la opción del menú desplegable
+        var voices = synth.getVoices();
+        var selectedVoice = voices.find(v => `${v.name} (${v.lang})` === vozSeleccionada);
+        if (selectedVoice) {
+          utterThis.voice = selectedVoice;
+        }
+
+        synth.speak(utterThis);
+      } else {
+        lecturaEnVozAltaActivada = false;
+        btnLector.style.backgroundColor = 'white';
+        btnLector.style.fontWeight = '400';
+        btnLector.textContent = 'Desactivar Lector de Texto';
+
+        synth.cancel();
+      }
+    }
+
+    populateVoiceList();
+
+    document.getElementById('btnLector').addEventListener('click', leerEnVozAlta);
+
+
 
 
 
@@ -687,14 +760,14 @@
 
       // Verificar si la guía está visible
       if (guia.style.display === 'block') {
-        guia.style.display = 'none'; 
-        btn.style.backgroundColor = 'white'; 
+        guia.style.display = 'none';
+        btn.style.backgroundColor = 'white';
         btn.style.fontWeight = '400';
         btn.textContent = 'Activar Guía de Lectura Negra';
         document.removeEventListener('mousemove', moverGuiaConRatonNegra);
       } else {
-        guia.style.display = 'block'; 
-        btn.style.backgroundColor = 'yellow'; 
+        guia.style.display = 'block';
+        btn.style.backgroundColor = 'yellow';
         btn.style.fontWeight = '700';
         btn.textContent = 'Desactivar Guía de Lectura Negra';
         document.addEventListener('mousemove', moverGuiaConRatonNegra);
@@ -727,14 +800,14 @@
 
       // Verificar si la guía está visible
       if (guia.style.display === 'block') {
-        guia.style.display = 'none'; 
-        btn.style.backgroundColor = 'white'; 
+        guia.style.display = 'none';
+        btn.style.backgroundColor = 'white';
         btn.style.fontWeight = '400';
         btn.textContent = 'Activar Guía de Lectura Blanca';
         document.removeEventListener('mousemove', moverGuiaConRatonBlanca);
       } else {
-        guia.style.display = 'block'; 
-        btn.style.backgroundColor = 'yellow'; 
+        guia.style.display = 'block';
+        btn.style.backgroundColor = 'yellow';
         btn.style.fontWeight = '700';
         btn.textContent = 'Desactivar Guía de Lectura Blanca';
         document.addEventListener('mousemove', moverGuiaConRatonBlanca);

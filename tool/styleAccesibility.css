@@ -25,33 +25,24 @@ scriptAccesibilidad.js */
 .tooltip-text {
     visibility: hidden;
     width: auto;
-    /* Ancho automático según el contenido */
     background-color: white;
-    /* Fondo del tooltip */
     color: black;
-    /* Color de texto del tooltip */
     text-align: center;
     border-radius: 6px;
     padding: 5px 10px;
     position: absolute;
     z-index: 1001;
-    /* Encima del botón */
     bottom: 110%;
-    /* Posición debajo del botón */
     left: 100%;
     transform: translateX(-50%);
-    /* Centrado horizontal */
     white-space: nowrap;
-    /* Evita que el texto se pase a la siguiente línea */
     transition: visibility 0.2s, opacity 0.2s ease-in-out;
     opacity: 0;
 }
 
 .btn-accesibilidad:hover .tooltip-text {
     visibility: visible;
-    /* Muestra el tooltip */
     opacity: 1;
-    /* Hace el tooltip totalmente opaco */
 }
 
 
@@ -62,7 +53,8 @@ scriptAccesibilidad.js */
     z-index: 3000;
     top: 0;
     left: 0;
-    background-color: lightblue;
+    background: linear-gradient(to bottom right,  #292458 35%,  #00627C );
+    color: white;
     overflow-x: hidden;
     transition: 0.5s;
     box-sizing: border-box;
@@ -81,18 +73,19 @@ scriptAccesibilidad.js */
 
 #menu-accesibilidad h2.titulo-menu {
     padding-right: 20px;
-    margin-top: 20px;
+    margin-top: 35px;
     margin-bottom: 20px;
 }
 
 .close-button {
     position: absolute;
+    margin-top: 13px;
     background-color: transparent;
     top: 20px;
     right: 10px;
     font-size: 30px;
     font-weight: bold;
-
+    color: white;
     border: none;
     cursor: pointer;
 }
@@ -102,17 +95,14 @@ scriptAccesibilidad.js */
 }
 
 
-
 #menu-accesibilidad div {
-    margin-bottom: 15px;
-    /* Espacio entre los elementos div */
+    margin-bottom: 25px;
     padding-left: 20px;
-    /* Espacio de relleno izquierdo */
 }
 
 .titulo-menu {
     margin-bottom: -15px;
-    /* Ajusta el margen inferior del título "Accesibilidad" */
+    padding-bottom:  20px;
 }
 
 #high-contrast {
@@ -121,32 +111,24 @@ scriptAccesibilidad.js */
 
 #color-picker-texto {
     width: 80px;
-    /* Ancho del color picker */
     height: 40px;
-    /* Altura del color picker */
     border: none;
-    /* Elimina el borde */
     padding: 0;
-    /* Elimina cualquier relleno interno */
     cursor: pointer;
-    /* Cambia el cursor al pasar sobre el color picker */
 }
 
 #color-picker-fondo {
     width: 80px;
-    /* Ancho del color picker */
     height: 40px;
-    /* Altura del color picker */
     border: none;
-    /* Elimina el borde */
     padding: 0;
-    /* Elimina cualquier relleno interno */
     cursor: pointer;
-    /* Cambia el cursor al pasar sobre el color picker */
 }
 
 .btn-modificar {
     padding: 10px;
+    margin-top: -20px;
+    margin-bottom: 20px;
     background-color: #f8f9fa;
     color: black;
     border: 1px solid #ccc;
@@ -156,7 +138,6 @@ scriptAccesibilidad.js */
     display: block;
 }
 
-/* Opcional: Estilos para el hover del botón */
 .btn-modificar:hover {
     background-color: #e2e6ea;
 }
@@ -227,21 +208,24 @@ scriptAccesibilidad.js */
 }
 
 .no-underline {
-    color: blue;
-    /* Cambia el color del texto a azul */
+    color: yellow;
     text-decoration: none;
-    /* Elimina el subrayado */
     font-weight: bold;
 }
+
+
 
 details>summary {
     display: flex;
     justify-content: space-between;
-    /* Espacio entre el texto y la flecha */
     align-items: center;
-    /* Alinea verticalmente */
     cursor: pointer;
     list-style: none;
+    padding-bottom: 20px;
+}
+
+details>summary:hover {
+   color: LightSkyBlue;
 }
 
 details>summary::after {
@@ -249,26 +233,23 @@ details>summary::after {
     font-size: 1em;
     line-height: 1;
     transition: transform 0.3s ease-in-out;
-    /* Animación de giro */
 }
 
 details[open]>summary::after {
     transform: rotate(-180deg);
-    /* Gira la flecha cuando está abierto */
 }
 
-/* Cursor por defecto personalizado */
 .custom-default-cursor {
     cursor: url('cursor.svg'), auto;
 }
 
-/* Cursor interactivo para elementos sobre los que se puede hacer clic */
 .custom-interactive-cursor {
     cursor: url('pointer.svg'), pointer;
 }
 
 .btn-cursor {
-    margin-bottom: 10px;
+    margin-top: -20px;
+    margin-bottom: 20px;
     padding: 10px;
     background-color: #f8f9fa;
     color: black;
@@ -279,17 +260,20 @@ details[open]>summary::after {
     display: block;
 }
 
+.btn-cursor:hover {
+    background-color: #e2e6ea;
+}
+
 .no-underline-cursor {
     color: blue;
-    /* Cambia el color del texto a azul */
     text-decoration: none;
-    /* Elimina el subrayado */
     font-weight: bold;
     margin: 3px;
 }
 
 .btn-teclado {
-    margin-bottom: 10px;
+    margin-top: -20px;
+    margin-bottom: 20px;
     padding: 10px;
     background-color: #f8f9fa;
     color: black;
@@ -298,6 +282,10 @@ details[open]>summary::after {
     border-radius: 5px;
     cursor: pointer;
     display: block;
+}
+
+.btn-teclado:hover {
+    background-color: #e2e6ea;
 }
 
 .simple-keyboard {
@@ -317,7 +305,8 @@ details[open]>summary::after {
 }
 
 .btn-img {
-    margin-bottom: 10px;
+    margin-top: -20px;
+    margin-bottom: 20px;
     padding: 10px;
     background-color: #f8f9fa;
     color: black;
@@ -327,12 +316,18 @@ details[open]>summary::after {
     cursor: pointer;
 }
 
+.btn-img:hover {
+    background-color: #e2e6ea;
+}
+
 #img-ll {
    margin-left: 150px;
    border-radius: 5px;
+   border: 2px solid white;
    width: 50px;
    height: 50px;
 }
+
 
 #guiaLecturaNegra {
     position: fixed;
@@ -356,3 +351,50 @@ details[open]>summary::after {
     display: none; 
   }
   
+
+  .select-voice {
+    width: 340px;
+    padding: 5px;
+    margin-bottom: 20px ;
+    background-color: WhiteSmoke;
+    color: black;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .select-voice:hover {
+    background-color: #e2e6ea;
+}
+
+  .btn-otros {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    color: black;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-otros:hover {
+    background-color: #e2e6ea;
+}
+
+.btn-otros-black {
+    margin-top: -20px;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    color: black;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-otros-black:hover {
+    background-color: #e2e6ea;
+}
