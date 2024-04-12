@@ -56,22 +56,25 @@
     document.body.appendChild(script);
 
 
-    menuAccesibilidad.innerHTML = '<button class="close-button">X</button><h2 class="titulo-menu">MENÚ DE ACCESIBILIDAD</h2>' +
-      '<details><summary><h3>Lectura Fácil</h3><img id="img-ll" src="tool/icon-lectura-facil.png"></summary><button id="lecturaFacil" class="btn-img">Activar Lectura Fácil</button></summary></details>' +
-      '<details><summary><h3 id="high-contrast">Ajustar Colores de Texto</h3></summary>' +
-      '<div id="color-texto-adjustment-container"><label class="menu-label" for="color-picker-texto">Seleccione un color:   </label><input type="color" id="color-picker-texto" ></div>' +
-      '<div><label class="menu-label" for="saturacionSliderTexto">Saturación:</label><input type="range" id="saturacionSliderTexto" class="custom-slider-satu" min="0" max="100" value="50"></div>' +
-      '<div><label class="menu-label" for="luminosidadSliderTexto">Luminosidad: </label><input type="range" id="luminosidadSliderTexto" class="custom-slider" min="0" max="100" value="50"></div>' +
-      '<div><a id="restablecerCambiosTexto" class="restablecer-cambios-link no-underline" href="#">Restablecer color del texto</a></div></details>' +
-      '<details><summary><h3 id="high-contrast">Ajustar Colores de Fondo</h3></summary>' +
-      '<div id="color-fondo-adjustment-container"><label class="menu-label" for="color-picker-fondo">Seleccione un color:  </label><input type="color" id="color-picker-fondo" ></div>' +
-      '<div><label class="menu-label" for="saturacionSliderFondo">Saturación:</label><input type="range" id="saturacionSliderFondo" class="custom-slider-satu" min="0" max="100" value="50"></div>' +
-      '<div><label class="menu-label" for="luminosidadSliderFondo">Luminosidad: </label><input type="range" id="luminosidadSliderFondo" class="custom-slider" min="0" max="100" value="50"></div>' +
-      '<div><a id="restablecerCambiosFondo" class="restablecer-cambios-link no-underline" href="#">Restablecer color de fondo</a></div></details>' +
-      '<details><summary><h3 id="modo-alto-contraste">Modo de Alto Contraste</h3></summary>' +
-      '<button id="toggleAltoContraste" class="btn-modificar">Alto Contraste</button></details>' +
-      '<details><summary><h3>Abrir Teclado Virtual en Pantalla</h3></summary><button id="btnTeclado" class="btn-teclado">Abrir Teclado Virtual</button></summary></details>' +
-      '<details><summary><h3>Ocultar Contenido Multimedia (imágenes/vídeos...)</h3></summary><button id="ocultarImg" class="btn-img">Ocultar Multimedia</button></summary></details>';
+    menuAccesibilidad.innerHTML =
+      '<div class="language-selector-container"><img src="tool/world-icon.png" alt="Icono de mundo" id="icono" class="world-icon"><select id="language-selector" class="language-selector">' +
+      '<option value="es">Español</option><option value="en">English</option></select></div>' +
+      '<button class="close-button">X</button><h2 class="titulo-menu" data-key="menuTitle">MENÚ DE ACCESIBILIDAD</h2>' +
+      '<details><summary><h3 data-key="easyReading">Lectura Fácil</h3><img id="img-ll" src="tool/icon-lectura-facil.png"></summary><button id="lecturaFacil" class="btn-img" data-key="activateEasyReading">Activar Lectura Fácil</button></summary></details>' +
+      '<details><summary><h3 id="high-contrast" data-key="adjustTextColor">Ajustar Colores de Texto</h3></summary>' +
+      '<div id="color-texto-adjustment-container"><label class="menu-label" for="color-picker-texto" data-key="selectColor">Seleccione un color:</label><input type="color" id="color-picker-texto" ></div>' +
+      '<div><label class="menu-label" for="saturacionSliderTexto" data-key="saturation">Saturación:</label><input type="range" id="saturacionSliderTexto" class="custom-slider-satu" min="0" max="100" value="50"></div>' +
+      '<div><label class="menu-label" for="luminosidadSliderTexto" data-key="brightness">Luminosidad:</label><input type="range" id="luminosidadSliderTexto" class="custom-slider" min="0" max="100" value="50"></div>' +
+      '<div><a id="restablecerCambiosTexto" class="restablecer-cambios-link no-underline" href="#" data-key="resetTextColor">Restablecer color del texto</a></div></details>' +
+      '<details><summary><h3 id="high-contrast" data-key="adjustBackgroundColor">Ajustar Colores de Fondo</h3></summary>' +
+      '<div id="color-fondo-adjustment-container"><label class="menu-label" for="color-picker-fondo" data-key="selectColor">Seleccione un color:</label><input type="color" id="color-picker-fondo" ></div>' +
+      '<div><label class="menu-label" for="saturacionSliderFondo" data-key="saturation">Saturación:</label><input type="range" id="saturacionSliderFondo" class="custom-slider-satu" min="0" max="100" value="50"></div>' +
+      '<div><label class="menu-label" for="luminosidadSliderFondo" data-key="brightness">Luminosidad:</label><input type="range" id="luminosidadSliderFondo" class="custom-slider" min="0" max="100" value="50"></div>' +
+      '<div><a id="restablecerCambiosFondo" class="restablecer-cambios-link no-underline" href="#" data-key="resetBackgroundColor">Restablecer color de fondo</a></div></details>' +
+      '<details><summary><h3 id="modo-alto-contraste" data-key="highContrastMode">Modo de Alto Contraste</h3></summary>' +
+      '<button id="toggleAltoContraste" class="btn-modificar" data-key="highContrast">Alto Contraste</button></details>' +
+      '<details><summary><h3 data-key="openVirtualKeyboard">Abrir Teclado Virtual en Pantalla</h3></summary><button id="btnTeclado" class="btn-teclado" data-key="openVirtualKeyboard">Abrir Teclado Virtual</button></summary></details>' +
+      '<details><summary><h3 data-key="hideMultimedia">Ocultar Contenido Multimedia (imágenes/vídeos...)</h3></summary><button id="ocultarImg" class="btn-img" data-key="hideMultimedia">Ocultar Multimedia</button></summary></details>';
 
     doc.body.appendChild(menuAccesibilidad);
 
@@ -407,16 +410,16 @@
     }
 
     // Añadir los controles de accesibilidad para el tamaño de la letra y el espaciado
-    menuAccesibilidad.innerHTML += '<details><summary><h3>Ajustar Texto</h3></summary>' +
-      '<div><label class="menu-label" for="tamanoFuenteSlider">Tamaño de letra:</label><input type="range" id="tamanoFuenteSlider" class="txt-slider" min="12" max="30" value="16"></div>' +
-      '<div><label class="menu-label" for="espaciadoLineasSlider">Espaciado entre líneas:</label><input type="range" id="espaciadoLineasSlider" class="txt-slider" min="1" max="3" value="1.6" step="0.1"></div>' +
-      '<div><label class="menu-label" for="espaciadoPalabrasSlider">Espaciado entre palabras:</label><input type="range" id="espaciadoPalabrasSlider" class="txt-slider" min="0" max="20" value="0"></div>' +
-      '<div><label class="menu-label" for="espaciadoLetrasSlider">Espaciado entre letras:</label><input type="range" id="espaciadoLetrasSlider" class="txt-slider" min="0" max="5" value="0"></div></details>' +
-      '<details><summary><h3>Ajustar Cursor</h3></summary><button id="btnCursorNegroGrande" class="btn-cursor">Cursor Negro y Grande</button></details>' +
-      '<details><summary><h3>Estilizar Botones</h3></summary><button id="btnEstilizarBotones" class="btn-cursor">Activar Estilo de Botones</button></details>' +
-      '<details><summary><h3>Guía de Lectura</h3></summary><button id="btnGuiaLecturaNegra" class="btn-otros-black">Activar Guía de Lectura Negra</button><div id="guiaLecturaNegra"></div>' +
-      '<button id="btnGuiaLecturaBlanca" class="btn-otros">Activar Guía de Lectura Blanca</button><div id="guiaLecturaBlanca"></div></details>' +
-      '<details><summary><h3>Lector de Texto</h3></summary><select id="voiceSelect" class="select-voice"></select><button id="btnLector" class="btn-otros ">Activar Lector de Texto</button></details>';
+    menuAccesibilidad.innerHTML += '<details><summary><h3 data-key="adjustText">Ajustar Texto</h3></summary>' +
+      '<div><label class="menu-label" for="tamanoFuenteSlider" data-key="fontSize">Tamaño de letra:</label><input type="range" id="tamanoFuenteSlider" class="txt-slider" min="12" max="30" value="16"></div>' +
+      '<div><label class="menu-label" for="espaciadoLineasSlider" data-key="lineSpacing">Espaciado entre líneas:</label><input type="range" id="espaciadoLineasSlider" class="txt-slider" min="1" max="3" value="1.6" step="0.1"></div>' +
+      '<div><label class="menu-label" for="espaciadoPalabrasSlider" data-key="wordSpacing">Espaciado entre palabras:</label><input type="range" id="espaciadoPalabrasSlider" class="txt-slider" min="0" max="20" value="0"></div>' +
+      '<div><label class="menu-label" for="espaciadoLetrasSlider" data-key="letterSpacing">Espaciado entre letras:</label><input type="range" id="espaciadoLetrasSlider" class="txt-slider" min="0" max="5" value="0"></div></details>' +
+      '<details><summary><h3 data-key="adjustCursor">Ajustar Cursor</h3></summary><button id="btnCursorNegroGrande" class="btn-cursor" data-key="cursorBlackLarge">Cursor Negro y Grande</button></details>' +
+      '<details><summary><h3 data-key="stylizeButtons">Estilizar Botones</h3></summary><button id="btnEstilizarBotones" class="btn-cursor" data-key="activateButtonStyle">Activar Estilo de Botones</button></details>' +
+      '<details><summary><h3 data-key="readingGuide">Guía de Lectura</h3></summary><button id="btnGuiaLecturaNegra" class="btn-otros-black" data-key="activateBlackReadingGuide">Activar Guía de Lectura Negra</button><div id="guiaLecturaNegra"></div>' +
+      '<button id="btnGuiaLecturaBlanca" class="btn-otros" data-key="activateWhiteReadingGuide">Activar Guía de Lectura Blanca</button><div id="guiaLecturaBlanca"></div></details>' +
+      '<details><summary><h3 data-key="textReader">Lector de Texto</h3></summary><select id="voiceSelect" class="select-voice"></select><button id="btnLector" class="btn-otros" data-key="activateTextReader">Activar Lector de Texto</button></details>';
 
 
     function populateVoiceList() {
@@ -460,7 +463,7 @@
         lecturaEnVozAltaActivada = true;
         btnLector.style.backgroundColor = 'yellow';
         btnLector.style.fontWeight = '700';
-        btnLector.textContent = 'Activar Lector de Texto';
+        btnLector.textContent = 'Desactivar Lector de Texto';
 
         var vozSeleccionada = document.getElementById('voiceSelect').value;
         var textoParaLeer = document.body.innerText;
@@ -478,7 +481,7 @@
         lecturaEnVozAltaActivada = false;
         btnLector.style.backgroundColor = 'white';
         btnLector.style.fontWeight = '400';
-        btnLector.textContent = 'Desactivar Lector de Texto';
+        btnLector.textContent = 'Activar Lector de Texto';
 
         synth.cancel();
       }
@@ -614,6 +617,7 @@
 
         // Restablecer el color del botón
         this.style.backgroundColor = ''; // Asume blanco o color original del botón
+        this.style.fontWeight = '400';
       } else {
         console.log('Botón clickeado, cambiando cursores...');
         document.body.classList.add('custom-default-cursor');
@@ -686,16 +690,17 @@
       var elementosOcultos = false; // Variable para detectar si al menos un elemento estaba oculto
 
       document.querySelectorAll('img, svg, video, iframe').forEach(function (el) {
-        if (el.id !== 'miBotonAccesibilidad') { // Excluyendo el botón de accesibilidad
+        if (el.id !== 'miBotonAccesibilidad' && el.id !== 'img-ll' && !el.closest('#menu-accesibilidad') && el.id !== 'icono') { // Excluyendo el botón de accesibilidad
           el.style.visibility = el.style.visibility === 'hidden' ? '' : 'hidden';
           if (el.style.visibility === 'hidden') elementosOcultos = true;
         }
       });
 
       document.querySelectorAll('*').forEach(function (el) {
-        if ((el.currentStyle ? el.currentStyle.backgroundImage !== 'none' : getComputedStyle(el, null).backgroundImage !== 'none') && el.id !== 'miBotonAccesibilidad') {
-          el.style.visibility = el.style.visibility === 'hidden' ? '' : 'hidden';
-          if (el.style.visibility === 'hidden') elementosOcultos = true;
+        if ((el.currentStyle ? el.currentStyle.backgroundImage !== 'none' : getComputedStyle(el, null).backgroundImage !== 'none') &&
+            el.id !== 'miBotonAccesibilidad' && el.id !== 'img-ll' && !el.closest('#menu-accesibilidad')) {
+            el.style.visibility = el.style.visibility === 'hidden' ? '' : 'hidden';
+            if (el.style.visibility === 'hidden') elementosOcultos = true;
         }
       });
 
@@ -832,6 +837,82 @@
         }
       }
     });
+
+
+    var translations = {
+      'es': {
+        'menuTitle': 'MENÚ DE ACCESIBILIDAD',
+        'easyReading': 'Activar Lectura Fácil',
+        'adjustTextColor': 'Ajustar Colores de Texto',
+        'selectColor': 'Seleccione un color:',
+        'saturation': 'Saturación:',
+        'brightness': 'Luminosidad:',
+        'resetTextColor': 'Restablecer color del texto',
+        'adjustBackgroundColor': 'Ajustar Colores de Fondo',
+        'resetBackgroundColor': 'Restablecer color de fondo',
+        'highContrastMode': 'Modo de Alto Contraste',
+        'highContrast': 'Alto Contraste',
+        'openVirtualKeyboard': 'Abrir Teclado Virtual',
+        'hideMultimedia': 'Ocultar Multimedia',
+        'adjustText': 'Ajustar Texto',
+        'fontSize': 'Tamaño de letra:',
+        'lineSpacing': 'Espaciado entre líneas:',
+        'wordSpacing': 'Espaciado entre palabras:',
+        'letterSpacing': 'Espaciado entre letras:',
+        'adjustCursor': 'Ajustar Cursor',
+        'cursorBlackLarge': 'Cursor Negro y Grande',
+        'stylizeButtons': 'Estilizar Botones',
+        'activateButtonStyle': 'Activar Estilo de Botones',
+        'readingGuide': 'Guía de Lectura',
+        'activateBlackReadingGuide': 'Activar Guía de Lectura Negra',
+        'activateWhiteReadingGuide': 'Activar Guía de Lectura Blanca',
+        'textReader': 'Lector de Texto',
+        'activateTextReader': 'Activar Lector de Texto'
+      },
+      'en': {
+        'menuTitle': 'ACCESSIBILITY MENU',
+        'easyReading': 'Activate Easy Reading',
+        'adjustTextColor': 'Adjust Text Colors',
+        'selectColor': 'Select a color:',
+        'saturation': 'Saturation:',
+        'brightness': 'Brightness:',
+        'resetTextColor': 'Reset text color',
+        'adjustBackgroundColor': 'Adjust Background Colors',
+        'resetBackgroundColor': 'Reset background color',
+        'highContrastMode': 'High Contrast Mode',
+        'highContrast': 'High Contrast',
+        'openVirtualKeyboard': 'Open Virtual Keyboard',
+        'hideMultimedia': 'Hide Multimedia',
+        'adjustText': 'Adjust Text',
+        'fontSize': 'Font Size:',
+        'lineSpacing': 'Line Spacing:',
+        'wordSpacing': 'Word Spacing:',
+        'letterSpacing': 'Letter Spacing:',
+        'adjustCursor': 'Adjust Cursor',
+        'cursorBlackLarge': 'Black and Large Cursor',
+        'stylizeButtons': 'Stylize Buttons',
+        'activateButtonStyle': 'Activate Button Style',
+        'readingGuide': 'Reading Guide',
+        'activateBlackReadingGuide': 'Activate Black Reading Guide',
+        'activateWhiteReadingGuide': 'Activate White Reading Guide',
+        'textReader': 'Text Reader',
+        'activateTextReader': 'Activate Text Reader'
+      }
+    };
+
+    // Evento para el selector de idioma
+    document.getElementById('language-selector').addEventListener('change', function (event) {
+      changeLanguage(event.target.value);
+    });
+
+    // Función para cambiar el idioma de los textos del menú de accesibilidad
+    function changeLanguage(lang) {
+      var elements = document.querySelectorAll('#menu-accesibilidad [data-key]');
+      elements.forEach(function (el) {
+        var key = el.getAttribute('data-key');
+        el.textContent = translations[lang][key] || el.textContent;
+      });
+    }
 
 
     //añadir ARIA (agrega información semántica a los elementos de un sitio web proporcionando ayuda adicional como dictados por voz y guías auditivas)
