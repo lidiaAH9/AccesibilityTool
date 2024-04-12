@@ -139,16 +139,19 @@
             dragElement(keyboardContainer);
             // Actualizar el texto y el fondo del botón cuando se crea el teclado por primera vez
             btnTeclado.style.background = 'yellow';
+            btnTeclado.style.fontWeight = '700';
             btnTeclado.textContent = 'Cerrar Teclado Virtual';
           } else {
             // Alternar la visibilidad del teclado
             if (keyboardContainer.style.display === 'none') {
               keyboardContainer.style.display = 'block';
               btnTeclado.style.background = 'yellow';
+              btnTeclado.style.fontWeight = '700';
               btnTeclado.textContent = 'Cerrar Teclado Virtual';
             } else {
               keyboardContainer.style.display = 'none';
               btnTeclado.style.background = 'white';
+              btnTeclado.style.fontWeight = '400';
               btnTeclado.textContent = 'Abrir Teclado Virtual';
             }
           }
@@ -338,10 +341,12 @@
       if (modoAltoContrasteActivado) {
         btnToggleAltoContraste.dataset.altoContraste = 'false';
         btnToggleAltoContraste.style.backgroundColor = 'white';
+        btnToggleAltoContraste.style.fontWeight = '400';
         btnToggleAltoContraste.textContent = 'Activar Alto Contraste';
       } else {
         btnToggleAltoContraste.dataset.altoContraste = 'true';
         btnToggleAltoContraste.style.backgroundColor = 'yellow';
+        btnToggleAltoContraste.style.fontWeight = '700';
         btnToggleAltoContraste.textContent = 'Desactivar Alto Contraste';
       }
     }
@@ -549,6 +554,7 @@
 
         // Cambiar el color del botón a amarillo
         this.style.backgroundColor = 'yellow';
+        this.style.fontWeight = '700';
         this.textContent = 'Desactivar Cursor';
       }
     });
@@ -562,6 +568,7 @@
 
       if (body.classList.contains('textoArial')) {
         btnLecturaFacil.style.backgroundColor = 'white';
+        btnLecturaFacil.style.fontWeight = '400';
         btnLecturaFacil.textContent = 'Activar Lectura Fácil';
         body.classList.remove('textoArial');
 
@@ -577,6 +584,7 @@
         estilosOriginales.clear();
       } else {
         btnLecturaFacil.style.backgroundColor = 'yellow';
+        btnLecturaFacil.style.fontWeight = '700';
         btnLecturaFacil.textContent = 'Desactivar Lectura Fácil';
         body.classList.add('textoArial');
 
@@ -621,9 +629,11 @@
       var boton = document.getElementById('ocultarImg');
       if (elementosOcultos) {
         boton.style.backgroundColor = 'yellow';
+        boton.style.fontWeight = '700';
         boton.textContent = 'Mostrar Multimedia';
       } else {
         boton.style.backgroundColor = 'white';
+        boton.style.fontWeight = '400';
         boton.textContent = 'Ocultar Multimedia';
       }
     }
@@ -656,10 +666,12 @@
       var btnActivacion = document.getElementById('btnEstilizarBotones');
       if (estiloAplicado) {
         btnActivacion.style.backgroundColor = 'white';
+        btnActivacion.style.fontWeight = '400';
         btnActivacion.textContent = 'Activar Estilo de Botones';
         btnActivacion.dataset.estiloAplicado = 'false';
       } else {
         btnActivacion.style.backgroundColor = 'yellow';
+        btnActivacion.style.fontWeight = '700';
         btnActivacion.textContent = 'Desactivar Estilo de Botones';
         btnActivacion.dataset.estiloAplicado = 'true';
       }
@@ -675,13 +687,15 @@
 
       // Verificar si la guía está visible
       if (guia.style.display === 'block') {
-        guia.style.display = 'none'; // Ocultar guía
-        btn.style.backgroundColor = 'white'; // Botón a blanco
+        guia.style.display = 'none'; 
+        btn.style.backgroundColor = 'white'; 
+        btn.style.fontWeight = '400';
         btn.textContent = 'Activar Guía de Lectura Negra';
         document.removeEventListener('mousemove', moverGuiaConRatonNegra);
       } else {
-        guia.style.display = 'block'; // Mostrar guía
-        btn.style.backgroundColor = 'yellow'; // Botón a amarillo
+        guia.style.display = 'block'; 
+        btn.style.backgroundColor = 'yellow'; 
+        btn.style.fontWeight = '700';
         btn.textContent = 'Desactivar Guía de Lectura Negra';
         document.addEventListener('mousemove', moverGuiaConRatonNegra);
       }
@@ -713,13 +727,15 @@
 
       // Verificar si la guía está visible
       if (guia.style.display === 'block') {
-        guia.style.display = 'none'; // Ocultar guía
-        btn.style.backgroundColor = 'white'; // Botón a blanco
+        guia.style.display = 'none'; 
+        btn.style.backgroundColor = 'white'; 
+        btn.style.fontWeight = '400';
         btn.textContent = 'Activar Guía de Lectura Blanca';
         document.removeEventListener('mousemove', moverGuiaConRatonBlanca);
       } else {
-        guia.style.display = 'block'; // Mostrar guía
-        btn.style.backgroundColor = 'yellow'; // Botón a amarillo
+        guia.style.display = 'block'; 
+        btn.style.backgroundColor = 'yellow'; 
+        btn.style.fontWeight = '700';
         btn.textContent = 'Desactivar Guía de Lectura Blanca';
         document.addEventListener('mousemove', moverGuiaConRatonBlanca);
       }
