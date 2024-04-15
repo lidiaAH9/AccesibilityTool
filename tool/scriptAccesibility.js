@@ -413,7 +413,7 @@
       '<details><summary><h3 data-key="stylizeButtons">Estilizar Botones</h3></summary><button id="btnEstilizarBotones" class="btn-cursor" data-key="activateButtonStyle">Activar Estilo de Botones</button></details>' +
       '<details><summary><h3 data-key="readingGuide">Guía de Lectura</h3></summary><button id="btnGuiaLecturaNegra" class="btn-otros-black" data-key="activateBlackReadingGuide">Activar Guía de Lectura Negra</button><div id="guiaLecturaNegra"></div>' +
       '<button id="btnGuiaLecturaBlanca" class="btn-otros" data-key="activateWhiteReadingGuide">Activar Guía de Lectura Blanca</button><div id="guiaLecturaBlanca"></div></details>' +
-      '<details><summary><h3 data-key="textReader">Lector de Texto</h3></summary><select id="voiceSelect" class="select-voice"></select><button id="btnLector" class="btn-otros" data-key="activateTextReader">Activar Lector de Texto</button></details>'+
+      '<details><summary><h3 data-key="textReader">Lector de Texto</h3></summary><select id="voiceSelect" class="select-voice"></select><button id="btnLector" class="btn-otros" data-key="activateTextReader">Activar Lector de Texto</button></details>' +
       '<details><summary><h3 data-key="subtitle">Subtítulos</h3></summary><button id="btnSubtitle" class="btn-cursor" data-key="activateSubtitle">Activar Subtítulos</button></details>';
 
 
@@ -843,44 +843,39 @@
     function activateSubtitles() {
       const lang = document.getElementById('language-selector').value;
       const btnSubtitle = document.getElementById('btnSubtitle');
-      // Determinar si los subtítulos están activados basándose en el estado del botón
       const subtitlesActivated = btnSubtitle.dataset.activated === 'true';
-      
-      // Obtener todos los iframes en el documento
-      var iframes = document.getElementsByTagName('iframe');
-    
-      // Iterar sobre cada iframe
-      for (var i = 0; i < iframes.length; i++) {
-        // Verificar si el iframe contiene un video de YouTube
-        if (iframes[i].src.includes("youtube.com/embed/")) {
-          // Determinar si debemos activar o desactivar los subtítulos
-          if (subtitlesActivated) {
-            // Desactivar los subtítulos
-            iframes[i].src = iframes[i].src.replace("&cc_load_policy=1", "").replace("?cc_load_policy=1", "");
-          } else {
-            // Activar los subtítulos
-            iframes[i].src += (iframes[i].src.includes('?') ? "&" : "?") + "cc_load_policy=1";
-          }
+
+      document.querySelectorAll('iframe[src*="youtube.com/embed/"]').forEach(iframe => {
+        let src = iframe.src;
+
+        // Asegurar que enablejsapi=1 está presente
+        if (!src.includes('enablejsapi=1')) {
+          src += (src.includes('?') ? '&' : '?') + 'enablejsapi=1';
         }
-      }
-    
-      // Cambiar el estado del botón y su apariencia
-      if (subtitlesActivated) {
-        btnSubtitle.dataset.activated = 'false';
-        btnSubtitle.style.backgroundColor = 'white';
-        btnSubtitle.style.fontWeight = '400';
-        btnSubtitle.textContent = translations[lang]['activateSubtitle'];
-      } else {
-        btnSubtitle.dataset.activated = 'true';
-        btnSubtitle.style.backgroundColor = 'yellow';
-        btnSubtitle.style.fontWeight = '700';
-        btnSubtitle.textContent = translations[lang]['deactivateSubtitle'];
-      }
+
+        if (subtitlesActivated) {
+          src = src.replace('&cc_load_policy=1', '').replace('?cc_load_policy=1', '');
+          btnSubtitle.dataset.activated = 'false';
+          btnSubtitle.style.backgroundColor = 'white';
+          btnSubtitle.style.fontWeight = '400';
+          btnSubtitle.textContent = translations[lang]['activateSubtitle'];
+        } else {
+          if (!src.includes('cc_load_policy=1')) {
+            src += '&cc_load_policy=1';
+          }
+          btnSubtitle.dataset.activated = 'true';
+          btnSubtitle.style.backgroundColor = 'yellow';
+          btnSubtitle.style.fontWeight = '700';
+          btnSubtitle.textContent = translations[lang]['deactivateSubtitle'];
+        }
+        console.log("URL:", src);
+        iframe.src = src;
+        console.log("URL del iframe:", iframe.src);
+      });
     }
-    
     // Asignar la función al botón de activar subtítulos
     document.getElementById('btnSubtitle').addEventListener('click', activateSubtitles);
-    
+
 
 
     var translations = {
