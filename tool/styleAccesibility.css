@@ -417,18 +417,22 @@ details[open]>summary::after {
     background: white;
     border-radius: 5px;
 }
+
 .language-selector-container:hover {
-    
+
     background: whitesmoke;
-    
+
 }
 
 
 .world-icon {
-    width: 24px; /* o el tamaño que prefieras */
-    height: 24px; /* o el tamaño que prefieras */
-    margin-right: 0.5em; /* Añade un espacio entre el icono y la etiqueta */
-  }
+    width: 24px;
+    /* o el tamaño que prefieras */
+    height: 24px;
+    /* o el tamaño que prefieras */
+    margin-right: 0.5em;
+    /* Añade un espacio entre el icono y la etiqueta */
+}
 
 .language-selector-label {
     margin-right: 10px;
@@ -452,3 +456,42 @@ details[open]>summary::after {
     background: whitesmoke;
 }
 
+
+
+/* Estilo general para todos los controles deslizantes */
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 80%;
+    height: 8px;
+    color: white;
+    background: white;
+    outline: none;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+/* Estilo del thumb (el control que se desliza) */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #908FA0;
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #908FA0;
+    cursor: pointer;
+}
+
+/* Estilo del track para Firefox */
+input[type="range"]::-moz-range-track {
+    background: #908FA0;
+    border-radius: 50%;
+    height: 8px;
+}
