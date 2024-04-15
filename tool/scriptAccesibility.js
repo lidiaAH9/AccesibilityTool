@@ -162,7 +162,7 @@
         console.log("El botón del teclado no se encontró.");
       }
     }, 0);
-    
+
 
 
     function dragElement(container) {
@@ -348,7 +348,7 @@
       btnToggleAltoContraste.style.fontWeight = modoAltoContrasteActivado ? '700' : '400';
     }
 
-  
+
     // Asegurar que el DOM se haya actualizado
     setTimeout(() => {
       // Ahora agregamos el evento al botón "Alto Contraste"
@@ -413,7 +413,8 @@
       '<details><summary><h3 data-key="stylizeButtons">Estilizar Botones</h3></summary><button id="btnEstilizarBotones" class="btn-cursor" data-key="activateButtonStyle">Activar Estilo de Botones</button></details>' +
       '<details><summary><h3 data-key="readingGuide">Guía de Lectura</h3></summary><button id="btnGuiaLecturaNegra" class="btn-otros-black" data-key="activateBlackReadingGuide">Activar Guía de Lectura Negra</button><div id="guiaLecturaNegra"></div>' +
       '<button id="btnGuiaLecturaBlanca" class="btn-otros" data-key="activateWhiteReadingGuide">Activar Guía de Lectura Blanca</button><div id="guiaLecturaBlanca"></div></details>' +
-      '<details><summary><h3 data-key="textReader">Lector de Texto</h3></summary><select id="voiceSelect" class="select-voice"></select><button id="btnLector" class="btn-otros" data-key="activateTextReader">Activar Lector de Texto</button></details>';
+      '<details><summary><h3 data-key="textReader">Lector de Texto</h3></summary><select id="voiceSelect" class="select-voice"></select><button id="btnLector" class="btn-otros" data-key="activateTextReader">Activar Lector de Texto</button></details>'+
+      '<details><summary><h3 data-key="subtitle">Subtítulos</h3></summary><button id="btnSubtitle" class="btn-cursor" data-key="activateSubtitle">Activar Subtítulos</button></details>';
 
 
     function populateVoiceList() {
@@ -612,7 +613,7 @@
 
         // Restablecer el color del botón
         this.textContent = translations[lang]['cursorBlackLarge'];
-        this.style.backgroundColor = ''; 
+        this.style.backgroundColor = '';
         this.style.fontWeight = '400';
       } else {
         console.log('Botón clickeado, cambiando cursores...');
@@ -684,7 +685,7 @@
 
 
     function ocultarImagenes() {
-      var elementosOcultos = false; 
+      var elementosOcultos = false;
       const lang = document.getElementById('language-selector').value;
       document.querySelectorAll('img, svg, video, iframe').forEach(function (el) {
         if (el.id !== 'miBotonAccesibilidad' && el.id !== 'img-ll' && !el.closest('#menu-accesibilidad') && el.id !== 'icono') { // Excluyendo el botón de accesibilidad
@@ -839,6 +840,49 @@
     });
 
 
+    function activateSubtitles() {
+      const lang = document.getElementById('language-selector').value;
+      const btnSubtitle = document.getElementById('btnSubtitle');
+      // Determinar si los subtítulos están activados basándose en el estado del botón
+      const subtitlesActivated = btnSubtitle.dataset.activated === 'true';
+      
+      // Obtener todos los iframes en el documento
+      var iframes = document.getElementsByTagName('iframe');
+    
+      // Iterar sobre cada iframe
+      for (var i = 0; i < iframes.length; i++) {
+        // Verificar si el iframe contiene un video de YouTube
+        if (iframes[i].src.includes("youtube.com/embed/")) {
+          // Determinar si debemos activar o desactivar los subtítulos
+          if (subtitlesActivated) {
+            // Desactivar los subtítulos
+            iframes[i].src = iframes[i].src.replace("&cc_load_policy=1", "").replace("?cc_load_policy=1", "");
+          } else {
+            // Activar los subtítulos
+            iframes[i].src += (iframes[i].src.includes('?') ? "&" : "?") + "cc_load_policy=1";
+          }
+        }
+      }
+    
+      // Cambiar el estado del botón y su apariencia
+      if (subtitlesActivated) {
+        btnSubtitle.dataset.activated = 'false';
+        btnSubtitle.style.backgroundColor = 'white';
+        btnSubtitle.style.fontWeight = '400';
+        btnSubtitle.textContent = translations[lang]['activateSubtitle'];
+      } else {
+        btnSubtitle.dataset.activated = 'true';
+        btnSubtitle.style.backgroundColor = 'yellow';
+        btnSubtitle.style.fontWeight = '700';
+        btnSubtitle.textContent = translations[lang]['deactivateSubtitle'];
+      }
+    }
+    
+    // Asignar la función al botón de activar subtítulos
+    document.getElementById('btnSubtitle').addEventListener('click', activateSubtitles);
+    
+
+
     var translations = {
       'es': {
         'menuTitle': 'MENÚ DE ACCESIBILIDAD',
@@ -851,6 +895,7 @@
         'adjustBackgroundColor': 'Ajustar Colores de Fondo',
         'resetBackgroundColor': 'Restablecer color de fondo',
         'highContrastMode': 'Modo de Alto Contraste',
+        'subtitle': 'Subtítulos',
         'highContrast': 'Activar Alto Contraste',
         'openVirtualKeyboard': 'Abrir Teclado Virtual',
         'hideMultimedia': 'Ocultar Multimedia',
@@ -868,6 +913,7 @@
         'activateWhiteReadingGuide': 'Activar Guía de Lectura Blanca',
         'textReader': 'Lector de Texto',
         'activateTextReader': 'Activar Lector de Texto',
+        'activateSubtitle': 'Activar Subtítulos',
         'deactivateEasyReading': 'Desactivar Lectura Fácil',
         'deactivateHighContrast': 'Desactivar Alto Contraste',
         'deactivateButtonStyle': 'Desactivar Estilo de Botones',
@@ -877,6 +923,7 @@
         'deactivateTextReader': 'Desactivar Lector de Texto',
         'deactivateBlackReadingGuide': 'Desactivar Guía de Lectura Negra',
         'deactivateWhiteReadingGuide': 'Desactivar Guía de Lectura Blanca',
+        'deactivateSubtitle': 'Desactivar Subtítulos',
       },
       'en': {
         'menuTitle': 'ACCESSIBILITY MENU',
@@ -885,6 +932,7 @@
         'selectColor': 'Select a color:',
         'saturation': 'Saturation:',
         'brightness': 'Brightness:',
+        'subtitle': 'Subtitles',
         'resetTextColor': 'Reset text color',
         'adjustBackgroundColor': 'Adjust Background Colors',
         'resetBackgroundColor': 'Reset background color',
@@ -906,6 +954,7 @@
         'activateWhiteReadingGuide': 'Activate White Reading Guide',
         'textReader': 'Text Reader',
         'activateTextReader': 'Activate Text Reader',
+        'activateSubtitle': 'Active Subtitles',
         'deactivateEasyReading': 'Disable Easy Reading',
         'deactivateHighContrast': 'Disable High Contrast',
         'deactivateButtonStyle': 'Disable Buttons Style',
@@ -915,6 +964,7 @@
         'deactivateTextReader': 'Disable Text Reader',
         'deactivateBlackReadingGuide': 'Disable Black Reading Guide',
         'deactivateWhiteReadingGuide': 'Disable White Reading Guide',
+        'deactivateSubtitle': 'Disable Subtitles'
       }
     };
 
