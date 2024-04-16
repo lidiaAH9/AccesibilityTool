@@ -414,9 +414,9 @@
       '<details><summary><h3 data-key="readingGuide">Guía de Lectura</h3></summary><button id="btnGuiaLecturaNegra" class="btn-otros-black" data-key="activateBlackReadingGuide">Activar Guía de Lectura Negra</button><div id="guiaLecturaNegra"></div>' +
       '<button id="btnGuiaLecturaBlanca" class="btn-otros" data-key="activateWhiteReadingGuide">Activar Guía de Lectura Blanca</button><div id="guiaLecturaBlanca"></div></details>' +
       '<details><summary><h3 data-key="textReader">Lector de Texto</h3></summary><select id="voiceSelect" class="select-voice"></select><button id="btnLector" class="btn-otros" data-key="activateTextReader">Activar Lector de Texto</button></details>' +
-      '<details><summary><h3 data-key="subtitle">Subtítulos</h3></summary><button id="btnSubtitle" class="btn-cursor" data-key="activateSubtitle">Activar Subtítulos</button></details>'+
+      '<details><summary><h3 data-key="subtitle">Subtítulos</h3></summary><button id="btnSubtitle" class="btn-cursor" data-key="activateSubtitle">Activar Subtítulos</button></details>' +
       '<button id="guardar" class="btn-save" data-key="save">Guardar Preferencias</button>';
-;
+    ;
 
 
     function populateVoiceList() {
@@ -772,12 +772,14 @@
         btn.style.fontWeight = '400';
         btn.textContent = translations[lang]['activateBlackReadingGuide'];
         document.removeEventListener('mousemove', moverGuiaConRatonNegra);
+        btn.dataset.active = 'false';
       } else {
         guia.style.display = 'block';
         btn.style.backgroundColor = 'yellow';
         btn.style.fontWeight = '700';
         btn.textContent = translations[lang]['deactivateBlackReadingGuide'];
         document.addEventListener('mousemove', moverGuiaConRatonNegra);
+        btn.dataset.active = 'true';
       }
     }
 
@@ -813,12 +815,14 @@
         btn.style.fontWeight = '400';
         btn.textContent = translations[lang]['activateWhiteReadingGuide'];
         document.removeEventListener('mousemove', moverGuiaConRatonBlanca);
+        btn.dataset.active = 'false';
       } else {
         guia.style.display = 'block';
         btn.style.backgroundColor = 'yellow';
         btn.style.fontWeight = '700';
         btn.textContent = translations[lang]['deactivateWhiteReadingGuide'];
         document.addEventListener('mousemove', moverGuiaConRatonBlanca);
+        btn.dataset.active = 'true';
       }
     }
 
@@ -1025,7 +1029,63 @@
     }
 
 
+    function guardarEstado() {
+      const preferencias = {
+        tecladoVirtual: document.getElementById('btnTeclado').dataset.open === 'true',
+        altoContraste: document.getElementById('toggleAltoContraste').dataset.altoContraste === 'true',
+        estilosBotones: document.getElementById('btnEstilizarBotones').dataset.estiloAplicado === 'true',
+        guiaLecturaNegra: document.getElementById('btnGuiaLecturaNegra').dataset.active === 'true',
+        guiaLecturaBlanca: document.getElementById('btnGuiaLecturaBlanca').dataset.active === 'true',
+        ocultarMultimedia: document.getElementById('ocultarImg').dataset.visible === 'true',
+        lecturaFacil: document.body.classList.contains('textoArial'),
+        cursorNegroGrande: document.body.classList.contains('custom-default-cursor'),
+        // Agrega aquí más características según sea necesario
+        
 
+      };
+
+      localStorage.setItem('preferenciasAccesibilidad', JSON.stringify(preferencias));
+      alert('Preferencias guardadas correctamente');
+      console.log('Estados guardados:', preferencias);
+    }
+
+    function cargarEstado() {
+      const preferenciasGuardadas = localStorage.getItem('preferenciasAccesibilidad');
+      if (preferenciasGuardadas) {
+        const preferencias = JSON.parse(preferenciasGuardadas);
+        console.log('Cargando estados:', preferencias);
+
+        if (preferencias.tecladoVirtual) {
+          document.getElementById('btnTeclado').click();
+        }
+        if (preferencias.altoContraste) {
+          document.getElementById('toggleAltoContraste').click();
+        }
+        if (preferencias.estilosBotones) {
+          document.getElementById('btnEstilizarBotones').click();
+        }
+        if (preferencias.guiaLecturaNegra) {
+          document.getElementById('btnGuiaLecturaNegra').click();
+        }
+        if (preferencias.guiaLecturaBlanca) {
+          document.getElementById('btnGuiaLecturaBlanca').click();
+        }
+        if (preferencias.ocultarMultimedia) {
+          document.getElementById('ocultarImg').click();
+        }
+        if (preferencias.lecturaFacil) {
+          document.getElementById('lecturaFacil').click();
+        }
+        if (preferencias.cursorNegroGrande) {
+          document.getElementById('btnCursorNegroGrande').click();
+        }
+        // Cargar más características según sea necesario
+      }
+    }
+
+    cargarEstado();
+
+    document.getElementById('guardar').addEventListener('click', guardarEstado);
 
     //añadir ARIA (agrega información semántica a los elementos de un sitio web proporcionando ayuda adicional como dictados por voz y guías auditivas)
     inicializarMejorasAccesibilidad();
