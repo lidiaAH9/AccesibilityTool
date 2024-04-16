@@ -259,6 +259,7 @@ details[open]>summary::after {
     border-radius: 5px;
     cursor: pointer;
     display: block;
+    text-align: center;
 }
 
 .btn-cursor:hover {
@@ -494,4 +495,19 @@ input[type="range"]::-moz-range-track {
     background: #908FA0;
     border-radius: 50%;
     height: 8px;
+}
+
+.btn-save {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    color: black;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    text-align: center;
+    font-weight: bold;
 }

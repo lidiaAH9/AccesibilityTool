@@ -414,7 +414,9 @@
       '<details><summary><h3 data-key="readingGuide">Guía de Lectura</h3></summary><button id="btnGuiaLecturaNegra" class="btn-otros-black" data-key="activateBlackReadingGuide">Activar Guía de Lectura Negra</button><div id="guiaLecturaNegra"></div>' +
       '<button id="btnGuiaLecturaBlanca" class="btn-otros" data-key="activateWhiteReadingGuide">Activar Guía de Lectura Blanca</button><div id="guiaLecturaBlanca"></div></details>' +
       '<details><summary><h3 data-key="textReader">Lector de Texto</h3></summary><select id="voiceSelect" class="select-voice"></select><button id="btnLector" class="btn-otros" data-key="activateTextReader">Activar Lector de Texto</button></details>' +
-      '<details><summary><h3 data-key="subtitle">Subtítulos</h3></summary><button id="btnSubtitle" class="btn-cursor" data-key="activateSubtitle">Activar Subtítulos</button></details>';
+      '<details><summary><h3 data-key="subtitle">Subtítulos</h3></summary><button id="btnSubtitle" class="btn-cursor" data-key="activateSubtitle">Activar Subtítulos</button></details>'+
+      '<button id="guardar" class="btn-save" data-key="save">Guardar Preferencias</button>';
+;
 
 
     function populateVoiceList() {
@@ -919,6 +921,7 @@
         'deactivateBlackReadingGuide': 'Desactivar Guía de Lectura Negra',
         'deactivateWhiteReadingGuide': 'Desactivar Guía de Lectura Blanca',
         'deactivateSubtitle': 'Desactivar Subtítulos',
+        'save': 'Guardar Preferencias'
       },
       'en': {
         'menuTitle': 'ACCESSIBILITY MENU',
@@ -959,7 +962,8 @@
         'deactivateTextReader': 'Disable Text Reader',
         'deactivateBlackReadingGuide': 'Disable Black Reading Guide',
         'deactivateWhiteReadingGuide': 'Disable White Reading Guide',
-        'deactivateSubtitle': 'Disable Subtitles'
+        'deactivateSubtitle': 'Disable Subtitles',
+        'save': 'Save Preferences'
       }
     };
 
