@@ -689,6 +689,7 @@
     function ocultarImagenes() {
       var elementosOcultos = false;
       const lang = document.getElementById('language-selector').value;
+      var visible = document.getElementById('ocultarImg').dataset.visible === 'true';
       document.querySelectorAll('img, svg, video, iframe').forEach(function (el) {
         if (el.id !== 'miBotonAccesibilidad' && el.id !== 'img-ll' && !el.closest('#menu-accesibilidad') && el.id !== 'icono') { // Excluyendo el botón de accesibilidad
           el.style.visibility = el.style.visibility === 'hidden' ? '' : 'hidden';
@@ -708,11 +709,13 @@
       if (elementosOcultos) {
         boton.style.backgroundColor = 'yellow';
         boton.style.fontWeight = '700';
-        boton.textContent = translations[lang]['hideMultimedia'];
+        boton.textContent = translations[lang]['showMultimedia'];
+        boton.dataset.visible = 'true';
       } else {
         boton.style.backgroundColor = 'white';
         boton.style.fontWeight = '400';
-        boton.textContent = translations[lang]['showMultimedia'];
+        boton.textContent = translations[lang]['hideMultimedia'];
+        boton.dataset.visible = 'false';
       }
     }
 
@@ -767,7 +770,7 @@
 
       // Verificar si la guía está visible
       if (guia.style.display === 'block') {
-        guia.style.display = 'none';
+      guia.style.display = 'none';
         btn.style.backgroundColor = 'white';
         btn.style.fontWeight = '400';
         btn.textContent = translations[lang]['activateBlackReadingGuide'];
