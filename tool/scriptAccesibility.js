@@ -50,6 +50,7 @@
     script.onload = function () {
       // La librería SimpleKeyboard está cargada y lista para usar
       console.log('La librería SimpleKeyboard ha sido cargada.');
+      initializeKeyboardAndEvents();
     };
 
     // Agrega el elemento script al final del body para comenzar la carga
@@ -78,124 +79,6 @@
 
     doc.body.appendChild(menuAccesibilidad);
 
-
-
-    let lastActiveInput = null;
-
-
-    // Esta función se invoca con cada cambio en el teclado virtual
-    function onKeyboardInput(input) {
-      if (lastActiveInput) {
-        lastActiveInput.value = input;
-      }
-    }
-
-    // Esta función maneja el guardado del último input activo
-    function onInputFocus(e) {
-
-      lastActiveInput = e.target;
-      myKeyboard.setInput(lastActiveInput.value);
-    }
-
-    // Inicialización del teclado virtual
-    function initializeSimpleKeyboard() {
-      dragElement(document.querySelector(".simple-keyboard"));
-      var keyboardContainer = document.querySelector(".simple-keyboard");
-      keyboardContainer.style.background = 'lightblue';
-      if (!keyboardContainer) {
-        console.error("El contenedor del teclado no fue encontrado.");
-        return;
-      }
-
-      // Configuración del teclado virtual
-      myKeyboard = new SimpleKeyboard.default({
-        onChange: onKeyboardInput,
-        theme: "simple-keyboard hg-theme-default hg-layout-default",
-        newLineOnEnter: true,
-        debug: true,
-      });
-
-      // Muestra el contenedor del teclado
-      keyboardContainer.style.display = "block";
-
-
-      // Añade el evento de enfoque a todos los campos de entrada
-      document.querySelectorAll('input').forEach(input => {
-        input.addEventListener('focus', onInputFocus);
-      });
-    }
-
-
-
-    // Espera a que todo el contenido esté listo.
-    setTimeout(function () {
-      var btnTeclado = document.getElementById("btnTeclado");
-      if (btnTeclado) {
-        btnTeclado.addEventListener('click', function () {
-          const lang = document.getElementById('language-selector').value;
-          var keyboardContainer = document.querySelector(".simple-keyboard");
-          if (!keyboardContainer) {
-            // Crear y configurar el teclado virtual si no existe
-            keyboardContainer = document.createElement('div');
-            keyboardContainer.className = 'simple-keyboard';
-            document.body.appendChild(keyboardContainer);
-            initializeSimpleKeyboard();
-            dragElement(keyboardContainer);
-            btnTeclado.dataset.open = 'true'; // Indica que el teclado está abierto
-          }
-          // Alternar la visibilidad y actualizar el estado y el texto del botón
-          if (keyboardContainer.style.display === 'none' || !keyboardContainer.style.display) {
-            keyboardContainer.style.display = 'block';
-            btnTeclado.dataset.open = 'true';
-            btnTeclado.textContent = translations[lang]['closeVirtualKeyboard'];
-            btnTeclado.style.background = 'yellow';
-            btnTeclado.style.fontWeight = '700';
-          } else {
-            keyboardContainer.style.display = 'none';
-            btnTeclado.dataset.open = 'false';
-            btnTeclado.textContent = translations[lang]['openVirtualKeyboard'];
-            btnTeclado.style.background = 'white';
-            btnTeclado.style.fontWeight = '400';
-          }
-        });
-      } else {
-        console.log("El botón del teclado no se encontró.");
-      }
-    }, 0);
-
-
-
-    function dragElement(container) {
-      let pos1 = 0,
-        pos2 = 0,
-        pos3 = 0,
-        pos4 = 0;
-      container.onpointerdown = pointerDrag;
-
-      function pointerDrag(e) {
-        e.preventDefault();
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-
-        document.onpointermove = elementDrag;
-        document.onpointerup = stopElementDrag;
-      }
-
-      function elementDrag(e) {
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-
-        container.style.top = container.offsetTop - pos2 + "px";
-        container.style.left = container.offsetLeft - pos1 + "px";
-      }
-
-      function stopElementDrag() {
-        document.onpointerup = null;
-        document.onpointermove = null;
-      }
-    }
 
 
 
@@ -604,6 +487,163 @@
     });
 
 
+    let lastActiveInput = null;
+
+
+    // Esta función se invoca con cada cambio en el teclado virtual
+    function onKeyboardInput(input) {
+      if (lastActiveInput) {
+        lastActiveInput.value = input;
+      }
+    }
+
+    // Esta función maneja el guardado del último input activo
+    function onInputFocus(e) {
+
+      lastActiveInput = e.target;
+      myKeyboard.setInput(lastActiveInput.value);
+    }
+
+    
+
+    /*Espera a que todo el contenido esté listo.
+    setTimeout(function () {
+      var btnTeclado = document.getElementById("btnTeclado");
+      if (btnTeclado) {
+        btnTeclado.addEventListener('click', function () {
+          const lang = document.getElementById('language-selector').value;
+          var keyboardContainer = document.querySelector(".simple-keyboard");
+          if (!keyboardContainer) {
+            // Crear y configurar el teclado virtual si no existe
+            keyboardContainer = document.createElement('div');
+            keyboardContainer.className = 'simple-keyboard';
+            document.body.appendChild(keyboardContainer);
+            initializeSimpleKeyboard();
+            dragElement(keyboardContainer);
+            btnTeclado.dataset.open = 'true'; // Indica que el teclado está abierto
+          }
+          // Alternar la visibilidad y actualizar el estado y el texto del botón
+          if (keyboardContainer.style.display === 'none' || !keyboardContainer.style.display) {
+            keyboardContainer.style.display = 'block';
+            btnTeclado.dataset.open = 'true';
+            btnTeclado.textContent = translations[lang]['closeVirtualKeyboard'];
+            btnTeclado.style.background = 'yellow';
+            btnTeclado.style.fontWeight = '700';
+          } else {
+            keyboardContainer.style.display = 'none';
+            btnTeclado.dataset.open = 'false';
+            btnTeclado.textContent = translations[lang]['openVirtualKeyboard'];
+            btnTeclado.style.background = 'white';
+            btnTeclado.style.fontWeight = '400';
+          }
+        });
+      } else {
+        console.log("El botón del teclado no se encontró.");
+      }
+    }, 0);*/
+
+
+
+
+    function initializeKeyboardAndEvents() {
+      var keyboardContainer = document.querySelector(".simple-keyboard");
+      var btnTeclado = document.getElementById("btnTeclado");
+  
+      // Si el contenedor del teclado no existe, créalo antes de inicializar el teclado
+      if (!keyboardContainer) {
+          keyboardContainer = document.createElement('div');
+          keyboardContainer.className = 'simple-keyboard';
+          document.body.appendChild(keyboardContainer);
+      }
+  
+      if (btnTeclado) {
+          btnTeclado.addEventListener('click', function () {
+              const lang = document.getElementById('language-selector').value;
+              toggleKeyboardVisibility(keyboardContainer, btnTeclado, lang);
+          });
+      } else {
+          console.log("El botón del teclado no se encontró.");
+      }
+  
+      // Ahora inicializa el teclado con el contenedor seguro en el DOM
+      initializeSimpleKeyboard();
+  }
+  
+  function initializeSimpleKeyboard() {
+      var keyboardContainer = document.querySelector(".simple-keyboard");
+      if (!keyboardContainer) {
+          console.error("El contenedor del teclado no fue encontrado después de la creación.");
+          return;
+      }
+     
+      keyboardContainer.style.background = 'lightblue';
+  
+      // Configuración del teclado virtual
+      myKeyboard = new SimpleKeyboard.default({
+          onChange: onKeyboardInput,
+          theme: "simple-keyboard hg-theme-default hg-layout-default",
+          newLineOnEnter: true,
+          debug: true,
+      });
+      keyboardContainer.style.display = "none";
+      dragElement(keyboardContainer);
+  
+      // Añade el evento de enfoque a todos los campos de entrada
+      document.querySelectorAll('input').forEach(input => {
+          input.addEventListener('focus', onInputFocus);
+      });
+  }
+  
+  
+  function toggleKeyboardVisibility(keyboardContainer, btnTeclado, lang) {
+      if (keyboardContainer.style.display === 'none' || !keyboardContainer.style.display) {
+          keyboardContainer.style.display = 'block';
+          btnTeclado.dataset.open = 'true';
+          btnTeclado.textContent = translations[lang]['closeVirtualKeyboard'];
+          btnTeclado.style.background = 'yellow';
+          btnTeclado.style.fontWeight = '700';
+      } else {
+          keyboardContainer.style.display = 'none';
+          btnTeclado.dataset.open = 'false';
+          btnTeclado.textContent = translations[lang]['openVirtualKeyboard'];
+          btnTeclado.style.background = 'white';
+          btnTeclado.style.fontWeight = '400';
+      }
+  }
+  
+
+    function dragElement(container) {
+      let pos1 = 0,
+        pos2 = 0,
+        pos3 = 0,
+        pos4 = 0;
+      container.onpointerdown = pointerDrag;
+
+      function pointerDrag(e) {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+
+        document.onpointermove = elementDrag;
+        document.onpointerup = stopElementDrag;
+      }
+
+      function elementDrag(e) {
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+
+        container.style.top = container.offsetTop - pos2 + "px";
+        container.style.left = container.offsetLeft - pos1 + "px";
+      }
+
+      function stopElementDrag() {
+        document.onpointerup = null;
+        document.onpointermove = null;
+      }
+    }
+
     let estilosOriginales = new Map();
 
     function actualizarEstilosTexto() {
@@ -819,7 +859,7 @@
     });
 
 
-    
+
     //Funcion para hacer la web con contraste alto
     function toggleModoAltoContraste() {
       const lang = document.getElementById('language-selector').value;
