@@ -50,10 +50,28 @@
     script.onload = function () {
       // La librería SimpleKeyboard está cargada y lista para usar
       console.log('La librería SimpleKeyboard ha sido cargada.');
+      initializeKeyboardAndEvents();
     };
 
     // Agrega el elemento script al final del body para comenzar la carga
     document.body.appendChild(script);
+
+
+    let chromaLoaded = false;
+
+    // Función para cargar Chroma.js
+    function cargarChroma() {
+      return new Promise((resolve, reject) => {
+        const scriptChroma = document.createElement('script');
+        scriptChroma.src = 'https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.1/chroma.min.js';
+        scriptChroma.onload = () => {
+          chromaLoaded = true;
+          resolve();
+        };
+        scriptChroma.onerror = reject;
+        document.head.appendChild(scriptChroma);
+      });
+    }
 
 
     menuAccesibilidad.innerHTML =
@@ -74,292 +92,27 @@
       '<details><summary><h3 id="modo-alto-contraste" data-key="highContrastMode">Modo de Alto Contraste</h3></summary>' +
       '<button id="toggleAltoContraste" class="btn-modificar" data-key="highContrast">Alto Contraste</button></details>' +
       '<details><summary><h3 data-key="openVirtualKeyboard">Abrir Teclado Virtual en Pantalla</h3></summary><button id="btnTeclado" class="btn-teclado" data-key="openVirtualKeyboard">Abrir Teclado Virtual</button></summary></details>' +
-      '<details><summary><h3 data-key="hideMultimedia">Ocultar Contenido Multimedia (imágenes/vídeos...)</h3></summary><button id="ocultarImg" class="btn-img" data-key="hideMultimedia">Ocultar Multimedia</button></summary></details>';
+      '<details><summary><h3 data-key="hideMultimedia">Ocultar Contenido Multimedia (imágenes/vídeos...)</h3></summary><button id="ocultarImg" class="btn-img" data-key="hideMultimedia">Ocultar Multimedia</button></summary></details>' +
+      '<details><summary><h3 data-key="adjustText">Ajustar Texto</h3></summary>' +
+      '<div><label class="menu-label" for="tamanoFuenteSlider" data-key="fontSize">Tamaño de letra:</label><input type="range" id="tamanoFuenteSlider" class="txt-slider" min="12" max="30" value="16"></div>' +
+      '<div><label class="menu-label" for="espaciadoLineasSlider" data-key="lineSpacing">Espaciado entre líneas:</label><input type="range" id="espaciadoLineasSlider" class="txt-slider" min="1" max="3" value="1.6" step="0.1"></div>' +
+      '<div><label class="menu-label" for="espaciadoPalabrasSlider" data-key="wordSpacing">Espaciado entre palabras:</label><input type="range" id="espaciadoPalabrasSlider" class="txt-slider" min="0" max="20" value="0"></div>' +
+      '<div><label class="menu-label" for="espaciadoLetrasSlider" data-key="letterSpacing">Espaciado entre letras:</label><input type="range" id="espaciadoLetrasSlider" class="txt-slider" min="0" max="5" value="0"></div></details>' +
+      '<details><summary><h3 data-key="adjustCursor">Ajustar Cursor</h3></summary><button id="btnCursorNegroGrande" class="btn-cursor" data-key="cursorBlackLarge">Cursor Negro y Grande</button></details>' +
+      '<details><summary><h3 data-key="stylizeButtons">Estilizar Botones</h3></summary><button id="btnEstilizarBotones" class="btn-cursor" data-key="activateButtonStyle">Activar Estilo de Botones</button></details>' +
+      '<details><summary><h3 data-key="readingGuide">Guía de Lectura</h3></summary><button id="btnGuiaLecturaNegra" class="btn-otros-black" data-key="activateBlackReadingGuide">Activar Guía de Lectura Negra</button><div id="guiaLecturaNegra"></div>' +
+      '<button id="btnGuiaLecturaBlanca" class="btn-otros" data-key="activateWhiteReadingGuide">Activar Guía de Lectura Blanca</button><div id="guiaLecturaBlanca"></div></details>' +
+      '<details><summary><h3 data-key="textReader">Lector de Texto</h3></summary><select id="voiceSelect" class="select-voice"></select><button id="btnLector" class="btn-otros" data-key="activateTextReader">Activar Lector de Texto</button></details>' +
+      '<details><summary><h3 data-key="subtitle">Subtítulos</h3></summary><button id="btnSubtitle" class="btn-cursor" data-key="activateSubtitle">Activar Subtítulos</button></details>' +
+      '<button id="guardar" class="btn-save" data-key="save">Guardar Preferencias</button>';
 
     doc.body.appendChild(menuAccesibilidad);
-
-
-
-    let lastActiveInput = null;
-
-
-    // Esta función se invoca con cada cambio en el teclado virtual
-    function onKeyboardInput(input) {
-      if (lastActiveInput) {
-        lastActiveInput.value = input;
-      }
-    }
-
-    // Esta función maneja el guardado del último input activo
-    function onInputFocus(e) {
-
-      lastActiveInput = e.target;
-      myKeyboard.setInput(lastActiveInput.value);
-    }
-
-    // Inicialización del teclado virtual
-    function initializeSimpleKeyboard() {
-      dragElement(document.querySelector(".simple-keyboard"));
-      var keyboardContainer = document.querySelector(".simple-keyboard");
-      keyboardContainer.style.background = 'lightblue';
-      if (!keyboardContainer) {
-        console.error("El contenedor del teclado no fue encontrado.");
-        return;
-      }
-
-      // Configuración del teclado virtual
-      myKeyboard = new SimpleKeyboard.default({
-        onChange: onKeyboardInput,
-        theme: "simple-keyboard hg-theme-default hg-layout-default",
-        newLineOnEnter: true,
-        debug: true,
-      });
-
-      // Muestra el contenedor del teclado
-      keyboardContainer.style.display = "block";
-
-
-      // Añade el evento de enfoque a todos los campos de entrada
-      document.querySelectorAll('input').forEach(input => {
-        input.addEventListener('focus', onInputFocus);
-      });
-    }
-
-
-
-    // Espera a que todo el contenido esté listo.
-    setTimeout(function () {
-      var btnTeclado = document.getElementById("btnTeclado");
-      if (btnTeclado) {
-        btnTeclado.addEventListener('click', function () {
-          const lang = document.getElementById('language-selector').value;
-          var keyboardContainer = document.querySelector(".simple-keyboard");
-          if (!keyboardContainer) {
-            // Crear y configurar el teclado virtual si no existe
-            keyboardContainer = document.createElement('div');
-            keyboardContainer.className = 'simple-keyboard';
-            document.body.appendChild(keyboardContainer);
-            initializeSimpleKeyboard();
-            dragElement(keyboardContainer);
-            btnTeclado.dataset.open = 'true'; // Indica que el teclado está abierto
-          }
-          // Alternar la visibilidad y actualizar el estado y el texto del botón
-          if (keyboardContainer.style.display === 'none' || !keyboardContainer.style.display) {
-            keyboardContainer.style.display = 'block';
-            btnTeclado.dataset.open = 'true';
-            btnTeclado.textContent = translations[lang]['closeVirtualKeyboard'];
-            btnTeclado.style.background = 'yellow';
-            btnTeclado.style.fontWeight = '700';
-          } else {
-            keyboardContainer.style.display = 'none';
-            btnTeclado.dataset.open = 'false';
-            btnTeclado.textContent = translations[lang]['openVirtualKeyboard'];
-            btnTeclado.style.background = 'white';
-            btnTeclado.style.fontWeight = '400';
-          }
-        });
-      } else {
-        console.log("El botón del teclado no se encontró.");
-      }
-    }, 0);
-
-
-
-    function dragElement(container) {
-      let pos1 = 0,
-        pos2 = 0,
-        pos3 = 0,
-        pos4 = 0;
-      container.onpointerdown = pointerDrag;
-
-      function pointerDrag(e) {
-        e.preventDefault();
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-
-        document.onpointermove = elementDrag;
-        document.onpointerup = stopElementDrag;
-      }
-
-      function elementDrag(e) {
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-
-        container.style.top = container.offsetTop - pos2 + "px";
-        container.style.left = container.offsetLeft - pos1 + "px";
-      }
-
-      function stopElementDrag() {
-        document.onpointerup = null;
-        document.onpointermove = null;
-      }
-    }
-
-
-
 
     // Agregar eventos al botón de accesibilidad para abrir/cerrar el menú
     btnAccesibilidad.addEventListener('click', function () {
       menuAccesibilidad.classList.toggle('open');
     });
 
-
-    // Cargar la biblioteca Chroma.js
-    const scriptChroma = doc.createElement('script');
-    scriptChroma.src = 'https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.1/chroma.min.js';
-    scriptChroma.onload = function () {
-
-      actualizarGradientes();
-      // Función para cambiar el color del texto
-      function cambiarColorTexto() {
-        const colorPickerTexto = doc.getElementById('color-picker-texto');
-        const luminosidadSliderTexto = doc.getElementById('luminosidadSliderTexto');
-        const saturacionSliderTexto = doc.getElementById('saturacionSliderTexto');
-
-        const colorTexto = chroma(colorPickerTexto.value).set('hsl.l', luminosidadSliderTexto.value / 100).set('hsl.s', saturacionSliderTexto.value / 100).hex();
-        const colorPickerTextoValue = colorPickerTexto.value;
-        const colorBaseTexto = chroma(colorPickerTextoValue);
-        const colorEndTexto = chroma('grey');
-        saturacionSliderTexto.style.background = `linear-gradient(to right, ${colorEndTexto}, ${colorBaseTexto})`;
-
-        // Seleccionar todos los elementos de texto y cambiar su color simultáneamente
-        const elementosTexto = doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
-        elementosTexto.forEach(elemento => {
-          // Verificar si el elemento está dentro del menú de accesibilidad
-          if (!elemento.closest('#menu-accesibilidad')) {
-            elemento.style.color = colorTexto;
-          }
-        });
-      }
-
-      // Función para cambiar el color de fondo
-      function cambiarColorFondo() {
-        const colorPickerFondo = doc.getElementById('color-picker-fondo');
-        const luminosidadSliderFondo = doc.getElementById('luminosidadSliderFondo');
-        const saturacionSliderFondo = doc.getElementById('saturacionSliderFondo');
-
-        const colorFondo = chroma(colorPickerFondo.value).set('hsl.l', luminosidadSliderFondo.value / 100).set('hsl.s', saturacionSliderFondo.value / 100).hex();
-        const colorPickerFondoValue = colorPickerFondo.value;
-        const colorBaseFondo = chroma(colorPickerFondoValue);
-        const colorEndFondo = chroma('grey');
-        saturacionSliderFondo.style.background = `linear-gradient(to right, ${colorEndFondo}, ${colorBaseFondo})`;
-
-        // Seleccionar todos los elementos de texto y cambiar su color simultáneamente
-        const elementosTexto = doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
-        elementosTexto.forEach(elemento => {
-          // Verificar si el elemento está dentro del menú de accesibilidad
-          if (!elemento.closest('#menu-accesibilidad')) {
-            elemento.style.backgroundColor = colorFondo;
-          }
-        });
-      }
-
-      function actualizarGradientes() {
-        const colorPickerTexto = doc.getElementById('color-picker-texto');
-        const colorPickerFondo = doc.getElementById('color-picker-fondo');
-        const saturacionSliderTexto = doc.getElementById('saturacionSliderTexto');
-        const saturacionSliderFondo = doc.getElementById('saturacionSliderFondo');
-
-        const colorBaseTexto = chroma(colorPickerTexto.value);
-        const colorBaseFondo = chroma(colorPickerFondo.value);
-        const colorEnd = chroma('grey');
-
-        saturacionSliderTexto.style.background = `linear-gradient(to right, ${colorEnd}, ${colorBaseTexto})`;
-        saturacionSliderFondo.style.background = `linear-gradient(to right, ${colorEnd}, ${colorBaseFondo})`;
-      }
-
-      // Eventos para cambiar el color de texto cuando se interactúa con los controles
-      doc.getElementById('color-picker-texto').addEventListener('input', cambiarColorTexto);
-      doc.getElementById('luminosidadSliderTexto').addEventListener('input', cambiarColorTexto);
-      doc.getElementById('saturacionSliderTexto').addEventListener('input', cambiarColorTexto);
-
-      doc.getElementById('color-picker-fondo').addEventListener('input', cambiarColorFondo);
-      doc.getElementById('luminosidadSliderFondo').addEventListener('input', cambiarColorFondo);
-      doc.getElementById('saturacionSliderFondo').addEventListener('input', cambiarColorFondo);
-
-
-      // Evento para restablecer los cambios de color del texto
-      doc.getElementById('restablecerCambiosTexto').addEventListener('click', function () {
-        // Restablecer los valores predeterminados del color del texto
-        const elementosTexto = doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
-        elementosTexto.forEach(elemento => {
-          elemento.style.color = ''; // Restablecer el color a su valor predeterminado
-        });
-        doc.getElementById('color-picker-texto').value = '#000000';
-        doc.getElementById('luminosidadSliderTexto').value = '50';
-        doc.getElementById('saturacionSliderTexto').value = '50';
-        actualizarGradientes();
-      });
-
-      // Evento para restablecer los cambios de color de fondo
-      doc.getElementById('restablecerCambiosFondo').addEventListener('click', function () {
-        // Restablecer los valores predeterminados del color de fondo
-        const elementosFondo = doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
-        elementosFondo.forEach(elemento => {
-          elemento.style.backgroundColor = ''; // Restablecer el color de fondo a su valor predeterminado
-        });
-        doc.getElementById('color-picker-texto').value = '#000000';
-        doc.getElementById('luminosidadSliderFondo').value = '50';
-        doc.getElementById('saturacionSliderFondo').value = '50';
-        actualizarGradientes();
-
-      });
-    };
-
-    // Agregar el script de Chroma.js al documento
-    doc.head.appendChild(scriptChroma);
-
-
-
-    //Funcion para hacer la web con contraste alto
-    function toggleModoAltoContraste() {
-      const lang = document.getElementById('language-selector').value;
-      const btnToggleAltoContraste = document.getElementById('toggleAltoContraste');
-      const elementos = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
-      let modoAltoContrasteActivado = btnToggleAltoContraste.dataset.altoContraste === 'true';
-
-      elementos.forEach(elemento => {
-        if (!elemento.closest('#menu-accesibilidad')) {
-          if (modoAltoContrasteActivado) {
-            // Restablecer estilos para el modo normal
-            elemento.style.backgroundColor = '';
-            elemento.style.color = '';
-            elemento.style.borderColor = '';
-            elemento.dataset.altoContraste = 'false';
-          } else {
-            // Aplicar estilos de alto contraste
-            elemento.style.backgroundColor = 'black';
-            elemento.style.color = 'white';
-            elemento.style.borderColor = 'white';
-            if (elemento.tagName === 'A') {
-              elemento.style.color = 'yellow';
-            }
-            elemento.dataset.altoContraste = 'true';
-          }
-        }
-      });
-
-      modoAltoContrasteActivado = !modoAltoContrasteActivado; // Cambiar el estado
-      btnToggleAltoContraste.dataset.altoContraste = modoAltoContrasteActivado ? 'true' : 'false';
-      btnToggleAltoContraste.textContent = modoAltoContrasteActivado ? translations[lang]['deactivateHighContrast'] : translations[lang]['highContrast'];
-      btnToggleAltoContraste.style.backgroundColor = modoAltoContrasteActivado ? 'yellow' : 'white';
-      btnToggleAltoContraste.style.fontWeight = modoAltoContrasteActivado ? '700' : '400';
-    }
-
-
-    // Asegurar que el DOM se haya actualizado
-    setTimeout(() => {
-      // Ahora agregamos el evento al botón "Alto Contraste"
-      const btnToggleAltoContraste = document.getElementById('toggleAltoContraste');
-      if (btnToggleAltoContraste) {
-        btnToggleAltoContraste.addEventListener('click', toggleModoAltoContraste);
-      } else {
-        console.error('El botón de Alto Contraste no se encontró.');
-      }
-
-    }, 0);
 
 
 
@@ -371,6 +124,7 @@
           elemento.style.fontSize = valor + 'px';
         }
       });
+      document.getElementById('tamanoFuenteSlider').dataset.tamanoFuente = valor;
     }
 
     // Función para cambiar el espaciado entre líneas
@@ -381,6 +135,7 @@
           elemento.style.lineHeight = valor;
         }
       });
+      document.getElementById('espaciadoLineasSlider').dataset.espaciadoLineas = valor;
     }
 
     // Función para cambiar el espaciado entre palabras
@@ -391,6 +146,7 @@
           elemento.style.wordSpacing = valor + 'px';
         }
       });
+      document.getElementById('espaciadoPalabrasSlider').dataset.espaciadoPalabras = valor;
     }
 
     // Función para cambiar el espaciado entre letras
@@ -401,94 +157,8 @@
           elemento.style.letterSpacing = valor + 'px';
         }
       });
+      document.getElementById('espaciadoLetrasSlider').dataset.espaciadoLetras = valor;
     }
-
-    // Añadir los controles de accesibilidad para el tamaño de la letra y el espaciado
-    menuAccesibilidad.innerHTML += '<details><summary><h3 data-key="adjustText">Ajustar Texto</h3></summary>' +
-      '<div><label class="menu-label" for="tamanoFuenteSlider" data-key="fontSize">Tamaño de letra:</label><input type="range" id="tamanoFuenteSlider" class="txt-slider" min="12" max="30" value="16"></div>' +
-      '<div><label class="menu-label" for="espaciadoLineasSlider" data-key="lineSpacing">Espaciado entre líneas:</label><input type="range" id="espaciadoLineasSlider" class="txt-slider" min="1" max="3" value="1.6" step="0.1"></div>' +
-      '<div><label class="menu-label" for="espaciadoPalabrasSlider" data-key="wordSpacing">Espaciado entre palabras:</label><input type="range" id="espaciadoPalabrasSlider" class="txt-slider" min="0" max="20" value="0"></div>' +
-      '<div><label class="menu-label" for="espaciadoLetrasSlider" data-key="letterSpacing">Espaciado entre letras:</label><input type="range" id="espaciadoLetrasSlider" class="txt-slider" min="0" max="5" value="0"></div></details>' +
-      '<details><summary><h3 data-key="adjustCursor">Ajustar Cursor</h3></summary><button id="btnCursorNegroGrande" class="btn-cursor" data-key="cursorBlackLarge">Cursor Negro y Grande</button></details>' +
-      '<details><summary><h3 data-key="stylizeButtons">Estilizar Botones</h3></summary><button id="btnEstilizarBotones" class="btn-cursor" data-key="activateButtonStyle">Activar Estilo de Botones</button></details>' +
-      '<details><summary><h3 data-key="readingGuide">Guía de Lectura</h3></summary><button id="btnGuiaLecturaNegra" class="btn-otros-black" data-key="activateBlackReadingGuide">Activar Guía de Lectura Negra</button><div id="guiaLecturaNegra"></div>' +
-      '<button id="btnGuiaLecturaBlanca" class="btn-otros" data-key="activateWhiteReadingGuide">Activar Guía de Lectura Blanca</button><div id="guiaLecturaBlanca"></div></details>' +
-      '<details><summary><h3 data-key="textReader">Lector de Texto</h3></summary><select id="voiceSelect" class="select-voice"></select><button id="btnLector" class="btn-otros" data-key="activateTextReader">Activar Lector de Texto</button></details>' +
-      '<details><summary><h3 data-key="subtitle">Subtítulos</h3></summary><button id="btnSubtitle" class="btn-cursor" data-key="activateSubtitle">Activar Subtítulos</button></details>';
-
-
-    function populateVoiceList() {
-      if (typeof speechSynthesis === "undefined") {
-        return;
-      }
-
-      const voices = speechSynthesis.getVoices();
-
-      for (let i = 0; i < voices.length; i++) {
-        const option = document.createElement("option");
-        option.textContent = `${voices[i].name} (${voices[i].lang})`;
-
-        if (voices[i].default) {
-          option.textContent += " — DEFAULT";
-        }
-
-        option.setAttribute("data-lang", voices[i].lang);
-        option.setAttribute("data-name", voices[i].name);
-        document.getElementById("voiceSelect").appendChild(option);
-      }
-    }
-
-    populateVoiceList();
-    if (
-      typeof speechSynthesis !== "undefined" &&
-      speechSynthesis.onvoiceschanged !== undefined
-    ) {
-      speechSynthesis.onvoiceschanged = populateVoiceList;
-    }
-
-
-    var lecturaEnVozAltaActivada = false;
-    var synth = window.speechSynthesis;
-
-
-    // Función para leer en voz alta
-    function leerEnVozAlta() {
-      var btnLector = document.getElementById('btnLector');
-      const lang = document.getElementById('language-selector').value;
-      if (!lecturaEnVozAltaActivada) {
-        lecturaEnVozAltaActivada = true;
-        btnLector.style.backgroundColor = 'yellow';
-        btnLector.style.fontWeight = '700';
-        btnLector.textContent = translations[lang]['deactivateTextReader'];
-
-        var vozSeleccionada = document.getElementById('voiceSelect').value;
-        var textoParaLeer = document.body.innerText;
-        var utterThis = new SpeechSynthesisUtterance(textoParaLeer);
-
-        // Seleccionar la voz según la opción del menú desplegable
-        var voices = synth.getVoices();
-        var selectedVoice = voices.find(v => `${v.name} (${v.lang})` === vozSeleccionada);
-        if (selectedVoice) {
-          utterThis.voice = selectedVoice;
-        }
-
-        synth.speak(utterThis);
-      } else {
-        lecturaEnVozAltaActivada = false;
-        btnLector.style.backgroundColor = 'white';
-        btnLector.style.fontWeight = '400';
-        btnLector.textContent = translations[lang]['activateTextReader'];
-
-        synth.cancel();
-      }
-    }
-
-    populateVoiceList();
-
-    document.getElementById('btnLector').addEventListener('click', leerEnVozAlta);
-
-
-
 
 
     // Eventos para cambiar el tamaño de la letra y el espaciado cuando se interactúa con los controles
@@ -507,6 +177,95 @@
     document.getElementById('espaciadoLetrasSlider').addEventListener('input', function (event) {
       cambiarEspaciadoLetras(event.target.value);
     });
+
+
+
+
+    function populateVoiceList() {
+      if (typeof speechSynthesis === "undefined" || !speechSynthesis.getVoices) {
+        console.error('La síntesis de voz no está disponible.');
+        return;
+      }
+
+      // Esperar un breve momento para que las voces estén disponibles
+      setTimeout(() => {
+        const voices = speechSynthesis.getVoices();
+        if (!voices || voices.length === 0) {
+          console.warn('No se han encontrado voces disponibles.');
+          return;
+        }
+
+        const voiceSelect = document.getElementById("voiceSelect");
+        voiceSelect.innerHTML = ''; // Limpiar opciones anteriores
+        for (let i = 0; i < voices.length; i++) {
+          const option = document.createElement("option");
+          option.textContent = `${voices[i].name} (${voices[i].lang})`;
+
+          if (voices[i].default) {
+            option.textContent += " — DEFAULT";
+          }
+
+          option.setAttribute("data-lang", voices[i].lang);
+          option.setAttribute("data-name", voices[i].name);
+          voiceSelect.appendChild(option);
+        }
+      }, 100);
+    }
+
+    if (typeof speechSynthesis !== "undefined" && speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = populateVoiceList;
+    }
+
+    var synth = window.speechSynthesis;
+
+    // Función para iniciar la lectura desde el principio
+    function iniciarLectura() {
+      const vozSeleccionada = document.getElementById('voiceSelect').value;
+      const textoParaLeer = document.body.innerText;
+      const utterThis = new SpeechSynthesisUtterance(textoParaLeer);
+
+      // Seleccionar la voz según la opción del menú desplegable
+      const voices = synth.getVoices();
+      const selectedVoice = voices.find(v => `${v.name} (${v.lang})` === vozSeleccionada);
+      if (selectedVoice) {
+        utterThis.voice = selectedVoice;
+        console.log(selectedVoice.name);
+      }
+
+      // Detener cualquier lectura previa y empezar desde el principio
+      synth.cancel();
+      synth.speak(utterThis);
+
+    }
+
+
+    // Función para activar/desactivar el lector de texto en voz alta
+    function leerEnVozAlta() {
+      const btnLector = document.getElementById('btnLector');
+      const lang = document.getElementById('language-selector').value;
+      const lecturaEnVozAltaActivada = btnLector.dataset.lecturaEnVozAltaActivada === 'true';
+
+      if (!lecturaEnVozAltaActivada) {
+        btnLector.style.backgroundColor = 'yellow';
+        btnLector.style.fontWeight = '700';
+        btnLector.textContent = translations[lang]['deactivateTextReader'];
+
+        iniciarLectura(); // Iniciar la lectura desde el principio
+        btnLector.dataset.lecturaEnVozAltaActivada = 'true';
+      } else {
+        btnLector.style.backgroundColor = 'white';
+        btnLector.style.fontWeight = '400';
+        btnLector.textContent = translations[lang]['activateTextReader'];
+
+        synth.cancel(); // Detener la lectura
+        btnLector.dataset.lecturaEnVozAltaActivada = 'false';
+      }
+    }
+
+    populateVoiceList();
+
+    document.getElementById('btnLector').addEventListener('click', leerEnVozAlta);
+
 
 
     function inicializarMejorasAccesibilidad() {
@@ -615,6 +374,7 @@
         this.textContent = translations[lang]['cursorBlackLarge'];
         this.style.backgroundColor = '';
         this.style.fontWeight = '400';
+        this.dataset.cursorActivo = 'false';
       } else {
         console.log('Botón clickeado, cambiando cursores...');
         document.body.classList.add('custom-default-cursor');
@@ -630,9 +390,127 @@
         this.style.backgroundColor = 'yellow';
         this.style.fontWeight = '700';
         this.textContent = translations[lang]['deactivateCursor'];
+        this.dataset.cursorActivo = 'true';
       }
     });
 
+
+    let lastActiveInput = null;
+
+
+    // Esta función se invoca con cada cambio en el teclado virtual
+    function onKeyboardInput(input) {
+      if (lastActiveInput) {
+        lastActiveInput.value = input;
+      }
+    }
+
+    // Esta función maneja el guardado del último input activo
+    function onInputFocus(e) {
+
+      lastActiveInput = e.target;
+      myKeyboard.setInput(lastActiveInput.value);
+    }
+
+
+    function initializeKeyboardAndEvents() {
+      var keyboardContainer = document.querySelector(".simple-keyboard");
+      var btnTeclado = document.getElementById("btnTeclado");
+
+      // Si el contenedor del teclado no existe, créalo antes de inicializar el teclado
+      if (!keyboardContainer) {
+        keyboardContainer = document.createElement('div');
+        keyboardContainer.className = 'simple-keyboard';
+        document.body.appendChild(keyboardContainer);
+      }
+
+      if (btnTeclado) {
+        btnTeclado.addEventListener('click', function () {
+          const lang = document.getElementById('language-selector').value;
+          toggleKeyboardVisibility(keyboardContainer, btnTeclado, lang);
+        });
+      } else {
+        console.log("El botón del teclado no se encontró.");
+      }
+
+      // Ahora inicializa el teclado con el contenedor seguro en el DOM
+      initializeSimpleKeyboard();
+    }
+
+    function initializeSimpleKeyboard() {
+      var keyboardContainer = document.querySelector(".simple-keyboard");
+      if (!keyboardContainer) {
+        console.error("El contenedor del teclado no fue encontrado después de la creación.");
+        return;
+      }
+
+      // Configuración del teclado virtual
+      myKeyboard = new SimpleKeyboard.default({
+        onChange: onKeyboardInput,
+        theme: "simple-keyboard hg-theme-default my-theme",
+        newLineOnEnter: true,
+        debug: true,
+      });
+      keyboardContainer.style.display = "none";
+      dragElement(keyboardContainer);
+
+      // Añade el evento de enfoque a todos los campos de entrada
+      document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('focus', onInputFocus);
+      });
+
+      cargarYUsarChroma();
+    }
+
+
+    function toggleKeyboardVisibility(keyboardContainer, btnTeclado, lang) {
+      if (keyboardContainer.style.display === 'none' || !keyboardContainer.style.display) {
+        keyboardContainer.style.display = 'block';
+        btnTeclado.textContent = translations[lang]['closeVirtualKeyboard'];
+        btnTeclado.style.background = 'yellow';
+        btnTeclado.style.fontWeight = '700';
+        btnTeclado.dataset.open = 'true';
+      } else {
+        keyboardContainer.style.display = 'none';
+        btnTeclado.textContent = translations[lang]['openVirtualKeyboard'];
+        btnTeclado.style.background = 'white';
+        btnTeclado.style.fontWeight = '400';
+        btnTeclado.dataset.open = 'false';
+      }
+    }
+
+
+    function dragElement(container) {
+      let pos1 = 0,
+        pos2 = 0,
+        pos3 = 0,
+        pos4 = 0;
+      container.onpointerdown = pointerDrag;
+
+      function pointerDrag(e) {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+
+        document.onpointermove = elementDrag;
+        document.onpointerup = stopElementDrag;
+      }
+
+      function elementDrag(e) {
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+
+        container.style.top = container.offsetTop - pos2 + "px";
+        container.style.left = container.offsetLeft - pos1 + "px";
+      }
+
+      function stopElementDrag() {
+        document.onpointerup = null;
+        document.onpointermove = null;
+      }
+    }
 
     let estilosOriginales = new Map();
 
@@ -657,6 +535,7 @@
         });
 
         estilosOriginales.clear();
+        btnLecturaFacil.dataset.estiloAplicado = 'false';
       } else {
         btnLecturaFacil.style.backgroundColor = 'yellow';
         btnLecturaFacil.style.fontWeight = '700';
@@ -677,6 +556,7 @@
             elemento.style.fontSize = '16px';
           }
         });
+        btnLecturaFacil.dataset.estiloAplicado = 'true';
       }
     }
 
@@ -684,9 +564,136 @@
 
 
 
+    // Función para cambiar el color del texto
+    function cambiarColorTexto() {
+      const colorPickerTexto = doc.getElementById('color-picker-texto');
+      const luminosidadSliderTexto = doc.getElementById('luminosidadSliderTexto');
+      const saturacionSliderTexto = doc.getElementById('saturacionSliderTexto');
+
+      if (colorPickerTexto.value === '' || luminosidadSliderTexto.value === ''|| saturacionSliderTexto.value === '') {
+        return; // Salir de la función si alguno de los valores está vacío
+      }
+
+      const colorTexto = chroma(colorPickerTexto.value).set('hsl.l', luminosidadSliderTexto.value / 100).set('hsl.s', saturacionSliderTexto.value / 100).hex();
+      const colorPickerTextoValue = colorPickerTexto.value;
+      const colorBaseTexto = chroma(colorPickerTextoValue);
+      const colorEndTexto = chroma('grey');
+      saturacionSliderTexto.style.background = `linear-gradient(to right, ${colorEndTexto}, ${colorBaseTexto})`;
+
+      // Seleccionar todos los elementos de texto y cambiar su color simultáneamente
+      const elementosTexto = doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button, form, ol, ul, cite, small');
+      elementosTexto.forEach(elemento => {
+        // Verificar si el elemento está dentro del menú de accesibilidad
+        if (!elemento.closest('#menu-accesibilidad') && !elemento.closest('.simple-keyboard')) {
+          elemento.style.color = colorTexto;
+        }
+      });
+    }
+
+    // Función para cambiar el color de fondo
+    function cambiarColorFondo() {
+      const colorPickerFondo = doc.getElementById('color-picker-fondo');
+      const luminosidadSliderFondo = doc.getElementById('luminosidadSliderFondo');
+      const saturacionSliderFondo = doc.getElementById('saturacionSliderFondo');
+
+      if (colorPickerFondo.value === '' || luminosidadSliderFondo.value === '' || saturacionSliderFondo.value === '') {
+        return; // Salir de la función si alguno de los valores está vacío
+      }
+
+      const colorFondo = chroma(colorPickerFondo.value).set('hsl.l', luminosidadSliderFondo.value / 100).set('hsl.s', saturacionSliderFondo.value / 100).hex();
+      const colorPickerFondoValue = colorPickerFondo.value;
+      const colorBaseFondo = chroma(colorPickerFondoValue);
+      const colorEndFondo = chroma('grey');
+      saturacionSliderFondo.style.background = `linear-gradient(to right, ${colorEndFondo}, ${colorBaseFondo})`;
+
+      // Seleccionar todos los elementos de texto y cambiar su color simultáneamente
+      const elementosTexto = doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button, form, ol, ul, cite, small');
+      elementosTexto.forEach(elemento => {
+        // Verificar si el elemento está dentro del menú de accesibilidad
+        if (!elemento.closest('#menu-accesibilidad') && !elemento.closest('.simple-keyboard')) {
+          elemento.style.backgroundColor = colorFondo;
+        }
+      });
+    }
+
+    function actualizarGradientes() {
+      const colorPickerTexto = doc.getElementById('color-picker-texto');
+      const colorPickerFondo = doc.getElementById('color-picker-fondo');
+      const saturacionSliderTexto = doc.getElementById('saturacionSliderTexto');
+      const saturacionSliderFondo = doc.getElementById('saturacionSliderFondo');
+
+      const colorBaseTexto = chroma(colorPickerTexto.value);
+      const colorBaseFondo = chroma(colorPickerFondo.value);
+      const colorEnd = chroma('grey');
+
+      saturacionSliderTexto.style.background = `linear-gradient(to right, ${colorEnd}, ${colorBaseTexto})`;
+      saturacionSliderFondo.style.background = `linear-gradient(to right, ${colorEnd}, ${colorBaseFondo})`;
+    }
+
+
+    async function cargarYUsarChroma() {
+      try {
+        if (!chromaLoaded) {
+          await cargarChroma(); // Espera a que se cargue Chroma.js si aún no se ha cargado
+        }
+        console.log('Chroma.js ha sido cargado.');
+
+        cargarEstado();
+        actualizarGradientes();
+        // Eventos para cambiar el color de texto cuando se interactúa con los controles, etc.
+        document.getElementById('color-picker-texto').addEventListener('input', cambiarColorTexto);
+        document.getElementById('luminosidadSliderTexto').addEventListener('input', cambiarColorTexto);
+        document.getElementById('saturacionSliderTexto').addEventListener('input', cambiarColorTexto);
+
+        document.getElementById('color-picker-fondo').addEventListener('input', cambiarColorFondo);
+        document.getElementById('luminosidadSliderFondo').addEventListener('input', cambiarColorFondo);
+        document.getElementById('saturacionSliderFondo').addEventListener('input', cambiarColorFondo);
+
+        var at = document.getElementById('restablecerCambiosTexto');
+        // Evento para restablecer los cambios de color del texto
+        document.getElementById('restablecerCambiosTexto').addEventListener('click', function () {
+          // Restablecer los valores predeterminados del color del texto
+          const elementosTexto = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button, form, ol, ul, cite, small');
+          elementosTexto.forEach(elemento => {
+            elemento.style.color = ''; // Restablecer el color a su valor predeterminado
+          });
+          at.dataset.active = 'true';
+          document.getElementById('color-picker-texto').value = '';
+          document.getElementById('luminosidadSliderTexto').value = '';
+          document.getElementById('saturacionSliderTexto').value = '';
+          actualizarGradientes();
+          //localStorage.setItem('textoRestablecido', 'true');
+        });
+
+        var af = document.getElementById('restablecerCambiosFondo');
+        // Evento para restablecer los cambios de color de fondo
+        document.getElementById('restablecerCambiosFondo').addEventListener('click', function () {
+          // Restablecer los valores predeterminados del color de fondo
+          const elementosFondo = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button, form, ol, ul, cite, small');
+          elementosFondo.forEach(elemento => {
+            elemento.style.backgroundColor = ''; // Restablecer el color de fondo a su valor predeterminado
+          });
+          af.dataset.active = 'true';
+          document.getElementById('color-picker-fondo').value = '';
+          document.getElementById('luminosidadSliderFondo').value = '';
+          document.getElementById('saturacionSliderFondo').value = '';
+          actualizarGradientes();
+          //localStorage.setItem('fondoRestablecido', 'true');
+        });
+      } catch (error) {
+        console.error('Error al cargar Chroma.js:', error);
+      }
+    }
+
+
+
+
+
+
     function ocultarImagenes() {
       var elementosOcultos = false;
       const lang = document.getElementById('language-selector').value;
+      var visible = document.getElementById('ocultarImg').dataset.visible === 'true';
       document.querySelectorAll('img, svg, video, iframe').forEach(function (el) {
         if (el.id !== 'miBotonAccesibilidad' && el.id !== 'img-ll' && !el.closest('#menu-accesibilidad') && el.id !== 'icono') { // Excluyendo el botón de accesibilidad
           el.style.visibility = el.style.visibility === 'hidden' ? '' : 'hidden';
@@ -706,11 +713,13 @@
       if (elementosOcultos) {
         boton.style.backgroundColor = 'yellow';
         boton.style.fontWeight = '700';
-        boton.textContent = translations[lang]['hideMultimedia'];
+        boton.textContent = translations[lang]['showMultimedia'];
+        boton.dataset.visible = 'true';
       } else {
         boton.style.backgroundColor = 'white';
         boton.style.fontWeight = '400';
-        boton.textContent = translations[lang]['showMultimedia'];
+        boton.textContent = translations[lang]['hideMultimedia'];
+        boton.dataset.visible = 'false';
       }
     }
 
@@ -770,12 +779,14 @@
         btn.style.fontWeight = '400';
         btn.textContent = translations[lang]['activateBlackReadingGuide'];
         document.removeEventListener('mousemove', moverGuiaConRatonNegra);
+        btn.dataset.active = 'false';
       } else {
         guia.style.display = 'block';
         btn.style.backgroundColor = 'yellow';
         btn.style.fontWeight = '700';
         btn.textContent = translations[lang]['deactivateBlackReadingGuide'];
         document.addEventListener('mousemove', moverGuiaConRatonNegra);
+        btn.dataset.active = 'true';
       }
     }
 
@@ -811,12 +822,14 @@
         btn.style.fontWeight = '400';
         btn.textContent = translations[lang]['activateWhiteReadingGuide'];
         document.removeEventListener('mousemove', moverGuiaConRatonBlanca);
+        btn.dataset.active = 'false';
       } else {
         guia.style.display = 'block';
         btn.style.backgroundColor = 'yellow';
         btn.style.fontWeight = '700';
         btn.textContent = translations[lang]['deactivateWhiteReadingGuide'];
         document.addEventListener('mousemove', moverGuiaConRatonBlanca);
+        btn.dataset.active = 'true';
       }
     }
 
@@ -838,6 +851,46 @@
         }
       }
     });
+
+
+
+    //Funcion para hacer la web con contraste alto
+    function toggleModoAltoContraste() {
+      const lang = document.getElementById('language-selector').value;
+      const btnToggleAltoContraste = document.getElementById('toggleAltoContraste');
+      const elementos = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
+      var modoAltoContrasteActivado = btnToggleAltoContraste.dataset.altoContraste === 'true';
+
+      elementos.forEach(elemento => {
+        if (!elemento.closest('#menu-accesibilidad')) {
+          if (modoAltoContrasteActivado) {
+            // Restablecer estilos para el modo normal
+            elemento.style.backgroundColor = '';
+            elemento.style.color = '';
+            elemento.style.borderColor = '';
+          } else {
+            // Aplicar estilos de alto contraste
+            elemento.style.backgroundColor = 'black';
+            elemento.style.color = 'white';
+            elemento.style.borderColor = 'white';
+            if (elemento.tagName === 'A') {
+              elemento.style.color = 'yellow';
+            }
+          }
+        }
+      });
+
+      modoAltoContrasteActivado = !modoAltoContrasteActivado; // Cambiar el estado
+      btnToggleAltoContraste.dataset.altoContraste = modoAltoContrasteActivado ? 'true' : 'false';
+      btnToggleAltoContraste.textContent = modoAltoContrasteActivado ? translations[lang]['deactivateHighContrast'] : translations[lang]['highContrast'];
+      btnToggleAltoContraste.style.backgroundColor = modoAltoContrasteActivado ? 'yellow' : 'white';
+      btnToggleAltoContraste.style.fontWeight = modoAltoContrasteActivado ? '700' : '400';
+    }
+
+    document.getElementById('toggleAltoContraste').addEventListener('click', toggleModoAltoContraste);
+
+
+
 
 
     function activateSubtitles() {
@@ -919,6 +972,8 @@
         'deactivateBlackReadingGuide': 'Desactivar Guía de Lectura Negra',
         'deactivateWhiteReadingGuide': 'Desactivar Guía de Lectura Blanca',
         'deactivateSubtitle': 'Desactivar Subtítulos',
+        'save': 'Guardar Preferencias',
+        'alert': 'Preferencias guardadas correctamente'
       },
       'en': {
         'menuTitle': 'ACCESSIBILITY MENU',
@@ -959,7 +1014,9 @@
         'deactivateTextReader': 'Disable Text Reader',
         'deactivateBlackReadingGuide': 'Disable Black Reading Guide',
         'deactivateWhiteReadingGuide': 'Disable White Reading Guide',
-        'deactivateSubtitle': 'Disable Subtitles'
+        'deactivateSubtitle': 'Disable Subtitles',
+        'save': 'Save Preferences',
+        'alert': 'Preferences saved successfully'
       }
     };
 
@@ -1021,7 +1078,132 @@
     }
 
 
+    function guardarEstado() {
+      const lang = document.getElementById('language-selector').value;
+      //const restablecerColorTexto = localStorage.getItem('textoRestablecido') === 'true';
+      //const restablecerColorFondo = localStorage.getItem('fondoRestablecido') === 'true';
 
+      const preferencias = {
+        tecladoVirtual: document.getElementById('btnTeclado').dataset.open === 'true',
+        altoContraste: document.getElementById('toggleAltoContraste').dataset.altoContraste === 'true',
+        estilosBotones: document.getElementById('btnEstilizarBotones').dataset.estiloAplicado === 'true',
+        guiaLecturaNegra: document.getElementById('btnGuiaLecturaNegra').dataset.active === 'true',
+        guiaLecturaBlanca: document.getElementById('btnGuiaLecturaBlanca').dataset.active === 'true',
+        ocultarMultimedia: document.getElementById('ocultarImg').dataset.visible === 'true',
+        lecturaFacil: document.getElementById('lecturaFacil').dataset.estiloAplicado === 'true',
+        cursorNegroGrande: document.getElementById('btnCursorNegroGrande').dataset.cursorActivo === 'true',
+        leerVozAlta: document.getElementById('btnLector').dataset.lecturaEnVozAltaActivada === 'true',
+        vozSeleccionada: document.getElementById('voiceSelect').value,
+        tamanoFuente: document.getElementById('tamanoFuenteSlider').dataset.tamanoFuente,
+        espaciadoLineas: document.getElementById('espaciadoLineasSlider').dataset.espaciadoLineas,
+        espaciadoPalabras: document.getElementById('espaciadoPalabrasSlider').dataset.espaciadoPalabras,
+        espaciadoLetras: document.getElementById('espaciadoLetrasSlider').dataset.espaciadoLetras,
+        colorTexto: document.getElementById('color-picker-texto').value,
+        saturacionTexto: document.getElementById('saturacionSliderTexto').value,
+        luminosidadTexto: document.getElementById('luminosidadSliderTexto').value,
+        colorFondo: document.getElementById('color-picker-fondo').value,
+        saturacionFondo: document.getElementById('saturacionSliderFondo').value,
+        luminosidadFondo: document.getElementById('luminosidadSliderFondo').value,
+        restablecerTxt: document.getElementById('restablecerCambiosTexto').dataset.active === 'true',
+        restablecerFondo: document.getElementById('restablecerCambiosFondo').dataset.active === 'true',
+      };
+
+      localStorage.setItem('preferenciasAccesibilidad', JSON.stringify(preferencias));
+      //localStorage.removeItem('textoRestablecido');
+      //localStorage.removeItem('fondoRestablecido');
+      alert(translations[lang]['alert']);
+      console.log('Estados guardados:', preferencias);
+    }
+
+    function cargarEstado() {
+      const preferenciasGuardadas = localStorage.getItem('preferenciasAccesibilidad');
+      if (preferenciasGuardadas) {
+        const preferencias = JSON.parse(preferenciasGuardadas);
+        console.log('Cargando estados:', preferencias);
+
+        // Seleccionar la voz guardada si está disponible
+        if (preferencias.vozSeleccionada) {
+          const voiceSelect = document.getElementById('voiceSelect');
+          const availableVoices = Array.from(voiceSelect.options).map(option => option.value);
+          if (availableVoices.includes(preferencias.vozSeleccionada)) {
+            voiceSelect.value = preferencias.vozSeleccionada;
+          } else {
+            console.log('La voz seleccionada no está disponible, seleccionando la voz predeterminada.');
+            // Aquí puedes elegir una voz predeterminada o simplemente dejar que el selector permanezca sin seleccionar.
+          }
+        }
+        if (preferencias.tecladoVirtual) {
+          document.getElementById('btnTeclado').click();
+        }
+        if (preferencias.altoContraste) {
+          document.getElementById('toggleAltoContraste').click();
+        }
+        if (preferencias.estilosBotones) {
+          document.getElementById('btnEstilizarBotones').click();
+        }
+        if (preferencias.guiaLecturaNegra) {
+          document.getElementById('btnGuiaLecturaNegra').click();
+        }
+        if (preferencias.guiaLecturaBlanca) {
+          document.getElementById('btnGuiaLecturaBlanca').click();
+        }
+        if (preferencias.ocultarMultimedia) {
+          document.getElementById('ocultarImg').click();
+        }
+        if (preferencias.lecturaFacil) {
+          document.getElementById('lecturaFacil').click();
+        }
+        if (preferencias.cursorNegroGrande) {
+          document.getElementById('btnCursorNegroGrande').click();
+        }
+
+        if (preferencias.leerVozAlta) {
+          document.getElementById('btnLector').click();
+
+        }
+
+        if (preferencias.tamanoFuente) {
+          document.getElementById('tamanoFuenteSlider').value = preferencias.tamanoFuente;
+          cambiarTamanoFuente(preferencias.tamanoFuente);
+        }
+
+        // Cargar y aplicar el espaciado de líneas guardado
+        if (preferencias.espaciadoLineas) {
+          document.getElementById('espaciadoLineasSlider').value = preferencias.espaciadoLineas;
+          cambiarEspaciadoLineas(preferencias.espaciadoLineas);
+        }
+
+        // Cargar y aplicar el espaciado entre palabras guardado
+        if (preferencias.espaciadoPalabras) {
+          document.getElementById('espaciadoPalabrasSlider').value = preferencias.espaciadoPalabras;
+          cambiarEspaciadoPalabras(preferencias.espaciadoPalabras);
+        }
+
+        // Cargar y aplicar el espaciado entre letras guardado
+        if (preferencias.espaciadoLetras) {
+          document.getElementById('espaciadoLetrasSlider').value = preferencias.espaciadoLetras;
+          cambiarEspaciadoLetras(preferencias.espaciadoLetras);
+        }
+        if (preferencias.restablecerTxt) {
+          document.getElementById('restablecerCambiosTexto').click();
+        }
+        if (preferencias.restablecerFondo) {
+          document.getElementById('restablecerCambiosFondo').click();
+        }
+        if (chromaLoaded) {
+          if (preferencias.colorTexto && !preferencias.restablecerTxt) {
+            document.getElementById('color-picker-texto').value = preferencias.colorTexto;
+            cambiarColorTexto();
+          }
+          if (preferencias.colorFondo && !preferencias.restablecerFondo) {
+            document.getElementById('color-picker-fondo').value = preferencias.colorFondo;
+            cambiarColorFondo();
+          }
+        }
+      }
+    }
+
+    document.getElementById('guardar').addEventListener('click', guardarEstado);
 
     //añadir ARIA (agrega información semántica a los elementos de un sitio web proporcionando ayuda adicional como dictados por voz y guías auditivas)
     inicializarMejorasAccesibilidad();
