@@ -114,119 +114,6 @@
     });
 
 
-    // Función para cambiar el color del texto
-    function cambiarColorTexto() {
-      const colorPickerTexto = doc.getElementById('color-picker-texto');
-      const luminosidadSliderTexto = doc.getElementById('luminosidadSliderTexto');
-      const saturacionSliderTexto = doc.getElementById('saturacionSliderTexto');
-
-      const colorTexto = chroma(colorPickerTexto.value).set('hsl.l', luminosidadSliderTexto.value / 100).set('hsl.s', saturacionSliderTexto.value / 100).hex();
-      const colorPickerTextoValue = colorPickerTexto.value;
-      const colorBaseTexto = chroma(colorPickerTextoValue);
-      const colorEndTexto = chroma('grey');
-      saturacionSliderTexto.style.background = `linear-gradient(to right, ${colorEndTexto}, ${colorBaseTexto})`;
-
-      // Seleccionar todos los elementos de texto y cambiar su color simultáneamente
-      const elementosTexto = doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
-      elementosTexto.forEach(elemento => {
-        // Verificar si el elemento está dentro del menú de accesibilidad
-        if (!elemento.closest('#menu-accesibilidad')) {
-          elemento.style.color = colorTexto;
-        }
-      });
-    }
-
-    // Función para cambiar el color de fondo
-    function cambiarColorFondo() {
-      const colorPickerFondo = doc.getElementById('color-picker-fondo');
-      const luminosidadSliderFondo = doc.getElementById('luminosidadSliderFondo');
-      const saturacionSliderFondo = doc.getElementById('saturacionSliderFondo');
-
-      const colorFondo = chroma(colorPickerFondo.value).set('hsl.l', luminosidadSliderFondo.value / 100).set('hsl.s', saturacionSliderFondo.value / 100).hex();
-      const colorPickerFondoValue = colorPickerFondo.value;
-      const colorBaseFondo = chroma(colorPickerFondoValue);
-      const colorEndFondo = chroma('grey');
-      saturacionSliderFondo.style.background = `linear-gradient(to right, ${colorEndFondo}, ${colorBaseFondo})`;
-
-      // Seleccionar todos los elementos de texto y cambiar su color simultáneamente
-      const elementosTexto = doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
-      elementosTexto.forEach(elemento => {
-        // Verificar si el elemento está dentro del menú de accesibilidad
-        if (!elemento.closest('#menu-accesibilidad')) {
-          elemento.style.backgroundColor = colorFondo;
-        }
-      });
-    }
-
-    function actualizarGradientes() {
-      const colorPickerTexto = doc.getElementById('color-picker-texto');
-      const colorPickerFondo = doc.getElementById('color-picker-fondo');
-      const saturacionSliderTexto = doc.getElementById('saturacionSliderTexto');
-      const saturacionSliderFondo = doc.getElementById('saturacionSliderFondo');
-
-      const colorBaseTexto = chroma(colorPickerTexto.value);
-      const colorBaseFondo = chroma(colorPickerFondo.value);
-      const colorEnd = chroma('grey');
-
-      saturacionSliderTexto.style.background = `linear-gradient(to right, ${colorEnd}, ${colorBaseTexto})`;
-      saturacionSliderFondo.style.background = `linear-gradient(to right, ${colorEnd}, ${colorBaseFondo})`;
-    }
-
-
-    async function cargarYUsarChroma() {
-      try {
-        if (!chromaLoaded) {
-          await cargarChroma(); // Espera a que se cargue Chroma.js si aún no se ha cargado
-        }
-        console.log('Chroma.js ha sido cargado.');
-
-        // Aquí puedes ejecutar el resto del código que utiliza Chroma.js
-        // Por ejemplo, aplicar el estado guardado si existe
-        cargarEstado();
-        // Luego, ejecutar el resto del código relacionado con Chroma.js
-        actualizarGradientes();
-        // Eventos para cambiar el color de texto cuando se interactúa con los controles, etc.
-        document.getElementById('color-picker-texto').addEventListener('input', cambiarColorTexto);
-        document.getElementById('luminosidadSliderTexto').addEventListener('input', cambiarColorTexto);
-        document.getElementById('saturacionSliderTexto').addEventListener('input', cambiarColorTexto);
-
-        document.getElementById('color-picker-fondo').addEventListener('input', cambiarColorFondo);
-        document.getElementById('luminosidadSliderFondo').addEventListener('input', cambiarColorFondo);
-        document.getElementById('saturacionSliderFondo').addEventListener('input', cambiarColorFondo);
-
-        // Evento para restablecer los cambios de color del texto
-        document.getElementById('restablecerCambiosTexto').addEventListener('click', function () {
-          // Restablecer los valores predeterminados del color del texto
-          const elementosTexto = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
-          elementosTexto.forEach(elemento => {
-            elemento.style.color = ''; // Restablecer el color a su valor predeterminado
-          });
-          document.getElementById('color-picker-texto').value = '';
-          document.getElementById('luminosidadSliderTexto').value = '';
-          document.getElementById('saturacionSliderTexto').value = '';
-          actualizarGradientes();
-        });
-
-        // Evento para restablecer los cambios de color de fondo
-        document.getElementById('restablecerCambiosFondo').addEventListener('click', function () {
-          // Restablecer los valores predeterminados del color de fondo
-          const elementosFondo = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
-          elementosFondo.forEach(elemento => {
-            elemento.style.backgroundColor = ''; // Restablecer el color de fondo a su valor predeterminado
-          });
-          document.getElementById('color-picker-fondo').value = '';
-          document.getElementById('luminosidadSliderFondo').value = '';
-          document.getElementById('saturacionSliderFondo').value = '';
-          actualizarGradientes();
-        });
-      } catch (error) {
-        console.error('Error al cargar Chroma.js:', error);
-      }
-    }
-
-
-
-
 
 
     // Función para cambiar el tamaño de la fuente
@@ -573,7 +460,6 @@
       });
 
       cargarYUsarChroma();
-      cargarEstado();
     }
 
 
@@ -675,6 +561,132 @@
     }
 
     document.getElementById('lecturaFacil').addEventListener('click', actualizarEstilosTexto);
+
+
+
+    // Función para cambiar el color del texto
+    function cambiarColorTexto() {
+      const colorPickerTexto = doc.getElementById('color-picker-texto');
+      const luminosidadSliderTexto = doc.getElementById('luminosidadSliderTexto');
+      const saturacionSliderTexto = doc.getElementById('saturacionSliderTexto');
+
+      if (colorPickerTexto.value === '' || luminosidadSliderTexto.value === ''|| saturacionSliderTexto.value === '') {
+        return; // Salir de la función si alguno de los valores está vacío
+      }
+
+      const colorTexto = chroma(colorPickerTexto.value).set('hsl.l', luminosidadSliderTexto.value / 100).set('hsl.s', saturacionSliderTexto.value / 100).hex();
+      const colorPickerTextoValue = colorPickerTexto.value;
+      const colorBaseTexto = chroma(colorPickerTextoValue);
+      const colorEndTexto = chroma('grey');
+      saturacionSliderTexto.style.background = `linear-gradient(to right, ${colorEndTexto}, ${colorBaseTexto})`;
+
+      // Seleccionar todos los elementos de texto y cambiar su color simultáneamente
+      const elementosTexto = doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button, form, ol, ul, cite, small');
+      elementosTexto.forEach(elemento => {
+        // Verificar si el elemento está dentro del menú de accesibilidad
+        if (!elemento.closest('#menu-accesibilidad') && !elemento.closest('.simple-keyboard')) {
+          elemento.style.color = colorTexto;
+        }
+      });
+    }
+
+    // Función para cambiar el color de fondo
+    function cambiarColorFondo() {
+      const colorPickerFondo = doc.getElementById('color-picker-fondo');
+      const luminosidadSliderFondo = doc.getElementById('luminosidadSliderFondo');
+      const saturacionSliderFondo = doc.getElementById('saturacionSliderFondo');
+
+      if (colorPickerFondo.value === '' || luminosidadSliderFondo.value === '' || saturacionSliderFondo.value === '') {
+        return; // Salir de la función si alguno de los valores está vacío
+      }
+
+      const colorFondo = chroma(colorPickerFondo.value).set('hsl.l', luminosidadSliderFondo.value / 100).set('hsl.s', saturacionSliderFondo.value / 100).hex();
+      const colorPickerFondoValue = colorPickerFondo.value;
+      const colorBaseFondo = chroma(colorPickerFondoValue);
+      const colorEndFondo = chroma('grey');
+      saturacionSliderFondo.style.background = `linear-gradient(to right, ${colorEndFondo}, ${colorBaseFondo})`;
+
+      // Seleccionar todos los elementos de texto y cambiar su color simultáneamente
+      const elementosTexto = doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button, form, ol, ul, cite, small');
+      elementosTexto.forEach(elemento => {
+        // Verificar si el elemento está dentro del menú de accesibilidad
+        if (!elemento.closest('#menu-accesibilidad') && !elemento.closest('.simple-keyboard')) {
+          elemento.style.backgroundColor = colorFondo;
+        }
+      });
+    }
+
+    function actualizarGradientes() {
+      const colorPickerTexto = doc.getElementById('color-picker-texto');
+      const colorPickerFondo = doc.getElementById('color-picker-fondo');
+      const saturacionSliderTexto = doc.getElementById('saturacionSliderTexto');
+      const saturacionSliderFondo = doc.getElementById('saturacionSliderFondo');
+
+      const colorBaseTexto = chroma(colorPickerTexto.value);
+      const colorBaseFondo = chroma(colorPickerFondo.value);
+      const colorEnd = chroma('grey');
+
+      saturacionSliderTexto.style.background = `linear-gradient(to right, ${colorEnd}, ${colorBaseTexto})`;
+      saturacionSliderFondo.style.background = `linear-gradient(to right, ${colorEnd}, ${colorBaseFondo})`;
+    }
+
+
+    async function cargarYUsarChroma() {
+      try {
+        if (!chromaLoaded) {
+          await cargarChroma(); // Espera a que se cargue Chroma.js si aún no se ha cargado
+        }
+        console.log('Chroma.js ha sido cargado.');
+
+        cargarEstado();
+        actualizarGradientes();
+        // Eventos para cambiar el color de texto cuando se interactúa con los controles, etc.
+        document.getElementById('color-picker-texto').addEventListener('input', cambiarColorTexto);
+        document.getElementById('luminosidadSliderTexto').addEventListener('input', cambiarColorTexto);
+        document.getElementById('saturacionSliderTexto').addEventListener('input', cambiarColorTexto);
+
+        document.getElementById('color-picker-fondo').addEventListener('input', cambiarColorFondo);
+        document.getElementById('luminosidadSliderFondo').addEventListener('input', cambiarColorFondo);
+        document.getElementById('saturacionSliderFondo').addEventListener('input', cambiarColorFondo);
+
+        var at = document.getElementById('restablecerCambiosTexto');
+        // Evento para restablecer los cambios de color del texto
+        document.getElementById('restablecerCambiosTexto').addEventListener('click', function () {
+          // Restablecer los valores predeterminados del color del texto
+          const elementosTexto = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button, form, ol, ul, cite, small');
+          elementosTexto.forEach(elemento => {
+            elemento.style.color = ''; // Restablecer el color a su valor predeterminado
+          });
+          at.dataset.active = 'true';
+          document.getElementById('color-picker-texto').value = '';
+          document.getElementById('luminosidadSliderTexto').value = '';
+          document.getElementById('saturacionSliderTexto').value = '';
+          actualizarGradientes();
+          //localStorage.setItem('textoRestablecido', 'true');
+        });
+
+        var af = document.getElementById('restablecerCambiosFondo');
+        // Evento para restablecer los cambios de color de fondo
+        document.getElementById('restablecerCambiosFondo').addEventListener('click', function () {
+          // Restablecer los valores predeterminados del color de fondo
+          const elementosFondo = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button, form, ol, ul, cite, small');
+          elementosFondo.forEach(elemento => {
+            elemento.style.backgroundColor = ''; // Restablecer el color de fondo a su valor predeterminado
+          });
+          af.dataset.active = 'true';
+          document.getElementById('color-picker-fondo').value = '';
+          document.getElementById('luminosidadSliderFondo').value = '';
+          document.getElementById('saturacionSliderFondo').value = '';
+          actualizarGradientes();
+          //localStorage.setItem('fondoRestablecido', 'true');
+        });
+      } catch (error) {
+        console.error('Error al cargar Chroma.js:', error);
+      }
+    }
+
+
+
 
 
 
@@ -1068,10 +1080,8 @@
 
     function guardarEstado() {
       const lang = document.getElementById('language-selector').value;
-
-      // Verificar si se ha restablecido algún color
-      const restablecerColorTexto  = document.getElementById('restablecerCambiosTexto').classList.contains('disabled');
-      const restablecerColorFondo  = document.getElementById('restablecerCambiosFondo').classList.contains('disabled');
+      //const restablecerColorTexto = localStorage.getItem('textoRestablecido') === 'true';
+      //const restablecerColorFondo = localStorage.getItem('fondoRestablecido') === 'true';
 
       const preferencias = {
         tecladoVirtual: document.getElementById('btnTeclado').dataset.open === 'true',
@@ -1088,17 +1098,19 @@
         espaciadoLineas: document.getElementById('espaciadoLineasSlider').dataset.espaciadoLineas,
         espaciadoPalabras: document.getElementById('espaciadoPalabrasSlider').dataset.espaciadoPalabras,
         espaciadoLetras: document.getElementById('espaciadoLetrasSlider').dataset.espaciadoLetras,
-        // Guardar la opción de restablecer si se ha restablecido alguno de los colores
-        restablecerColores: restablecerColorTexto || restablecerColorFondo,
-        // Guardar los valores de los colores solo si no se ha restablecido ninguno
-        colorTexto: restablecerColorTexto ? '' : document.getElementById('color-picker-texto').value,
-        luminosidadTexto: restablecerColorTexto ? '' : document.getElementById('luminosidadSliderTexto').value,
-        colorFondo: restablecerColorFondo ? '' : document.getElementById('color-picker-fondo').value,
-        luminosidadFondo: restablecerColorFondo ? '' : document.getElementById('luminosidadSliderFondo').value,
-        // Guardar otras preferencias según sea necesario
+        colorTexto: document.getElementById('color-picker-texto').value,
+        saturacionTexto: document.getElementById('saturacionSliderTexto').value,
+        luminosidadTexto: document.getElementById('luminosidadSliderTexto').value,
+        colorFondo: document.getElementById('color-picker-fondo').value,
+        saturacionFondo: document.getElementById('saturacionSliderFondo').value,
+        luminosidadFondo: document.getElementById('luminosidadSliderFondo').value,
+        restablecerTxt: document.getElementById('restablecerCambiosTexto').dataset.active === 'true',
+        restablecerFondo: document.getElementById('restablecerCambiosFondo').dataset.active === 'true',
       };
 
       localStorage.setItem('preferenciasAccesibilidad', JSON.stringify(preferencias));
+      //localStorage.removeItem('textoRestablecido');
+      //localStorage.removeItem('fondoRestablecido');
       alert(translations[lang]['alert']);
       console.log('Estados guardados:', preferencias);
     }
@@ -1172,20 +1184,20 @@
           document.getElementById('espaciadoLetrasSlider').value = preferencias.espaciadoLetras;
           cambiarEspaciadoLetras(preferencias.espaciadoLetras);
         }
+        if (preferencias.restablecerTxt) {
+          document.getElementById('restablecerCambiosTexto').click();
+        }
+        if (preferencias.restablecerFondo) {
+          document.getElementById('restablecerCambiosFondo').click();
+        }
         if (chromaLoaded) {
-          if (preferencias.colorTexto) {
+          if (preferencias.colorTexto && !preferencias.restablecerTxt) {
             document.getElementById('color-picker-texto').value = preferencias.colorTexto;
-            document.getElementById('luminosidadSliderTexto').value = preferencias.luminosidadTexto;
-            document.getElementById('saturacionSliderTexto').value = preferencias.saturacionTexto;
-            cambiarColorTexto(); // Asumiendo que esta función lee los valores directamente de los elementos
+            cambiarColorTexto();
           }
-
-          // Aplicar los colores y configuración de los sliders de fondo guardados
-          if (preferencias.colorFondo) {
+          if (preferencias.colorFondo && !preferencias.restablecerFondo) {
             document.getElementById('color-picker-fondo').value = preferencias.colorFondo;
-            document.getElementById('luminosidadSliderFondo').value = preferencias.luminosidadFondo;
-            document.getElementById('saturacionSliderFondo').value = preferencias.saturacionFondo;
-            cambiarColorFondo(); // Asumiendo que esta función lee los valores directamente de los elementos
+            cambiarColorFondo();
           }
         }
       }
