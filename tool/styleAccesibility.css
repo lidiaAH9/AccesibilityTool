@@ -152,7 +152,6 @@ scriptAccesibilidad.js */
     -webkit-appearance: none;
     appearance: none;
     width: 80%;
-    height: 15px;
     background: linear-gradient(to right, grey, var(--color-seleccionado));
     border-radius: 5px;
     outline: none;
@@ -165,7 +164,6 @@ scriptAccesibilidad.js */
     -webkit-appearance: none;
     appearance: none;
     width: 18px;
-    height: 18px;
     background-color: var(--thumb-color);
     border-radius: 50%;
     border: 2px solid white;
@@ -178,7 +176,6 @@ scriptAccesibilidad.js */
     -webkit-appearance: none;
     appearance: none;
     width: 80%;
-    height: 15px;
     background: linear-gradient(to right, black, white);
     border-radius: 5px;
     outline: none;
@@ -192,7 +189,6 @@ scriptAccesibilidad.js */
     -webkit-appearance: none;
     appearance: none;
     width: 18px;
-    height: 18px;
     background-color: var(--thumb-color);
     border-radius: 50%;
     border: 2px solid white;
@@ -290,20 +286,22 @@ details[open]>summary::after {
     background-color: #e2e6ea;
 }
 
-.simple-keyboard {
+
+.simple-keyboard.my-theme {
     position: absolute;
     cursor: move;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100vw;
-    max-width: 1000px;
-    max-height: 300px;
+    max-width: 1300px;
+    max-height: 500px;
     z-index: 4000;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     background-color: #fff;
-    padding: 20px;
+    padding: 15px;
+    background: lightblue;
 }
 
 .btn-img {
@@ -464,11 +462,10 @@ input[type="range"] {
     -webkit-appearance: none;
     width: 80%;
     height: 8px;
-    color: white;
-    background: white;
     outline: none;
     -webkit-transition: .2s;
     transition: opacity .2s;
+    border-radius: 5px;
 }
 
 /* Estilo del thumb (el control que se desliza) */

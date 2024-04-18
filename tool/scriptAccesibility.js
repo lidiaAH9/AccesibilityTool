@@ -57,6 +57,23 @@
     document.body.appendChild(script);
 
 
+    let chromaLoaded = false;
+
+    // Función para cargar Chroma.js
+    function cargarChroma() {
+      return new Promise((resolve, reject) => {
+        const scriptChroma = document.createElement('script');
+        scriptChroma.src = 'https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.1/chroma.min.js';
+        scriptChroma.onload = () => {
+          chromaLoaded = true;
+          resolve();
+        };
+        scriptChroma.onerror = reject;
+        document.head.appendChild(scriptChroma);
+      });
+    }
+
+
     menuAccesibilidad.innerHTML =
       '<div class="language-selector-container"><img src="tool/world-icon.png" alt="Icono de mundo" id="icono" class="world-icon"><select id="language-selector" class="language-selector">' +
       '<option value="es">Español</option><option value="en">English</option></select></div>' +
@@ -75,13 +92,21 @@
       '<details><summary><h3 id="modo-alto-contraste" data-key="highContrastMode">Modo de Alto Contraste</h3></summary>' +
       '<button id="toggleAltoContraste" class="btn-modificar" data-key="highContrast">Alto Contraste</button></details>' +
       '<details><summary><h3 data-key="openVirtualKeyboard">Abrir Teclado Virtual en Pantalla</h3></summary><button id="btnTeclado" class="btn-teclado" data-key="openVirtualKeyboard">Abrir Teclado Virtual</button></summary></details>' +
-      '<details><summary><h3 data-key="hideMultimedia">Ocultar Contenido Multimedia (imágenes/vídeos...)</h3></summary><button id="ocultarImg" class="btn-img" data-key="hideMultimedia">Ocultar Multimedia</button></summary></details>';
+      '<details><summary><h3 data-key="hideMultimedia">Ocultar Contenido Multimedia (imágenes/vídeos...)</h3></summary><button id="ocultarImg" class="btn-img" data-key="hideMultimedia">Ocultar Multimedia</button></summary></details>' +
+      '<details><summary><h3 data-key="adjustText">Ajustar Texto</h3></summary>' +
+      '<div><label class="menu-label" for="tamanoFuenteSlider" data-key="fontSize">Tamaño de letra:</label><input type="range" id="tamanoFuenteSlider" class="txt-slider" min="12" max="30" value="16"></div>' +
+      '<div><label class="menu-label" for="espaciadoLineasSlider" data-key="lineSpacing">Espaciado entre líneas:</label><input type="range" id="espaciadoLineasSlider" class="txt-slider" min="1" max="3" value="1.6" step="0.1"></div>' +
+      '<div><label class="menu-label" for="espaciadoPalabrasSlider" data-key="wordSpacing">Espaciado entre palabras:</label><input type="range" id="espaciadoPalabrasSlider" class="txt-slider" min="0" max="20" value="0"></div>' +
+      '<div><label class="menu-label" for="espaciadoLetrasSlider" data-key="letterSpacing">Espaciado entre letras:</label><input type="range" id="espaciadoLetrasSlider" class="txt-slider" min="0" max="5" value="0"></div></details>' +
+      '<details><summary><h3 data-key="adjustCursor">Ajustar Cursor</h3></summary><button id="btnCursorNegroGrande" class="btn-cursor" data-key="cursorBlackLarge">Cursor Negro y Grande</button></details>' +
+      '<details><summary><h3 data-key="stylizeButtons">Estilizar Botones</h3></summary><button id="btnEstilizarBotones" class="btn-cursor" data-key="activateButtonStyle">Activar Estilo de Botones</button></details>' +
+      '<details><summary><h3 data-key="readingGuide">Guía de Lectura</h3></summary><button id="btnGuiaLecturaNegra" class="btn-otros-black" data-key="activateBlackReadingGuide">Activar Guía de Lectura Negra</button><div id="guiaLecturaNegra"></div>' +
+      '<button id="btnGuiaLecturaBlanca" class="btn-otros" data-key="activateWhiteReadingGuide">Activar Guía de Lectura Blanca</button><div id="guiaLecturaBlanca"></div></details>' +
+      '<details><summary><h3 data-key="textReader">Lector de Texto</h3></summary><select id="voiceSelect" class="select-voice"></select><button id="btnLector" class="btn-otros" data-key="activateTextReader">Activar Lector de Texto</button></details>' +
+      '<details><summary><h3 data-key="subtitle">Subtítulos</h3></summary><button id="btnSubtitle" class="btn-cursor" data-key="activateSubtitle">Activar Subtítulos</button></details>' +
+      '<button id="guardar" class="btn-save" data-key="save">Guardar Preferencias</button>';
 
     doc.body.appendChild(menuAccesibilidad);
-
-
-
-
 
     // Agregar eventos al botón de accesibilidad para abrir/cerrar el menú
     btnAccesibilidad.addEventListener('click', function () {
@@ -89,110 +114,116 @@
     });
 
 
-    // Cargar la biblioteca Chroma.js
-    const scriptChroma = doc.createElement('script');
-    scriptChroma.src = 'https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.1/chroma.min.js';
-    scriptChroma.onload = function () {
+    // Función para cambiar el color del texto
+    function cambiarColorTexto() {
+      const colorPickerTexto = doc.getElementById('color-picker-texto');
+      const luminosidadSliderTexto = doc.getElementById('luminosidadSliderTexto');
+      const saturacionSliderTexto = doc.getElementById('saturacionSliderTexto');
 
-      actualizarGradientes();
-      // Función para cambiar el color del texto
-      function cambiarColorTexto() {
-        const colorPickerTexto = doc.getElementById('color-picker-texto');
-        const luminosidadSliderTexto = doc.getElementById('luminosidadSliderTexto');
-        const saturacionSliderTexto = doc.getElementById('saturacionSliderTexto');
+      const colorTexto = chroma(colorPickerTexto.value).set('hsl.l', luminosidadSliderTexto.value / 100).set('hsl.s', saturacionSliderTexto.value / 100).hex();
+      const colorPickerTextoValue = colorPickerTexto.value;
+      const colorBaseTexto = chroma(colorPickerTextoValue);
+      const colorEndTexto = chroma('grey');
+      saturacionSliderTexto.style.background = `linear-gradient(to right, ${colorEndTexto}, ${colorBaseTexto})`;
 
-        const colorTexto = chroma(colorPickerTexto.value).set('hsl.l', luminosidadSliderTexto.value / 100).set('hsl.s', saturacionSliderTexto.value / 100).hex();
-        const colorPickerTextoValue = colorPickerTexto.value;
-        const colorBaseTexto = chroma(colorPickerTextoValue);
-        const colorEndTexto = chroma('grey');
-        saturacionSliderTexto.style.background = `linear-gradient(to right, ${colorEndTexto}, ${colorBaseTexto})`;
-
-        // Seleccionar todos los elementos de texto y cambiar su color simultáneamente
-        const elementosTexto = doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
-        elementosTexto.forEach(elemento => {
-          // Verificar si el elemento está dentro del menú de accesibilidad
-          if (!elemento.closest('#menu-accesibilidad')) {
-            elemento.style.color = colorTexto;
-          }
-        });
-      }
-
-      // Función para cambiar el color de fondo
-      function cambiarColorFondo() {
-        const colorPickerFondo = doc.getElementById('color-picker-fondo');
-        const luminosidadSliderFondo = doc.getElementById('luminosidadSliderFondo');
-        const saturacionSliderFondo = doc.getElementById('saturacionSliderFondo');
-
-        const colorFondo = chroma(colorPickerFondo.value).set('hsl.l', luminosidadSliderFondo.value / 100).set('hsl.s', saturacionSliderFondo.value / 100).hex();
-        const colorPickerFondoValue = colorPickerFondo.value;
-        const colorBaseFondo = chroma(colorPickerFondoValue);
-        const colorEndFondo = chroma('grey');
-        saturacionSliderFondo.style.background = `linear-gradient(to right, ${colorEndFondo}, ${colorBaseFondo})`;
-
-        // Seleccionar todos los elementos de texto y cambiar su color simultáneamente
-        const elementosTexto = doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
-        elementosTexto.forEach(elemento => {
-          // Verificar si el elemento está dentro del menú de accesibilidad
-          if (!elemento.closest('#menu-accesibilidad')) {
-            elemento.style.backgroundColor = colorFondo;
-          }
-        });
-      }
-
-      function actualizarGradientes() {
-        const colorPickerTexto = doc.getElementById('color-picker-texto');
-        const colorPickerFondo = doc.getElementById('color-picker-fondo');
-        const saturacionSliderTexto = doc.getElementById('saturacionSliderTexto');
-        const saturacionSliderFondo = doc.getElementById('saturacionSliderFondo');
-
-        const colorBaseTexto = chroma(colorPickerTexto.value);
-        const colorBaseFondo = chroma(colorPickerFondo.value);
-        const colorEnd = chroma('grey');
-
-        saturacionSliderTexto.style.background = `linear-gradient(to right, ${colorEnd}, ${colorBaseTexto})`;
-        saturacionSliderFondo.style.background = `linear-gradient(to right, ${colorEnd}, ${colorBaseFondo})`;
-      }
-
-      // Eventos para cambiar el color de texto cuando se interactúa con los controles
-      doc.getElementById('color-picker-texto').addEventListener('input', cambiarColorTexto);
-      doc.getElementById('luminosidadSliderTexto').addEventListener('input', cambiarColorTexto);
-      doc.getElementById('saturacionSliderTexto').addEventListener('input', cambiarColorTexto);
-
-      doc.getElementById('color-picker-fondo').addEventListener('input', cambiarColorFondo);
-      doc.getElementById('luminosidadSliderFondo').addEventListener('input', cambiarColorFondo);
-      doc.getElementById('saturacionSliderFondo').addEventListener('input', cambiarColorFondo);
-
-
-      // Evento para restablecer los cambios de color del texto
-      doc.getElementById('restablecerCambiosTexto').addEventListener('click', function () {
-        // Restablecer los valores predeterminados del color del texto
-        const elementosTexto = doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
-        elementosTexto.forEach(elemento => {
-          elemento.style.color = ''; // Restablecer el color a su valor predeterminado
-        });
-        doc.getElementById('color-picker-texto').value = '#000000';
-        doc.getElementById('luminosidadSliderTexto').value = '50';
-        doc.getElementById('saturacionSliderTexto').value = '50';
-        actualizarGradientes();
+      // Seleccionar todos los elementos de texto y cambiar su color simultáneamente
+      const elementosTexto = doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
+      elementosTexto.forEach(elemento => {
+        // Verificar si el elemento está dentro del menú de accesibilidad
+        if (!elemento.closest('#menu-accesibilidad')) {
+          elemento.style.color = colorTexto;
+        }
       });
+    }
 
-      // Evento para restablecer los cambios de color de fondo
-      doc.getElementById('restablecerCambiosFondo').addEventListener('click', function () {
-        // Restablecer los valores predeterminados del color de fondo
-        const elementosFondo = doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
-        elementosFondo.forEach(elemento => {
-          elemento.style.backgroundColor = ''; // Restablecer el color de fondo a su valor predeterminado
-        });
-        doc.getElementById('color-picker-texto').value = '#000000';
-        doc.getElementById('luminosidadSliderFondo').value = '50';
-        doc.getElementById('saturacionSliderFondo').value = '50';
-        actualizarGradientes();
+    // Función para cambiar el color de fondo
+    function cambiarColorFondo() {
+      const colorPickerFondo = doc.getElementById('color-picker-fondo');
+      const luminosidadSliderFondo = doc.getElementById('luminosidadSliderFondo');
+      const saturacionSliderFondo = doc.getElementById('saturacionSliderFondo');
 
+      const colorFondo = chroma(colorPickerFondo.value).set('hsl.l', luminosidadSliderFondo.value / 100).set('hsl.s', saturacionSliderFondo.value / 100).hex();
+      const colorPickerFondoValue = colorPickerFondo.value;
+      const colorBaseFondo = chroma(colorPickerFondoValue);
+      const colorEndFondo = chroma('grey');
+      saturacionSliderFondo.style.background = `linear-gradient(to right, ${colorEndFondo}, ${colorBaseFondo})`;
+
+      // Seleccionar todos los elementos de texto y cambiar su color simultáneamente
+      const elementosTexto = doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
+      elementosTexto.forEach(elemento => {
+        // Verificar si el elemento está dentro del menú de accesibilidad
+        if (!elemento.closest('#menu-accesibilidad')) {
+          elemento.style.backgroundColor = colorFondo;
+        }
       });
-    };
+    }
 
-    // Agregar el script de Chroma.js al documento
-    doc.head.appendChild(scriptChroma);
+    function actualizarGradientes() {
+      const colorPickerTexto = doc.getElementById('color-picker-texto');
+      const colorPickerFondo = doc.getElementById('color-picker-fondo');
+      const saturacionSliderTexto = doc.getElementById('saturacionSliderTexto');
+      const saturacionSliderFondo = doc.getElementById('saturacionSliderFondo');
+
+      const colorBaseTexto = chroma(colorPickerTexto.value);
+      const colorBaseFondo = chroma(colorPickerFondo.value);
+      const colorEnd = chroma('grey');
+
+      saturacionSliderTexto.style.background = `linear-gradient(to right, ${colorEnd}, ${colorBaseTexto})`;
+      saturacionSliderFondo.style.background = `linear-gradient(to right, ${colorEnd}, ${colorBaseFondo})`;
+    }
+
+
+    async function cargarYUsarChroma() {
+      try {
+        if (!chromaLoaded) {
+          await cargarChroma(); // Espera a que se cargue Chroma.js si aún no se ha cargado
+        }
+        console.log('Chroma.js ha sido cargado.');
+
+        // Aquí puedes ejecutar el resto del código que utiliza Chroma.js
+        // Por ejemplo, aplicar el estado guardado si existe
+        cargarEstado();
+        // Luego, ejecutar el resto del código relacionado con Chroma.js
+        actualizarGradientes();
+        // Eventos para cambiar el color de texto cuando se interactúa con los controles, etc.
+        document.getElementById('color-picker-texto').addEventListener('input', cambiarColorTexto);
+        document.getElementById('luminosidadSliderTexto').addEventListener('input', cambiarColorTexto);
+        document.getElementById('saturacionSliderTexto').addEventListener('input', cambiarColorTexto);
+
+        document.getElementById('color-picker-fondo').addEventListener('input', cambiarColorFondo);
+        document.getElementById('luminosidadSliderFondo').addEventListener('input', cambiarColorFondo);
+        document.getElementById('saturacionSliderFondo').addEventListener('input', cambiarColorFondo);
+
+        // Evento para restablecer los cambios de color del texto
+        document.getElementById('restablecerCambiosTexto').addEventListener('click', function () {
+          // Restablecer los valores predeterminados del color del texto
+          const elementosTexto = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
+          elementosTexto.forEach(elemento => {
+            elemento.style.color = ''; // Restablecer el color a su valor predeterminado
+          });
+          document.getElementById('color-picker-texto').value = '';
+          document.getElementById('luminosidadSliderTexto').value = '';
+          document.getElementById('saturacionSliderTexto').value = '';
+          actualizarGradientes();
+        });
+
+        // Evento para restablecer los cambios de color de fondo
+        document.getElementById('restablecerCambiosFondo').addEventListener('click', function () {
+          // Restablecer los valores predeterminados del color de fondo
+          const elementosFondo = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
+          elementosFondo.forEach(elemento => {
+            elemento.style.backgroundColor = ''; // Restablecer el color de fondo a su valor predeterminado
+          });
+          document.getElementById('color-picker-fondo').value = '';
+          document.getElementById('luminosidadSliderFondo').value = '';
+          document.getElementById('saturacionSliderFondo').value = '';
+          actualizarGradientes();
+        });
+      } catch (error) {
+        console.error('Error al cargar Chroma.js:', error);
+      }
+    }
+
 
 
 
@@ -206,6 +237,7 @@
           elemento.style.fontSize = valor + 'px';
         }
       });
+      document.getElementById('tamanoFuenteSlider').dataset.tamanoFuente = valor;
     }
 
     // Función para cambiar el espaciado entre líneas
@@ -216,6 +248,7 @@
           elemento.style.lineHeight = valor;
         }
       });
+      document.getElementById('espaciadoLineasSlider').dataset.espaciadoLineas = valor;
     }
 
     // Función para cambiar el espaciado entre palabras
@@ -226,6 +259,7 @@
           elemento.style.wordSpacing = valor + 'px';
         }
       });
+      document.getElementById('espaciadoPalabrasSlider').dataset.espaciadoPalabras = valor;
     }
 
     // Función para cambiar el espaciado entre letras
@@ -236,22 +270,28 @@
           elemento.style.letterSpacing = valor + 'px';
         }
       });
+      document.getElementById('espaciadoLetrasSlider').dataset.espaciadoLetras = valor;
     }
 
-    // Añadir los controles de accesibilidad para el tamaño de la letra y el espaciado
-    menuAccesibilidad.innerHTML += '<details><summary><h3 data-key="adjustText">Ajustar Texto</h3></summary>' +
-      '<div><label class="menu-label" for="tamanoFuenteSlider" data-key="fontSize">Tamaño de letra:</label><input type="range" id="tamanoFuenteSlider" class="txt-slider" min="12" max="30" value="16"></div>' +
-      '<div><label class="menu-label" for="espaciadoLineasSlider" data-key="lineSpacing">Espaciado entre líneas:</label><input type="range" id="espaciadoLineasSlider" class="txt-slider" min="1" max="3" value="1.6" step="0.1"></div>' +
-      '<div><label class="menu-label" for="espaciadoPalabrasSlider" data-key="wordSpacing">Espaciado entre palabras:</label><input type="range" id="espaciadoPalabrasSlider" class="txt-slider" min="0" max="20" value="0"></div>' +
-      '<div><label class="menu-label" for="espaciadoLetrasSlider" data-key="letterSpacing">Espaciado entre letras:</label><input type="range" id="espaciadoLetrasSlider" class="txt-slider" min="0" max="5" value="0"></div></details>' +
-      '<details><summary><h3 data-key="adjustCursor">Ajustar Cursor</h3></summary><button id="btnCursorNegroGrande" class="btn-cursor" data-key="cursorBlackLarge">Cursor Negro y Grande</button></details>' +
-      '<details><summary><h3 data-key="stylizeButtons">Estilizar Botones</h3></summary><button id="btnEstilizarBotones" class="btn-cursor" data-key="activateButtonStyle">Activar Estilo de Botones</button></details>' +
-      '<details><summary><h3 data-key="readingGuide">Guía de Lectura</h3></summary><button id="btnGuiaLecturaNegra" class="btn-otros-black" data-key="activateBlackReadingGuide">Activar Guía de Lectura Negra</button><div id="guiaLecturaNegra"></div>' +
-      '<button id="btnGuiaLecturaBlanca" class="btn-otros" data-key="activateWhiteReadingGuide">Activar Guía de Lectura Blanca</button><div id="guiaLecturaBlanca"></div></details>' +
-      '<details><summary><h3 data-key="textReader">Lector de Texto</h3></summary><select id="voiceSelect" class="select-voice"></select><button id="btnLector" class="btn-otros" data-key="activateTextReader">Activar Lector de Texto</button></details>' +
-      '<details><summary><h3 data-key="subtitle">Subtítulos</h3></summary><button id="btnSubtitle" class="btn-cursor" data-key="activateSubtitle">Activar Subtítulos</button></details>' +
-      '<button id="guardar" class="btn-save" data-key="save">Guardar Preferencias</button>';
-    ;
+
+    // Eventos para cambiar el tamaño de la letra y el espaciado cuando se interactúa con los controles
+    document.getElementById('tamanoFuenteSlider').addEventListener('input', function (event) {
+      cambiarTamanoFuente(event.target.value);
+    });
+
+    document.getElementById('espaciadoLineasSlider').addEventListener('input', function (event) {
+      cambiarEspaciadoLineas(event.target.value);
+    });
+
+    document.getElementById('espaciadoPalabrasSlider').addEventListener('input', function (event) {
+      cambiarEspaciadoPalabras(event.target.value);
+    });
+
+    document.getElementById('espaciadoLetrasSlider').addEventListener('input', function (event) {
+      cambiarEspaciadoLetras(event.target.value);
+    });
+
+
 
 
     function populateVoiceList() {
@@ -339,25 +379,6 @@
 
     document.getElementById('btnLector').addEventListener('click', leerEnVozAlta);
 
-
-
-
-    // Eventos para cambiar el tamaño de la letra y el espaciado cuando se interactúa con los controles
-    document.getElementById('tamanoFuenteSlider').addEventListener('input', function (event) {
-      cambiarTamanoFuente(event.target.value);
-    });
-
-    document.getElementById('espaciadoLineasSlider').addEventListener('input', function (event) {
-      cambiarEspaciadoLineas(event.target.value);
-    });
-
-    document.getElementById('espaciadoPalabrasSlider').addEventListener('input', function (event) {
-      cambiarEspaciadoPalabras(event.target.value);
-    });
-
-    document.getElementById('espaciadoLetrasSlider').addEventListener('input', function (event) {
-      cambiarEspaciadoLetras(event.target.value);
-    });
 
 
     function inicializarMejorasAccesibilidad() {
@@ -504,113 +525,74 @@
       myKeyboard.setInput(lastActiveInput.value);
     }
 
-    
-
-    /*Espera a que todo el contenido esté listo.
-    setTimeout(function () {
-      var btnTeclado = document.getElementById("btnTeclado");
-      if (btnTeclado) {
-        btnTeclado.addEventListener('click', function () {
-          const lang = document.getElementById('language-selector').value;
-          var keyboardContainer = document.querySelector(".simple-keyboard");
-          if (!keyboardContainer) {
-            // Crear y configurar el teclado virtual si no existe
-            keyboardContainer = document.createElement('div');
-            keyboardContainer.className = 'simple-keyboard';
-            document.body.appendChild(keyboardContainer);
-            initializeSimpleKeyboard();
-            dragElement(keyboardContainer);
-            btnTeclado.dataset.open = 'true'; // Indica que el teclado está abierto
-          }
-          // Alternar la visibilidad y actualizar el estado y el texto del botón
-          if (keyboardContainer.style.display === 'none' || !keyboardContainer.style.display) {
-            keyboardContainer.style.display = 'block';
-            btnTeclado.dataset.open = 'true';
-            btnTeclado.textContent = translations[lang]['closeVirtualKeyboard'];
-            btnTeclado.style.background = 'yellow';
-            btnTeclado.style.fontWeight = '700';
-          } else {
-            keyboardContainer.style.display = 'none';
-            btnTeclado.dataset.open = 'false';
-            btnTeclado.textContent = translations[lang]['openVirtualKeyboard'];
-            btnTeclado.style.background = 'white';
-            btnTeclado.style.fontWeight = '400';
-          }
-        });
-      } else {
-        console.log("El botón del teclado no se encontró.");
-      }
-    }, 0);*/
-
-
-
 
     function initializeKeyboardAndEvents() {
       var keyboardContainer = document.querySelector(".simple-keyboard");
       var btnTeclado = document.getElementById("btnTeclado");
-  
+
       // Si el contenedor del teclado no existe, créalo antes de inicializar el teclado
       if (!keyboardContainer) {
-          keyboardContainer = document.createElement('div');
-          keyboardContainer.className = 'simple-keyboard';
-          document.body.appendChild(keyboardContainer);
+        keyboardContainer = document.createElement('div');
+        keyboardContainer.className = 'simple-keyboard';
+        document.body.appendChild(keyboardContainer);
       }
-  
+
       if (btnTeclado) {
-          btnTeclado.addEventListener('click', function () {
-              const lang = document.getElementById('language-selector').value;
-              toggleKeyboardVisibility(keyboardContainer, btnTeclado, lang);
-          });
+        btnTeclado.addEventListener('click', function () {
+          const lang = document.getElementById('language-selector').value;
+          toggleKeyboardVisibility(keyboardContainer, btnTeclado, lang);
+        });
       } else {
-          console.log("El botón del teclado no se encontró.");
+        console.log("El botón del teclado no se encontró.");
       }
-  
+
       // Ahora inicializa el teclado con el contenedor seguro en el DOM
       initializeSimpleKeyboard();
-  }
-  
-  function initializeSimpleKeyboard() {
+    }
+
+    function initializeSimpleKeyboard() {
       var keyboardContainer = document.querySelector(".simple-keyboard");
       if (!keyboardContainer) {
-          console.error("El contenedor del teclado no fue encontrado después de la creación.");
-          return;
+        console.error("El contenedor del teclado no fue encontrado después de la creación.");
+        return;
       }
-     
-      keyboardContainer.style.background = 'lightblue';
-  
+
       // Configuración del teclado virtual
       myKeyboard = new SimpleKeyboard.default({
-          onChange: onKeyboardInput,
-          theme: "simple-keyboard hg-theme-default hg-layout-default",
-          newLineOnEnter: true,
-          debug: true,
+        onChange: onKeyboardInput,
+        theme: "simple-keyboard hg-theme-default my-theme",
+        newLineOnEnter: true,
+        debug: true,
       });
       keyboardContainer.style.display = "none";
       dragElement(keyboardContainer);
-  
+
       // Añade el evento de enfoque a todos los campos de entrada
       document.querySelectorAll('input').forEach(input => {
-          input.addEventListener('focus', onInputFocus);
+        input.addEventListener('focus', onInputFocus);
       });
-  }
-  
-  
-  function toggleKeyboardVisibility(keyboardContainer, btnTeclado, lang) {
+
+      cargarYUsarChroma();
+      cargarEstado();
+    }
+
+
+    function toggleKeyboardVisibility(keyboardContainer, btnTeclado, lang) {
       if (keyboardContainer.style.display === 'none' || !keyboardContainer.style.display) {
-          keyboardContainer.style.display = 'block';
-          btnTeclado.dataset.open = 'true';
-          btnTeclado.textContent = translations[lang]['closeVirtualKeyboard'];
-          btnTeclado.style.background = 'yellow';
-          btnTeclado.style.fontWeight = '700';
+        keyboardContainer.style.display = 'block';
+        btnTeclado.textContent = translations[lang]['closeVirtualKeyboard'];
+        btnTeclado.style.background = 'yellow';
+        btnTeclado.style.fontWeight = '700';
+        btnTeclado.dataset.open = 'true';
       } else {
-          keyboardContainer.style.display = 'none';
-          btnTeclado.dataset.open = 'false';
-          btnTeclado.textContent = translations[lang]['openVirtualKeyboard'];
-          btnTeclado.style.background = 'white';
-          btnTeclado.style.fontWeight = '400';
+        keyboardContainer.style.display = 'none';
+        btnTeclado.textContent = translations[lang]['openVirtualKeyboard'];
+        btnTeclado.style.background = 'white';
+        btnTeclado.style.fontWeight = '400';
+        btnTeclado.dataset.open = 'false';
       }
-  }
-  
+    }
+
 
     function dragElement(container) {
       let pos1 = 0,
@@ -978,7 +960,8 @@
         'deactivateBlackReadingGuide': 'Desactivar Guía de Lectura Negra',
         'deactivateWhiteReadingGuide': 'Desactivar Guía de Lectura Blanca',
         'deactivateSubtitle': 'Desactivar Subtítulos',
-        'save': 'Guardar Preferencias'
+        'save': 'Guardar Preferencias',
+        'alert': 'Preferencias guardadas correctamente'
       },
       'en': {
         'menuTitle': 'ACCESSIBILITY MENU',
@@ -1020,7 +1003,8 @@
         'deactivateBlackReadingGuide': 'Disable Black Reading Guide',
         'deactivateWhiteReadingGuide': 'Disable White Reading Guide',
         'deactivateSubtitle': 'Disable Subtitles',
-        'save': 'Save Preferences'
+        'save': 'Save Preferences',
+        'alert': 'Preferences saved successfully'
       }
     };
 
@@ -1083,6 +1067,12 @@
 
 
     function guardarEstado() {
+      const lang = document.getElementById('language-selector').value;
+
+      // Verificar si se ha restablecido algún color
+      const restablecerColorTexto  = document.getElementById('restablecerCambiosTexto').classList.contains('disabled');
+      const restablecerColorFondo  = document.getElementById('restablecerCambiosFondo').classList.contains('disabled');
+
       const preferencias = {
         tecladoVirtual: document.getElementById('btnTeclado').dataset.open === 'true',
         altoContraste: document.getElementById('toggleAltoContraste').dataset.altoContraste === 'true',
@@ -1090,15 +1080,26 @@
         guiaLecturaNegra: document.getElementById('btnGuiaLecturaNegra').dataset.active === 'true',
         guiaLecturaBlanca: document.getElementById('btnGuiaLecturaBlanca').dataset.active === 'true',
         ocultarMultimedia: document.getElementById('ocultarImg').dataset.visible === 'true',
-        lecturaFacil: document.getElementById('lecturaFacil').dataset.estiloAplicado === 'true', // Modificado para usar dataset
+        lecturaFacil: document.getElementById('lecturaFacil').dataset.estiloAplicado === 'true',
         cursorNegroGrande: document.getElementById('btnCursorNegroGrande').dataset.cursorActivo === 'true',
         leerVozAlta: document.getElementById('btnLector').dataset.lecturaEnVozAltaActivada === 'true',
         vozSeleccionada: document.getElementById('voiceSelect').value,
-
+        tamanoFuente: document.getElementById('tamanoFuenteSlider').dataset.tamanoFuente,
+        espaciadoLineas: document.getElementById('espaciadoLineasSlider').dataset.espaciadoLineas,
+        espaciadoPalabras: document.getElementById('espaciadoPalabrasSlider').dataset.espaciadoPalabras,
+        espaciadoLetras: document.getElementById('espaciadoLetrasSlider').dataset.espaciadoLetras,
+        // Guardar la opción de restablecer si se ha restablecido alguno de los colores
+        restablecerColores: restablecerColorTexto || restablecerColorFondo,
+        // Guardar los valores de los colores solo si no se ha restablecido ninguno
+        colorTexto: restablecerColorTexto ? '' : document.getElementById('color-picker-texto').value,
+        luminosidadTexto: restablecerColorTexto ? '' : document.getElementById('luminosidadSliderTexto').value,
+        colorFondo: restablecerColorFondo ? '' : document.getElementById('color-picker-fondo').value,
+        luminosidadFondo: restablecerColorFondo ? '' : document.getElementById('luminosidadSliderFondo').value,
+        // Guardar otras preferencias según sea necesario
       };
 
       localStorage.setItem('preferenciasAccesibilidad', JSON.stringify(preferencias));
-      alert('Preferencias guardadas correctamente');
+      alert(translations[lang]['alert']);
       console.log('Estados guardados:', preferencias);
     }
 
@@ -1148,11 +1149,47 @@
           document.getElementById('btnLector').click();
 
         }
-        // Cargar más características según sea necesario
+
+        if (preferencias.tamanoFuente) {
+          document.getElementById('tamanoFuenteSlider').value = preferencias.tamanoFuente;
+          cambiarTamanoFuente(preferencias.tamanoFuente);
+        }
+
+        // Cargar y aplicar el espaciado de líneas guardado
+        if (preferencias.espaciadoLineas) {
+          document.getElementById('espaciadoLineasSlider').value = preferencias.espaciadoLineas;
+          cambiarEspaciadoLineas(preferencias.espaciadoLineas);
+        }
+
+        // Cargar y aplicar el espaciado entre palabras guardado
+        if (preferencias.espaciadoPalabras) {
+          document.getElementById('espaciadoPalabrasSlider').value = preferencias.espaciadoPalabras;
+          cambiarEspaciadoPalabras(preferencias.espaciadoPalabras);
+        }
+
+        // Cargar y aplicar el espaciado entre letras guardado
+        if (preferencias.espaciadoLetras) {
+          document.getElementById('espaciadoLetrasSlider').value = preferencias.espaciadoLetras;
+          cambiarEspaciadoLetras(preferencias.espaciadoLetras);
+        }
+        if (chromaLoaded) {
+          if (preferencias.colorTexto) {
+            document.getElementById('color-picker-texto').value = preferencias.colorTexto;
+            document.getElementById('luminosidadSliderTexto').value = preferencias.luminosidadTexto;
+            document.getElementById('saturacionSliderTexto').value = preferencias.saturacionTexto;
+            cambiarColorTexto(); // Asumiendo que esta función lee los valores directamente de los elementos
+          }
+
+          // Aplicar los colores y configuración de los sliders de fondo guardados
+          if (preferencias.colorFondo) {
+            document.getElementById('color-picker-fondo').value = preferencias.colorFondo;
+            document.getElementById('luminosidadSliderFondo').value = preferencias.luminosidadFondo;
+            document.getElementById('saturacionSliderFondo').value = preferencias.saturacionFondo;
+            cambiarColorFondo(); // Asumiendo que esta función lee los valores directamente de los elementos
+          }
+        }
       }
     }
-
-    cargarEstado();
 
     document.getElementById('guardar').addEventListener('click', guardarEstado);
 
