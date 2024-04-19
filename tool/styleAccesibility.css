@@ -349,6 +349,7 @@ details[open]>summary::after {
     background-color: black;
     pointer-events: none;
     display: none;
+    z-index: 4000;
 }
 
 #guiaLecturaBlanca {
@@ -360,8 +361,13 @@ details[open]>summary::after {
     background-color: white;
     pointer-events: none;
     display: none;
+    z-index: 4000;
 }
 
+#guiaLecturaNegra.active, #guiaLecturaBlanca.active {
+    opacity: 1;
+    visibility: visible;
+}
 
 .select-voice {
     width: 340px;

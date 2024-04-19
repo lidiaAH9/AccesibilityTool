@@ -100,8 +100,8 @@
       '<div><label class="menu-label" for="espaciadoLetrasSlider" data-key="letterSpacing">Espaciado entre letras:</label><input type="range" id="espaciadoLetrasSlider" class="txt-slider" min="0" max="5" value="0"></div></details>' +
       '<details><summary><h3 data-key="adjustCursor">Ajustar Cursor</h3></summary><button id="btnCursorNegroGrande" class="btn-cursor" data-key="cursorBlackLarge">Cursor Negro y Grande</button></details>' +
       '<details><summary><h3 data-key="stylizeButtons">Estilizar Botones</h3></summary><button id="btnEstilizarBotones" class="btn-cursor" data-key="activateButtonStyle">Activar Estilo de Botones</button></details>' +
-      '<details><summary><h3 data-key="readingGuide">Guía de Lectura</h3></summary><button id="btnGuiaLecturaNegra" class="btn-otros-black" data-key="activateBlackReadingGuide">Activar Guía de Lectura Negra</button><div id="guiaLecturaNegra"></div>' +
-      '<button id="btnGuiaLecturaBlanca" class="btn-otros" data-key="activateWhiteReadingGuide">Activar Guía de Lectura Blanca</button><div id="guiaLecturaBlanca"></div></details>' +
+      '<details id="guias" class="guias"><summary><h3 data-key="readingGuide">Guía de Lectura</h3></summary><button id="btnGuiaLecturaNegra" class="btn-otros-black" data-key="activateBlackReadingGuide">Activar Guía de Lectura Negra</button>' +
+      '<button id="btnGuiaLecturaBlanca" class="btn-otros" data-key="activateWhiteReadingGuide">Activar Guía de Lectura Blanca</button></details><div id="guiaLecturaNegra"></div><div id="guiaLecturaBlanca"></div>' +
       '<details><summary><h3 data-key="textReader">Lector de Texto</h3></summary><select id="voiceSelect" class="select-voice"></select><button id="btnLector" class="btn-otros" data-key="activateTextReader">Activar Lector de Texto</button></details>' +
       '<button id="guardar" class="btn-save" data-key="save">Guardar Preferencias</button>';
 
@@ -1144,10 +1144,16 @@
           document.getElementById('btnEstilizarBotones').click();
         }
         if (preferencias.guiaLecturaNegra) {
-          document.getElementById('btnGuiaLecturaNegra').click();
+          const btnGuiaNegra = document.getElementById('btnGuiaLecturaNegra');
+          if (!btnGuiaNegra.dataset.active || btnGuiaNegra.dataset.active === 'false') {
+            btnGuiaNegra.click();
+          }
         }
         if (preferencias.guiaLecturaBlanca) {
-          document.getElementById('btnGuiaLecturaBlanca').click();
+          const btnGuiaBlanca = document.getElementById('btnGuiaLecturaBlanca');
+          if (!btnGuiaBlanca.dataset.active || btnGuiaBlanca.dataset.active === 'false') {
+            btnGuiaBlanca.click();
+          }
         }
         if (preferencias.ocultarMultimedia) {
           document.getElementById('ocultarImg').click();
