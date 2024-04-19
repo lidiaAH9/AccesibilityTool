@@ -181,7 +181,7 @@
 
 
     function populateVoiceList() {
-      if (typeof speechSynthesis === "undefined" || !speechSynthesis.getVoices) {
+      if (typeof speechSynthesis === undefined || !speechSynthesis.getVoices) {
         console.error('La síntesis de voz no está disponible.');
         return;
       }
@@ -196,6 +196,8 @@
 
         const voiceSelect = document.getElementById("voiceSelect");
         voiceSelect.innerHTML = ''; // Limpiar opciones anteriores
+        const savedVoice = localStorage.getItem('selectedVoice'); // Obtener la voz guardada en localStorage
+
         for (let i = 0; i < voices.length; i++) {
           const option = document.createElement("option");
           option.textContent = `${voices[i].name} (${voices[i].lang})`;
@@ -207,13 +209,14 @@
           option.setAttribute("data-lang", voices[i].lang);
           option.setAttribute("data-name", voices[i].name);
           voiceSelect.appendChild(option);
+
+          if (voices[i].name === savedVoice) {
+            option.selected = true;
+          }
         }
       }, 100);
     }
 
-    if (typeof speechSynthesis !== "undefined" && speechSynthesis.onvoiceschanged !== undefined) {
-      speechSynthesis.onvoiceschanged = populateVoiceList;
-    }
 
     var synth = window.speechSynthesis;
 
@@ -240,6 +243,8 @@
 
     // Función para activar/desactivar el lector de texto en voz alta
     function leerEnVozAlta() {
+
+      console.log("PAPAAAAAAAAAAAA");
       const btnLector = document.getElementById('btnLector');
       const lang = document.getElementById('language-selector').value;
       const lecturaEnVozAltaActivada = btnLector.dataset.lecturaEnVozAltaActivada === 'true';
@@ -248,21 +253,26 @@
         btnLector.style.backgroundColor = 'yellow';
         btnLector.style.fontWeight = '700';
         btnLector.textContent = translations[lang]['deactivateTextReader'];
-
-        iniciarLectura(); // Iniciar la lectura desde el principio
-        btnLector.dataset.lecturaEnVozAltaActivada = 'true';
+        iniciarLectura();
+        guardarEstadoLectura(true); // Iniciar la lectura desde el principio
+        console.log("PEPEEEEEEEEE");
       } else {
         btnLector.style.backgroundColor = 'white';
         btnLector.style.fontWeight = '400';
         btnLector.textContent = translations[lang]['activateTextReader'];
-
-        synth.cancel(); // Detener la lectura
-        btnLector.dataset.lecturaEnVozAltaActivada = 'false';
+        window.speechSynthesis.cancel(); // Detener la lectura
+        guardarEstadoLectura(false);
+        console.log("PIPIIIIIIIII");
       }
     }
 
-    populateVoiceList();
-
+    setTimeout(function () {
+      populateVoiceList();
+      console.log("erhgdrhawhe235456");
+    }, 2000);
+    setTimeout(function () {
+      leerEnVozAlta();
+    }, 5000);
     document.getElementById('btnLector').addEventListener('click', leerEnVozAlta);
 
 
@@ -705,7 +715,6 @@
     function ocultarImagenes() {
       var elementosOcultos = false;
       const lang = document.getElementById('language-selector').value;
-      var visible = document.getElementById('ocultarImg').dataset.visible === 'true';
       document.querySelectorAll('img, svg, video, iframe').forEach(function (el) {
         if (el.id !== 'miBotonAccesibilidad' && el.id !== 'img-ll' && !el.closest('#menu-accesibilidad') && el.id !== 'icono') { // Excluyendo el botón de accesibilidad
           el.style.visibility = el.style.visibility === 'hidden' ? '' : 'hidden';
@@ -1088,6 +1097,23 @@
     }
 
 
+    function guardarEstadoLectura(estado) {
+      localStorage.setItem('lecturaEnVozAlta', estado.toString());
+    }
+
+    function obtenerEstadoLectura() {
+      return localStorage.getItem('lecturaEnVozAlta') === 'true';
+    }
+
+    window.onload = function () {
+      const estadoInicial = obtenerEstadoLectura();
+      btnLector.dataset.lecturaEnVozAltaActivada = estadoInicial;
+      if (estadoInicial) {
+        leerEnVozAlta();
+      }
+    };
+
+
     function guardarEstado() {
       const lang = document.getElementById('language-selector').value;
       const coloresActuales = obtenerColoresActuales();
@@ -1100,8 +1126,8 @@
         ocultarMultimedia: document.getElementById('ocultarImg').dataset.visible === 'true',
         lecturaFacil: document.getElementById('lecturaFacil').dataset.estiloAplicado === 'true',
         cursorNegroGrande: document.getElementById('btnCursorNegroGrande').dataset.cursorActivo === 'true',
-        leerVozAlta: document.getElementById('btnLector').dataset.lecturaEnVozAltaActivada === 'true',
-        vozSeleccionada: document.getElementById('voiceSelect').value,
+        //leerVozAlta: document.getElementById('btnLector').dataset.lecturaEnVozAltaActivada === 'true',
+        //vozSeleccionada: document.getElementById('voiceSelect').value,
         tamanoFuente: document.getElementById('tamanoFuenteSlider').dataset.tamanoFuente,
         espaciadoLineas: document.getElementById('espaciadoLineasSlider').dataset.espaciadoLineas,
         espaciadoPalabras: document.getElementById('espaciadoPalabrasSlider').dataset.espaciadoPalabras,
@@ -1123,16 +1149,8 @@
         const preferencias = JSON.parse(preferenciasGuardadas);
         console.log('Cargando estados:', preferencias);
 
-        // Seleccionar la voz guardada si está disponible
-        if (preferencias.vozSeleccionada) {
-          const voiceSelect = document.getElementById('voiceSelect');
-          const availableVoices = Array.from(voiceSelect.options).map(option => option.value);
-          if (availableVoices.includes(preferencias.vozSeleccionada)) {
-            voiceSelect.value = preferencias.vozSeleccionada;
-          } else {
-            console.log('La voz seleccionada no está disponible, seleccionando la voz predeterminada.');
-            // Aquí puedes elegir una voz predeterminada o simplemente dejar que el selector permanezca sin seleccionar.
-          }
+        if (preferencias.leerVozAlta) {
+          document.getElementById('btnLector').click();
         }
         if (preferencias.tecladoVirtual) {
           document.getElementById('btnTeclado').click();
@@ -1164,12 +1182,6 @@
         if (preferencias.cursorNegroGrande) {
           document.getElementById('btnCursorNegroGrande').click();
         }
-
-        if (preferencias.leerVozAlta) {
-          document.getElementById('btnLector').click();
-
-        }
-
         if (preferencias.tamanoFuente) {
           document.getElementById('tamanoFuenteSlider').value = preferencias.tamanoFuente;
           cambiarTamanoFuente(preferencias.tamanoFuente);
@@ -1197,7 +1209,7 @@
       }
     }
 
-    document.getElementById('guardar').addEventListener('click', guardarEstado);
+    document.getElementById('guardar').addEventListener('click', guardarEstado, guardarEstadoLectura);
 
     function aplicarColoresGuardados(preferencias) {
       if (preferencias.coloresTexto && preferencias.coloresFondo) {
