@@ -187,28 +187,22 @@
       }
 
       // Esperar un breve momento para que las voces estén disponibles
-      setTimeout(() => {
-        const voices = speechSynthesis.getVoices();
-        if (!voices || voices.length === 0) {
-          console.warn('No se han encontrado voces disponibles.');
-          return;
-        }
+      const voices = speechSynthesis.getVoices();
+      if (!voices || voices.length === 0) {
+        console.warn('No se han encontrado voces disponibles.');
+        return;
+      }
 
-        const voiceSelect = document.getElementById("voiceSelect");
-        voiceSelect.innerHTML = ''; // Limpiar opciones anteriores
-        for (let i = 0; i < voices.length; i++) {
-          const option = document.createElement("option");
-          option.textContent = `${voices[i].name} (${voices[i].lang})`;
+      const voiceSelect = document.getElementById("voiceSelect");
+      voiceSelect.innerHTML = ''; // Limpiar opciones anteriores
+      for (let i = 0; i < voices.length; i++) {
+        const option = document.createElement("option");
+        option.textContent = `${voices[i].name} (${voices[i].lang})`;
 
-          if (voices[i].default) {
-            option.textContent += " — DEFAULT";
-          }
-
-          option.setAttribute("data-lang", voices[i].lang);
-          option.setAttribute("data-name", voices[i].name);
-          voiceSelect.appendChild(option);
-        }
-      }, 100);
+        option.setAttribute("data-lang", voices[i].lang);
+        option.setAttribute("data-name", voices[i].name);
+        voiceSelect.appendChild(option);
+      }
     }
 
     if (typeof speechSynthesis !== "undefined" && speechSynthesis.onvoiceschanged !== undefined) {
@@ -219,49 +213,52 @@
 
     // Función para iniciar la lectura desde el principio
     function iniciarLectura() {
-      const vozSeleccionada = document.getElementById('voiceSelect').value;
       const textoParaLeer = document.body.innerText;
       const utterThis = new SpeechSynthesisUtterance(textoParaLeer);
-
-      // Seleccionar la voz según la opción del menú desplegable
-      const voices = synth.getVoices();
-      const selectedVoice = voices.find(v => `${v.name} (${v.lang})` === vozSeleccionada);
-      if (selectedVoice) {
-        utterThis.voice = selectedVoice;
-        console.log(selectedVoice.name);
-      }
-
+      
+      const preferenciasGuardadas = localStorage.getItem('preferenciasAccesibilidad');
+      const preferencias = JSON.parse(preferenciasGuardadas);
+      document.getElementById('voiceSelect').value = preferencias.vozSeleccionada;
+      console.log(document.getElementById('voiceSelect').value);
       // Detener cualquier lectura previa y empezar desde el principio
       synth.cancel();
+      console.log(synth.speaking);
       synth.speak(utterThis);
 
+      console.log(synth.speaking);
     }
 
 
     // Función para activar/desactivar el lector de texto en voz alta
     function leerEnVozAlta() {
-      const btnLector = document.getElementById('btnLector');
-      const lang = document.getElementById('language-selector').value;
-      const lecturaEnVozAltaActivada = btnLector.dataset.lecturaEnVozAltaActivada === 'true';
+      setTimeout(() => {
+        const btnLector = document.getElementById('btnLector');
+        const lang = document.getElementById('language-selector').value;
+        const lecturaEnVozAltaActivada = btnLector.dataset.lecturaEnVozAltaActivada === 'true';
 
-      if (!lecturaEnVozAltaActivada) {
-        btnLector.style.backgroundColor = 'yellow';
-        btnLector.style.fontWeight = '700';
-        btnLector.textContent = translations[lang]['deactivateTextReader'];
-
-        iniciarLectura(); // Iniciar la lectura desde el principio
-        btnLector.dataset.lecturaEnVozAltaActivada = 'true';
-      } else {
-        btnLector.style.backgroundColor = 'white';
-        btnLector.style.fontWeight = '400';
-        btnLector.textContent = translations[lang]['activateTextReader'];
-
-        synth.cancel(); // Detener la lectura
-        btnLector.dataset.lecturaEnVozAltaActivada = 'false';
-      }
+        if (!lecturaEnVozAltaActivada) {
+          btnLector.style.backgroundColor = 'yellow';
+          btnLector.style.fontWeight = '700';
+          btnLector.textContent = translations[lang]['deactivateTextReader'];
+          console.log("HOLAAAAAAAAAAA");
+          populateVoiceList();
+          iniciarLectura(); // Iniciar la lectura desde el principio
+          btnLector.dataset.lecturaEnVozAltaActivada = 'true';
+        } else {
+          btnLector.style.backgroundColor = 'white';
+          btnLector.style.fontWeight = '400';
+          btnLector.textContent = translations[lang]['activateTextReader'];
+          console.log("ADIOOOOOOOOOOOOOOS");
+          synth.cancel(); // Detener la lectura
+          btnLector.dataset.lecturaEnVozAltaActivada = 'false';
+        }
+      }, 1000);
     }
 
+
     populateVoiceList();
+
+
 
     document.getElementById('btnLector').addEventListener('click', leerEnVozAlta);
 
@@ -1130,7 +1127,7 @@
           if (availableVoices.includes(preferencias.vozSeleccionada)) {
             voiceSelect.value = preferencias.vozSeleccionada;
           } else {
-            console.log('La voz seleccionada no está disponible, seleccionando la voz predeterminada.');
+            console.log('La voz seleccionada no está disponible, seleccionando la voz predeterminada.', preferencias.vozSeleccionada);
             // Aquí puedes elegir una voz predeterminada o simplemente dejar que el selector permanezca sin seleccionar.
           }
         }
@@ -1167,7 +1164,7 @@
 
         if (preferencias.leerVozAlta) {
           document.getElementById('btnLector').click();
-
+          populateVoiceList();
         }
 
         if (preferencias.tamanoFuente) {
