@@ -181,7 +181,7 @@
 
 
     function populateVoiceList() {
-      if (typeof speechSynthesis === "undefined" || !speechSynthesis.getVoices) {
+      if (typeof speechSynthesis === "undefined") {
         console.error('La síntesis de voz no está disponible.');
         return;
       }
@@ -198,11 +198,12 @@
       for (let i = 0; i < voices.length; i++) {
         const option = document.createElement("option");
         option.textContent = `${voices[i].name} (${voices[i].lang})`;
-
         option.setAttribute("data-lang", voices[i].lang);
         option.setAttribute("data-name", voices[i].name);
+        option.value = voices[i].name;
         voiceSelect.appendChild(option);
       }
+    
     }
 
     if (typeof speechSynthesis !== "undefined" && speechSynthesis.onvoiceschanged !== undefined) {
@@ -215,11 +216,16 @@
     function iniciarLectura() {
       const textoParaLeer = document.body.innerText;
       const utterThis = new SpeechSynthesisUtterance(textoParaLeer);
-      
-      const preferenciasGuardadas = localStorage.getItem('preferenciasAccesibilidad');
-      const preferencias = JSON.parse(preferenciasGuardadas);
-      document.getElementById('voiceSelect').value = preferencias.vozSeleccionada;
+      const voiceSelect = document.getElementById('voiceSelect');
+      const selectedVoiceName = voiceSelect.value;
+      // Asignar la voz seleccionada al utterance
+      const voices = synth.getVoices();
+      const selectedVoice = voices.find(voice => voice.name === selectedVoiceName);
+      if (selectedVoice) {
+          utterThis.voice = selectedVoice;
+      }
       console.log(document.getElementById('voiceSelect').value);
+      
       // Detener cualquier lectura previa y empezar desde el principio
       synth.cancel();
       console.log(synth.speaking);
@@ -241,7 +247,6 @@
           btnLector.style.fontWeight = '700';
           btnLector.textContent = translations[lang]['deactivateTextReader'];
           console.log("HOLAAAAAAAAAAA");
-          populateVoiceList();
           iniciarLectura(); // Iniciar la lectura desde el principio
           btnLector.dataset.lecturaEnVozAltaActivada = 'true';
         } else {
@@ -255,10 +260,7 @@
       }, 1000);
     }
 
-
     populateVoiceList();
-
-
 
     document.getElementById('btnLector').addEventListener('click', leerEnVozAlta);
 
@@ -899,47 +901,6 @@
     document.getElementById('toggleAltoContraste').addEventListener('click', toggleModoAltoContraste);
 
 
-
-
-
-    /*function activateSubtitles() {
-      const lang = document.getElementById('language-selector').value;
-      const btnSubtitle = document.getElementById('btnSubtitle');
-      const subtitlesActivated = btnSubtitle.dataset.activated === 'true';
-
-      document.querySelectorAll('iframe[src*="youtube.com/embed/"]').forEach(iframe => {
-        let src = iframe.src;
-
-        // Asegurar que enablejsapi=1 está presente
-        if (!src.includes('enablejsapi=1')) {
-          src += (src.includes('?') ? '&' : '?') + 'enablejsapi=1';
-        }
-
-        if (subtitlesActivated) {
-          src = src.replace('&cc_load_policy=1', '').replace('?cc_load_policy=1', '');
-          btnSubtitle.dataset.activated = 'false';
-          btnSubtitle.style.backgroundColor = 'white';
-          btnSubtitle.style.fontWeight = '400';
-          btnSubtitle.textContent = translations[lang]['activateSubtitle'];
-        } else {
-          if (!src.includes('cc_load_policy=1')) {
-            src += '&cc_load_policy=1';
-          }
-          btnSubtitle.dataset.activated = 'true';
-          btnSubtitle.style.backgroundColor = 'yellow';
-          btnSubtitle.style.fontWeight = '700';
-          btnSubtitle.textContent = translations[lang]['deactivateSubtitle'];
-        }
-        console.log("URL:", src);
-        iframe.src = src;
-        console.log("URL del iframe:", iframe.src);
-      });
-    }
-    // Asignar la función al botón de activar subtítulos
-    document.getElementById('btnSubtitle').addEventListener('click', activateSubtitles);*/
-
-
-
     var translations = {
       'es': {
         'menuTitle': 'MENÚ DE ACCESIBILIDAD',
@@ -1193,7 +1154,7 @@
 
       }
     }
-
+    populateVoiceList();
     document.getElementById('guardar').addEventListener('click', guardarEstado);
 
     function aplicarColoresGuardados(preferencias) {
