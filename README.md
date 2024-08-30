@@ -17,8 +17,6 @@ Text Reader: Converts text to speech, supporting multiple languages to assist us
 Implementation Instructions
 To integrate this accessibility tool into your web page, you will need to include the JavaScript file that contains the tool's code. Below is the typical structure for incorporating this script:
 
-html
-Copiar código
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,10 +28,11 @@ Copiar código
 <body>
     <!-- Your website's body content goes here -->
 
-    <!-- Accessibility Tool Script -->
+    <!-- Accessibility Tool Script
     <script src="path/to/accessibility-tool.js"></script>
 </body>
 </html>
+
 
 
 Usage
