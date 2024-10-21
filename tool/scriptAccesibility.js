@@ -1,7 +1,29 @@
 (function (doc) {
 
+  const estilosOriginales = [];
+
+    // Función para almacenar los estilos originales de los elementos de texto
+    function almacenarEstilosOriginales() {
+      const elementosTexto = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, li, div, a, button');
+      elementosTexto.forEach(elemento => {
+        if (!elemento.closest('#menu-accesibilidad')) {
+          estilosOriginales.push({
+            elemento: elemento,
+            fontSize: window.getComputedStyle(elemento).fontSize,
+            lineHeight: window.getComputedStyle(elemento).lineHeight,
+            wordSpacing: window.getComputedStyle(elemento).wordSpacing,
+            letterSpacing: window.getComputedStyle(elemento).letterSpacing
+          });
+        }
+      });
+    }
+
+
+    
   // Esperamos a que el DOM esté listo antes de ejecutar nuestro script
   doc.addEventListener('DOMContentLoaded', function () {
+
+    almacenarEstilosOriginales();
 
     // Crear el botón de accesibilidad
     var btnAccesibilidad = doc.createElement('button');
@@ -97,7 +119,8 @@
       '<div><label class="menu-label" for="tamanoFuenteSlider" data-key="fontSize">Tamaño de letra:</label><input type="range" id="tamanoFuenteSlider" class="txt-slider" min="12" max="30" value="16"></div>' +
       '<div><label class="menu-label" for="espaciadoLineasSlider" data-key="lineSpacing">Espaciado entre líneas:</label><input type="range" id="espaciadoLineasSlider" class="txt-slider" min="1" max="3" value="1.6" step="0.1"></div>' +
       '<div><label class="menu-label" for="espaciadoPalabrasSlider" data-key="wordSpacing">Espaciado entre palabras:</label><input type="range" id="espaciadoPalabrasSlider" class="txt-slider" min="0" max="20" value="0"></div>' +
-      '<div><label class="menu-label" for="espaciadoLetrasSlider" data-key="letterSpacing">Espaciado entre letras:</label><input type="range" id="espaciadoLetrasSlider" class="txt-slider" min="0" max="5" value="0"></div></details>' +
+      '<div><label class="menu-label" for="espaciadoLetrasSlider" data-key="letterSpacing">Espaciado entre letras:</label><input type="range" id="espaciadoLetrasSlider" class="txt-slider" min="0" max="5" value="0"></div>' +
+      '<div><a id="restablecerTexto" class="restablecer-cambios-link no-underline" href="#" data-key="resetText">Restablecer texto</a></div></details>' +
       '<details><summary><h3 data-key="adjustCursor">Ajustar Cursor</h3></summary><button id="btnCursorNegroGrande" class="btn-cursor" data-key="cursorBlackLarge">Cursor Negro y Grande</button></details>' +
       '<details><summary><h3 data-key="stylizeButtons">Estilizar Botones</h3></summary><button id="btnEstilizarBotones" class="btn-cursor" data-key="activateButtonStyle">Activar Estilo de Botones</button></details>' +
       '<details id="guias" class="guias"><summary><h3 data-key="readingGuide">Guía de Lectura</h3></summary><button id="btnGuiaLecturaNegra" class="btn-otros-black" data-key="activateBlackReadingGuide">Activar Guía de Lectura Negra</button>' +
@@ -112,8 +135,7 @@
       menuAccesibilidad.classList.toggle('open');
     });
 
-
-
+    
 
     // Función para cambiar el tamaño de la fuente
     function cambiarTamanoFuente(valor) {
@@ -123,7 +145,7 @@
           elemento.style.fontSize = valor + 'px';
         }
       });
-      document.getElementById('tamanoFuenteSlider').dataset.tamanoFuente = valor;
+      //document.getElementById('tamanoFuenteSlider').dataset.tamanoFuente = valor;
     }
 
     // Función para cambiar el espaciado entre líneas
@@ -134,7 +156,7 @@
           elemento.style.lineHeight = valor;
         }
       });
-      document.getElementById('espaciadoLineasSlider').dataset.espaciadoLineas = valor;
+      //document.getElementById('espaciadoLineasSlider').dataset.espaciadoLineas = valor;
     }
 
     // Función para cambiar el espaciado entre palabras
@@ -145,7 +167,7 @@
           elemento.style.wordSpacing = valor + 'px';
         }
       });
-      document.getElementById('espaciadoPalabrasSlider').dataset.espaciadoPalabras = valor;
+      //document.getElementById('espaciadoPalabrasSlider').dataset.espaciadoPalabras = valor;
     }
 
     // Función para cambiar el espaciado entre letras
@@ -156,7 +178,7 @@
           elemento.style.letterSpacing = valor + 'px';
         }
       });
-      document.getElementById('espaciadoLetrasSlider').dataset.espaciadoLetras = valor;
+      //document.getElementById('espaciadoLetrasSlider').dataset.espaciadoLetras = valor;
     }
 
 
@@ -178,7 +200,27 @@
     });
 
 
+    // Evento de clic para restablecer los ajustes
+    document.getElementById('restablecerTexto').addEventListener('click', function (event) {
+      event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+      restablecerEstilosOriginales();
+    });
 
+    // Función para restablecer los estilos originales
+    function restablecerEstilosOriginales() {
+      estilosOriginales.forEach(item => {
+        item.elemento.style.fontSize = item.fontSize;
+        item.elemento.style.lineHeight = item.lineHeight;
+        item.elemento.style.wordSpacing = item.wordSpacing;
+        item.elemento.style.letterSpacing = item.letterSpacing;
+      });
+
+      // Restablecer los sliders a sus valores originales
+      document.getElementById('tamanoFuenteSlider').value = 16;
+      document.getElementById('espaciadoLineasSlider').value = 1.6;
+      document.getElementById('espaciadoPalabrasSlider').value = 0;
+      document.getElementById('espaciadoLetrasSlider').value = 0;
+    }
 
     function populateVoiceList() {
       if (typeof speechSynthesis === "undefined") {
@@ -203,7 +245,7 @@
         option.value = voices[i].name;
         voiceSelect.appendChild(option);
       }
-    
+
     }
 
     if (typeof speechSynthesis !== "undefined" && speechSynthesis.onvoiceschanged !== undefined) {
@@ -222,10 +264,10 @@
       const voices = synth.getVoices();
       const selectedVoice = voices.find(voice => voice.name === selectedVoiceName);
       if (selectedVoice) {
-          utterThis.voice = selectedVoice;
+        utterThis.voice = selectedVoice;
       }
       console.log(document.getElementById('voiceSelect').value);
-      
+
       // Detener cualquier lectura previa y empezar desde el principio
       synth.cancel();
       console.log(synth.speaking);
@@ -1128,28 +1170,28 @@
           populateVoiceList();
         }
 
-        if (preferencias.tamanoFuente) {
-          document.getElementById('tamanoFuenteSlider').value = preferencias.tamanoFuente;
-          cambiarTamanoFuente(preferencias.tamanoFuente);
-        }
+        // if (preferencias.tamanoFuente) {
+        //   document.getElementById('tamanoFuenteSlider').value = preferencias.tamanoFuente;
+        //   cambiarTamanoFuente(preferencias.tamanoFuente);
+        // }
 
-        // Cargar y aplicar el espaciado de líneas guardado
-        if (preferencias.espaciadoLineas) {
-          document.getElementById('espaciadoLineasSlider').value = preferencias.espaciadoLineas;
-          cambiarEspaciadoLineas(preferencias.espaciadoLineas);
-        }
+        // // Cargar y aplicar el espaciado de líneas guardado
+        // if (preferencias.espaciadoLineas) {
+        //   document.getElementById('espaciadoLineasSlider').value = preferencias.espaciadoLineas;
+        //   cambiarEspaciadoLineas(preferencias.espaciadoLineas);
+        // }
 
-        // Cargar y aplicar el espaciado entre palabras guardado
-        if (preferencias.espaciadoPalabras) {
-          document.getElementById('espaciadoPalabrasSlider').value = preferencias.espaciadoPalabras;
-          cambiarEspaciadoPalabras(preferencias.espaciadoPalabras);
-        }
+        // // Cargar y aplicar el espaciado entre palabras guardado
+        // if (preferencias.espaciadoPalabras) {
+        //   document.getElementById('espaciadoPalabrasSlider').value = preferencias.espaciadoPalabras;
+        //   cambiarEspaciadoPalabras(preferencias.espaciadoPalabras);
+        // }
 
-        // Cargar y aplicar el espaciado entre letras guardado
-        if (preferencias.espaciadoLetras) {
-          document.getElementById('espaciadoLetrasSlider').value = preferencias.espaciadoLetras;
-          cambiarEspaciadoLetras(preferencias.espaciadoLetras);
-        }
+        // // Cargar y aplicar el espaciado entre letras guardado
+        // if (preferencias.espaciadoLetras) {
+        //   document.getElementById('espaciadoLetrasSlider').value = preferencias.espaciadoLetras;
+        //   cambiarEspaciadoLetras(preferencias.espaciadoLetras);
+        // }
         aplicarColoresGuardados(preferencias);
 
       }

@@ -26,37 +26,45 @@
         </p>
     </div>
 
-    <div style="display:flex;">
-        <a href="#" style=" font-size: 20px;">Este es un enlace de prueba</a>
+    <div style="display:flex; align-items: center; justify-content: end;">
+        <a href="#" style=" font-size: 20px; ">Este es un enlace de prueba</a>
     </div>
 
-    <div style="display:flex; align-items: center; justify-content: center; " >
+    <div style="display:flex; align-items: center; justify-content: center; margin-top: 30px;" >
         <img src="imagen.jpg" alt="Imagen de prueba" style=" left: 40%; top: 30%; height: 20%; width: 20%; background-color: transparent !important; ">
     </div>
 
-    <div style="display:flex; margin-top: 80px;">
+    <div style="display:flex; margin-top: 80px; align-items: center; justify-content: center;">
         <!-- Formulario simple que enviará una petición GET -->
         <form action="" style="display: block;">
-            <label for="GET-name">Nombre:</label>
-            <input id="GET-name" type="text" name="name" />
-            <label for="GET-num">Num:</label>
-            <input id="GET-num" type="text" name="num" />
-            <label for="GET-country">Country:</label>
-            <input id="GET-country" type="text" name="country" />
-            <input type="submit" value="Save" />
+            <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                <label for="GET-name" style="margin-right: 10px;">Nombre:</label>
+                <input id="GET-name" type="text" name="name" />
+            </div>
+            <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                <label for="GET-num" style="margin-right: 10px;">Teléfono:</label>
+                <input id="GET-num" type="text" name="num" />
+            </div>
+            <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                <label for="GET-country" style="margin-right: 10px;">Country:</label>
+                <input id="GET-country" type="text" name="country"  />
+            </div>
+            <div style="display: flex; ">
+                <input type="submit" value="Guardar" style="  padding: 10px 20px; border-radius: 5px;  height: auto; width: auto; "/>
+            </div>
         </form>
     </div>
+    
 
-    <div style="display:flex; margin-top: 60px; justify-content: flex-end;">
+    <div style="display:flex; margin-top: 20px; justify-content: flex-end;">
       
         <div >
             <iframe width="560" height="315" src="https://www.youtube.com/embed/RNtn4hFC3Yg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
     </div>
 
-    <div>
-        <br><br>
-        <button type="button"  style="float: right;  cursor:pointer; height: 100px; width: 300px;  border-radius: 5px; background: linear-gradient(135deg, DodgerBlue, violet); box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); border: none; font-weight: bold;" >BOTÓN DE PRUEBA</button>
+    <div >
+        <button type="button" style="float: right;  cursor:pointer; height: 50px; width: 300px;  border-radius: 5px; background: linear-gradient(135deg, violet, pink); box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); border: none; font-weight: bold;" >BOTÓN DE PRUEBA</button>
     </div>
 
     <!-- Herramienta de Accesibilidad -->
